@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "BookMapper">
+	
+	<select id="bookAllList" parameterType="hashMap" resultType ="hashMap">
+		SELECT book_id, book_name FROM books where book_id in 
+		<foreach item="item" open="(" separator="," close=")" collection="zzimList">
+							#{item}
+		</foreach>
+	</select>
+
+	<select id="bookList" parameterType="hashMap" resultType="hashMap">
+	
+		SELECT book_id, book_name, book_author, book_type, book_date, book_price 
+		FROM Books WHERE 1=1
+		<if test='keyword != null and keyword !="" '>
+			AND 
+			<if test="type eq 'title' ">
+			REPLACE(book_name,' ','')
+			</if>
+			<if test="type eq 'author' ">
+			REPLACE(book_author,' ','')			
+			</if>
+			<if test="type eq 'publisher' ">
+			REPLACE(book_type,' ','')
+			</if>
+			  LIKE '%'+ REPLACE( #{keyword} ,' ','') + '%'
+		</if>
+	</select>
+	
+	<select id="bookListCount" parameterType="hashMap" resultType="int">
+	
+		SELECT count(book_name) as cnt
+		FROM Books WHERE 1=1
+		<if test='keyword != null and keyword !="" '>
+			AND 
+			<if test="type eq 'title' ">
+			REPLACE(book_name,' ','')
+			</if>
+			<if test="type eq 'author' ">
+			REPLACE(book_author,' ','')			
+			</if>
+			<if test="type eq 'publisher' ">
+			REPLACE(book_type,' ','')
+			</if>
+			  LIKE '%'+ REPLACE( #{keyword} ,' ','') + '%'
+		</if>
+	
+	</select>
+	
+	
+	<select id="bookDetail" parameterType="hashMap" resultType="hashMap">
+		SELECT book_id, book_name, book_author, book_type, book_date, book_price 
+		FROM Books WHERE book_id = #{book_id}
+	
+	</select>
+	
+	<select id="booklikeUsers" parameterType="hashMap" resultType="hashMap">
+		SELECT b.member_id as member_id, c.member_name as member_name, a.book_id as book_id, 
+		a.book_name as book_name, heart_check 
+		FROM books as a left outer join mypage as b 
+		on a.book_id = b.book_id left outer join members as c on c.member_id = b.member_id 
+		where b.book_id = #{book_id} and heart_check = 'Y'
+	
+	</select>
+	<select id="bookScore" parameterType="hashMap" resultType="hashMap">
+		SELECT (sum(convert(float,review_score)))/count(*) as avg,
+		count(member_name) as cnt 
+		FROM review WHERE book_id = #{book_id}
+	</select>
+
+</mapper>
