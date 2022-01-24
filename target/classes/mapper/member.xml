@@ -4,7 +4,7 @@
 <mapper namespace = "MemberMapper">
 	
 	<select id="updatemyinfo" parameterType="hashMap">
-		UPDATE members SET MEMBER_PW = #{member_new_pw}, 
+		UPDATE members SET member_pw = #{member_new_pw}, 
 		MEMBER_NAME = #{member_name}, MEMBER_PHONE = #{member_phone}, 
 		MEMBER_HOME1 = #{member_home1}, MEMBER_HOME2 = #{member_home2}, 
 		MEMBER_HOME3 = #{member_home3} WHERE MEMBER_ID = #{member_id}
@@ -19,65 +19,65 @@
 	</select>
 
 	<select id="myzzimCount" parameterType="hashMap" resultType="int">
-		select count(case when zzim_check = 'Y' then 1 end) as cnt FROM MYPAGE as a 
-		left outer join MEMBERS as b on a.member_id = b.member_id 
+		select count(case when zzim_check = 'Y' then 1 end) as cnt FROM mypage as a 
+		left outer join members as b on a.member_id = b.member_id 
 		WHERE b.member_name = #{member_name}
 	</select>	
 	
 	<select id="myheartCount" parameterType="hashMap" resultType="int">
 		SELECT count(case when heart_check = 'Y' then 1 end) as cnt 
-		FROM MYPAGE
+		FROM mypage
 		WHERE member_id=#{member_id}
 	</select>	
 
 	<select id="dupCheck" parameterType="hashMap" resultType="int">
-		SELECT count(*) as cnt FROM MYPAGE as a left outer join MEMBERS as b on a.member_id = b.member_id
+		SELECT count(*) as cnt FROM mypage as a left outer join members as b on a.member_id = b.member_id
 		WHERE b.member_name = #{member_name} and book_id = #{book_id}
 	</select>
 
 	<select id="heartCount" parameterType="hashMap" resultType="int">
 		SELECT COUNT(*) as heartCnt 
-		FROM MYPAGE 
+		FROM mypage 
 		WHERE heart_check = 'Y' AND book_id = #{book_id} 
 	</select>
 	
 	<select id="heartChk" parameterType="hashMap" resultType="hashMap">
 		SELECT a.member_id, b.member_name, heart_check as heartChk 
-		FROM MYPAGE as a left outer join MEMBERS as b on a.member_id = b.member_id  
+		FROM mypage as a left outer join members as b on a.member_id = b.member_id  
 		WHERE b.member_name = #{member_name} and book_id = #{book_id}
 	</select>
 	
 	<select id="heartUpdate" parameterType="hashMap" resultType="hashMap">
-		UPDATE MYPAGE
+		UPDATE mypage
 		SET heart_check = #{heart_yn} 
 		WHERE member_id = #{member_id} and book_id = #{book_id}
 	</select>
 	
 	<select id="heartInsert" parameterType="hashMap" resultType="hashMap">
-		INSERT INTO MYPAGE(member_id, book_id, heart_check) 
+		INSERT INTO mypage(member_id, book_id, heart_check) 
 		VALUES(#{member_id}, #{book_id}, #{heart_yn})
 	</select>
 
 	<select id="emotagList" parameterType="hashMap" resultType="hashMap">
 		SELECT emo_tag as emo_tag
-		FROM MYPAGE WHERE book_id = #{book_id}
+		FROM mypage WHERE book_id = #{book_id}
 	</select>
 	
 	<select id="emotagInsert" parameterType="hashMap" resultType="hashMap">
-		INSERT INTO MYPAGE(book_id, book_name, member_id, emo_tag) 
+		INSERT INTO mypage(book_id, book_name, member_id, emo_tag) 
 		VALUES(#{book_id}, #{book_name}, #{member_id}, #{emo_tag});
 
 	</select>
 	
 	<select id="zzimInsert" parameterType="hashMap" resultType="hashMap">
 		
-		INSERT INTO MYPAGE(member_id, book_id, zzim_check) 
+		INSERT INTO mypage(member_id, book_id, zzim_check) 
 		VALUES(#{member_id}, #{book_id}, 'Y')
 	
 	</select>
 	<select id="zzimUpdate" parameterType="hashMap" resultType="hashMap">
 		
-		UPDATE MYPAGE SET zzim_check = #{zzim_yn} 
+		UPDATE mypage SET zzim_check = #{zzim_yn} 
 		WHERE member_id = #{member_id} and book_id = #{book_id}
 	
 	</select>
@@ -85,7 +85,7 @@
 		
 		SELECT b.member_id as member_id, c.member_name, a.book_id as book_id, a.book_name as book_name
 		, a.book_type as book_type, book_author, zzim_check 
-		FROM books as a left outer join MYPAGE as b 
+		FROM books as a left outer join mypage as b 
 		on a.book_id = b.book_id left outer join members as c on b.member_id = c.member_id 
 		where c.member_name = #{member_name} and zzim_check = 'Y'
 		
@@ -99,7 +99,7 @@
 
 	<select id="zzimDelete" parameterType="hashMap" resultType="hashMap">
 
-		UPDATE MYPAGE SET zzim_check = ''
+		UPDATE mypage SET zzim_check = ''
 		WHERE member_id = #{member_id} AND
 		book_id in 
 		<foreach item="item" open="(" separator="," close=")" collection="zzimList">
@@ -111,7 +111,7 @@
 	<insert id="insertReview" parameterType="hashMap">
 		INSERT INTO review(member_name, book_id, book_name, review_title, review_content, review_date, review_score) 
 		VALUES(#{member_name}, #{book_id}, #{book_name}, #{review_title}, 
-		#{review_content}, convert(char(19),now(),20), #{star})
+		#{review_content}, DATE_FORMAT(NOW(), '%Y-%m-%d %T'), #{star})
 	</insert>
 	
 	<select id="reviewListall" parameterType="hashMap" resultType="hashMap">
@@ -159,10 +159,12 @@
 		#{order_email}, #{ship_msg}, #{total_price}, #{order_date})
 	</insert>
 	<update id="savemymile" parameterType="hashMap">
-		UPDATE member_data SET mile = mile + convert(int, #{mileage}) WHERE member_name = #{member_name}
+		UPDATE member_data SET mile = mile + cast(#{mileage} AS signed integer) WHERE member_name = #{member_name}
 	</update>
 	<select id="showalldata" parameterType="hashMap" resultType="hashMap">
-		SELECT member_name, mile, follow1, follow2, follow3, follow4, follow5 FROM member_data 
+		SELECT member_name, mile 
+		
+		FROM member_data 
 		WHERE member_name = #{member_name}
 	</select>
 </mapper>

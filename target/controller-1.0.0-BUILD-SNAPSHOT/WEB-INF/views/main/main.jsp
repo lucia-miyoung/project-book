@@ -120,12 +120,7 @@ function gologinout(num) {
               <li class="selected">제목</li>
             </ul>
           </div>
-          <style>      	
 
-		.search-result ul li.invisible {
-			display:none;
-		}
-          </style>
           <form  method="GET" id="cfrm"> 
             <button id="search-button"><span class="far fa-search"></span></button>
             <input id="search-input" name="keyword" type="text" placeholder="제목, 저자, 해쉬태그 검색" autocomplete="off" spellcheck="false"
@@ -155,7 +150,7 @@ function gologinout(num) {
         	const searchList = document.querySelectorAll('.search-result > ul > li');	
         		searchInput.addEventListener('keyup', () => {
         			
-        			const searchVal = searchInput.value;
+        			const searchVal = searchInput.value.trim().replace(/ /g, '');
         			if(searchVal.length > 0) {
         				searchResult.style.display = "block";
         				goPreview(searchVal);
@@ -172,7 +167,7 @@ function gologinout(num) {
         	const searchBtn = document.querySelector('#search-button');
         	searchBtn.addEventListener('click', (event) => {
         		
-        		 const searchVal = searchInput.value;
+        		 const searchVal = searchInput.value.trim().replace(/ /g, '');;
         		if(searchVal.length == 0) {
         			alert('검색어를 입력해주세요.');
         			return;

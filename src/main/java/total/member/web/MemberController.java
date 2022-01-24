@@ -111,6 +111,15 @@ public class MemberController {
 		model.addAttribute("paramMap", paramMap);
 		return "/login/myaccount";
 	}
+	
+	@RequestMapping(value = "/deletemyaccount")
+	public String deletemyaccount(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+			ModelMap model) throws Exception {
+		System.out.println("deletemyaccount {}:  " + paramMap);
+		
+		model.addAttribute("paramMap", paramMap);
+		return "/login/delete";
+	}
 
 	@RequestMapping(value = "/notice")
 	public String notice(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,

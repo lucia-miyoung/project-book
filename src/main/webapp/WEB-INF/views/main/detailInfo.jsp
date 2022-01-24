@@ -12,7 +12,7 @@
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>도서 상세 </title>
 <!-- Google Fonts -->
-<link
+<link                
 	href="https://fonts.googleapis.com/css?family=Black+Han+Sans|Nanum+Gothic|Kaushan+Script|Montserrat|Noto+Sans+KR|Open+Sans|Roboto&display=swap"
 	rel="stylesheet" />
 <!-- Fontawesome API-->
@@ -484,7 +484,7 @@
 <script>
 	const starWidth = document.querySelector('.bookStarScore').offsetWidth;
 	const starCnt = document.querySelectorAll('.bookStarScore #default i').length;
-	const bookScore = Number(document.querySelector('.bookScoreWrap > .bookScore').textContent.trim());
+	let bookScore = Number(document.querySelector('.bookScoreWrap > .bookScore').textContent.trim());
 	const fullStar = document.querySelector('.bookStarScore #full');
 	
 	let score = (starWidth/starCnt) * bookScore;

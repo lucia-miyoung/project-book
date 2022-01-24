@@ -120,12 +120,7 @@ function gologinout(num) {
               <li class="selected">제목</li>
             </ul>
           </div>
-          <style>      	
 
-		.search-result ul li.invisible {
-			display:none;
-		}
-          </style>
           <form  method="GET" id="cfrm"> 
             <button id="search-button"><span class="far fa-search"></span></button>
             <input id="search-input" name="keyword" type="text" placeholder="제목, 저자, 해쉬태그 검색" autocomplete="off" spellcheck="false"
@@ -155,7 +150,7 @@ function gologinout(num) {
         	const searchList = document.querySelectorAll('.search-result > ul > li');	
         		searchInput.addEventListener('keyup', () => {
         			
-        			const searchVal = searchInput.value;
+        			const searchVal = searchInput.value.trim().replace(/ /g, '');
         			if(searchVal.length > 0) {
         				searchResult.style.display = "block";
         				goPreview(searchVal);
@@ -172,7 +167,7 @@ function gologinout(num) {
         	const searchBtn = document.querySelector('#search-button');
         	searchBtn.addEventListener('click', (event) => {
         		
-        		 const searchVal = searchInput.value;
+        		 const searchVal = searchInput.value.trim().replace(/ /g, '');;
         		if(searchVal.length == 0) {
         			alert('검색어를 입력해주세요.');
         			return;
@@ -539,7 +534,7 @@ function gologinout(num) {
             <i class="fas fa-clock"></i>
             <span></span>
           </div>
-          사람들이 많이 읽은 책
+          <!-- 사람들이 많이 읽은 책 -->
         </h2>
         <!-- initialize clock -->
         <script>
@@ -586,7 +581,7 @@ function gologinout(num) {
           </ul>
         </div>
       </section>
-      <section class="best-seller fadeInUp">
+      <!-- <section class="best-seller fadeInUp">
         <h2 class="section-heading">베스트셀러</h2>
         <div class="content-wrapper">
           <div class="filter-container">
@@ -605,7 +600,7 @@ function gologinout(num) {
               </ul>
             </div>
           </div>
-          <!-- toggle filter click -->
+          toggle filter click
           <script>
             // ajax callback
             function updateBestSeller() {
@@ -716,7 +711,7 @@ function gologinout(num) {
             </ul>
           </div>
         </div>
-      </section>
+      </section> -->
       <section class="paperbook-sale content-area fadeInUp">
         <h2 class="section-heading">빈 책장을 채우는 기회</h2>
         <div class="content-wrapper">
@@ -741,7 +736,7 @@ function gologinout(num) {
           </div>
         </div>
       </section>
-      <section class="coming-soon content-area fadeInUp">
+<%--       <section class="coming-soon content-area fadeInUp">
         <h2 class="section-heading">출시 예정 도서</h2>
         <div class="content-wrapper slider-wrapper flexible-slider-window">
           <ul class="slider flexible-slider">
@@ -810,7 +805,7 @@ function gologinout(num) {
             });
           });
         </script>
-      </section>
+      </section> --%>
       <section class="recent-posts content-area fadeInUp">
         <h2 class="section-heading">최신 리뷰엉이</h2>
         <div class="content-wrapper">

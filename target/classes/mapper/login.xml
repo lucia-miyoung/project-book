@@ -36,9 +36,9 @@
 	<select id="memberloginChk" parameterType="hashMap" resultType="int">
 		
 		SELECT COUNT(*) AS cnt 
-		FROM MEMBERS 
-		WHERE MEMBER_ID = #{member_id} 
-		AND MEMBER_PW = #{member_new_pw}
+		FROM members 
+		WHERE member_id = #{member_id} 
+		AND member_pw = #{member_new_pw}
 	
 	</select>
 

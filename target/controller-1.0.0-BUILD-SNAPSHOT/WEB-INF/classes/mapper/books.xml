@@ -13,7 +13,7 @@
 	<select id="bookList" parameterType="hashMap" resultType="hashMap">
 	
 		SELECT book_id, book_name, book_author, book_type, book_date, book_price 
-		FROM Books WHERE 1=1
+		FROM books WHERE 1=1
 		<if test='keyword != null and keyword !="" '>
 			AND 
 			<if test="type eq 'title' ">
@@ -25,14 +25,14 @@
 			<if test="type eq 'publisher' ">
 			REPLACE(book_type,' ','')
 			</if>
-			  LIKE '%'+ REPLACE( #{keyword} ,' ','') + '%'
+			  LIKE concat('%',replace(#{keyword}, ' ', ''),'%');
 		</if>
 	</select>
 	
 	<select id="bookListCount" parameterType="hashMap" resultType="int">
 	
 		SELECT count(book_name) as cnt
-		FROM Books WHERE 1=1
+		FROM books WHERE 1=1
 		<if test='keyword != null and keyword !="" '>
 			AND 
 			<if test="type eq 'title' ">
@@ -44,7 +44,7 @@
 			<if test="type eq 'publisher' ">
 			REPLACE(book_type,' ','')
 			</if>
-			  LIKE '%'+ REPLACE( #{keyword} ,' ','') + '%'
+			  LIKE concat('%',replace(#{keyword}, ' ', ''),'%');
 		</if>
 	
 	</select>
@@ -52,7 +52,7 @@
 	
 	<select id="bookDetail" parameterType="hashMap" resultType="hashMap">
 		SELECT book_id, book_name, book_author, book_type, book_date, book_price 
-		FROM Books WHERE book_id = #{book_id}
+		FROM books WHERE book_id = #{book_id}
 	
 	</select>
 	
@@ -65,7 +65,7 @@
 	
 	</select>
 	<select id="bookScore" parameterType="hashMap" resultType="hashMap">
-		SELECT (sum(convert(float,review_score)))/count(*) as avg,
+		SELECT (sum(convert(review_score, float)))/count(*) as avg,
 		count(member_name) as cnt 
 		FROM review WHERE book_id = #{book_id}
 	</select>
