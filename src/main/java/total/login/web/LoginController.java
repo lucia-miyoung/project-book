@@ -80,14 +80,12 @@ public class LoginController extends CommonController {
 		return "/login/signin";
 	}
 	
-	@ResponseBody
 	@RequestMapping(value="/logout")
-	public String logout(HttpServletRequest req, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
+	public void logout(HttpServletRequest req, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
 		model.addAttribute("paramMap", paramMap);
 		  HttpSession session = req.getSession();
 	        session.invalidate();
 	      String cp = req.getContextPath();
-	    return "로그아웃 됐습니다.";
 	}
 	
 	@RequestMapping(value="/signup")

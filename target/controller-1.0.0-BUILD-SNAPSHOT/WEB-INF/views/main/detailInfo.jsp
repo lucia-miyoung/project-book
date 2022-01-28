@@ -12,7 +12,7 @@
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>도서 상세 </title>
 <!-- Google Fonts -->
-<link
+<link                
 	href="https://fonts.googleapis.com/css?family=Black+Han+Sans|Nanum+Gothic|Kaushan+Script|Montserrat|Noto+Sans+KR|Open+Sans|Roboto&display=swap"
 	rel="stylesheet" />
 <!-- Fontawesome API-->
@@ -73,6 +73,22 @@
 			</div>
 		</nav>
 	</header>
+	<style>
+	.mypageBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 13px;
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 200ms ease-in-out;
+    text-decoration: none;
+	}
+	</style>
 	<script>
 
 
@@ -117,35 +133,8 @@
 			<input type="hidden" name="heart_yn" id="heart_yn" value="${heartChk.heartChk}" /> 
 			<input type="hidden" name="book_id" id="book_id" value="${paramMap.book_id}" /> 
 			<input type="hidden" name="zzim_chk" id="zzim_chk" value="${zzimCnt}" />
-<%-- 			<input type="hidden" name="member_id" id="member_id" value="${paramMap.member_id}" /> --%>
-			
 		</form>
 
-<style>
-.mypageBtn {
-	position: absolute;
-	top: 0;
-	right: 0;
-	font-size: 13px;
-	background-color: black;
-	color: white;
-	padding: 5px;
-	border-radius: 4px;
-	cursor: pointer;
-	opacity: 0.7;
-	transition: all 200ms ease-in-out;
-	text-decoration: none;
-}
-
-.mypageBtn:hover {
-	transform: scale(1.02);
-	opacity: 1;
-}
-
-.top-container {
-	position: relative;
-}
-</style>
 		<div class="top-container">
 			<c:if test="${sessionScope.userId != null}">
 				<a href="javascript:goView('${ sessionScope.userId }');"
@@ -153,7 +142,7 @@
 			</c:if>
 			<div class="leftBox">
 				<div class="imageBox">
-					<img src="../../../resources/images/books/book${paramMap.book_id}.jpg"
+					<img src="/bookImg/book${paramMap.book_id}.jpg"
 						alt="없음" />
 				</div>
 
@@ -163,7 +152,7 @@
 			<div class="introWrite">
 				<h3>${bookInfo.book_name}</h3>
 				<ul>
-					<li>저자 이름</li>
+					<li>${bookInfo.book_author}</li>
 					<li style="color: gray;">${bookInfo.book_date}</li>
 					<li style="color: lightgray;">${bookInfo.book_type}</li>
 				</ul>
@@ -196,76 +185,6 @@
 					 	</span>
 					</div>
 				</div>
-				
-				<style>
-.bookStarScore {
-	display: inline-block;
-    position: relative;
-    margin-left:10px;
-    padding-left:0;
-    width:129.38px;
-}
-
-.bookStarScore i {
-	font-size: 23px;
-}
-				
-.bookStarScore #default i {
-	color: #979797;
-}
-
-.bookStarScore #default, .bookStarScore #full {
-	display:flex;
-}
-
-.bookStarScore #full {
-	position: absolute;
-    white-space: nowrap;
-    overflow: hidden;
-    top: 0;
-}
-
-.bookStarScore #full i {
-	color: #FFA200;
-}
-
-.bookScoreWrap {
-	position:absolute;
-	width: 50px;
-    display: inline-block;
-    right: -64px;
-    top: 0;
-}
-
-.bookScoreWrap .bookScore {
-	width: 30px;
-    display: inline-block;
-    text-align: center;
-}
-			
-.bookScoreWrap .add {
-    position: absolute;
-    width: 90px;
-    text-align: center;
-    margin-left:5px;
-}			
-				
-</style>
-<!-- 	<script>
-				
-			    $(function() {
-			        var rating = $('.bookStarScore');
-
-			        rating.each(function(){
-			            var targetScore = $(this).attr('data-rate');
-			            console.log(targetScore);
-			            $(this).find('span:nth-child(-n+'+targetScore+')').css({color:'#f1c40f'});
-			            $('#starScore').html(targetScore);
-			        });
-
-			     });
-			    
-				</script> -->
 
 				<!-- <input type="text" name="starTxt" id="starTxt" value="3"> -->
 				<form>
@@ -283,9 +202,19 @@
 					<a href="#" id="modalOpen">
 						<div class="likelists">
 							<div class="likePeople">
-								<img src="../../../resources/images/myLibrary/picture1.png"/>
-								<img src="../../../resources/images/myLibrary/picture1.png"/>
-								<img src="../../../resources/images/myLibrary/picture1.png"/>
+								<img src="/image/default.png"/>
+								<img src="/image/default.png"/>
+								<img src="/image/default.png"/>
+							<%-- <c:if test="${likedlist.size() == 0}">
+								<img src="/image/default.png"/>
+								<img src="/image/default.png"/>
+								<img src="/image/default.png"/>
+							</c:if>
+							<c:if test="${likedlist.size() > 0}">
+								<c:forEach items="${likedlist}" var="list">
+									<img src="/image${list.member_image}"/>
+								</c:forEach>
+							</c:if> --%>
 							</div>
 						</div> <span id="people"> 좋아하는 사람들</span>
 					</a>
@@ -331,7 +260,7 @@
 								<li>
 									<div id="likedUsersList">
 										<img id="myFaceImage"
-											src="../../../resources/images/myLibrary/picture1.png" /> 
+											src="/image${list.member_image}" /> 
 										<a href="javascript:showUserpage('${list.member_name}')" class="likedUser">
 											<span>${list.member_name }</span>
 										</a>
@@ -461,8 +390,8 @@
 					<div class="similarBook">
 					<c:choose>
 						<c:when test="${bookList.size() > 0 }">
-							<c:forEach items="${bookList }" var="list" varStatus="status" begin="0" end="4">
-								<img src="../../../resources/images/books/book${list.book_id}.jpg" alt="">
+							<c:forEach items="${bookList }" var="list" varStatus="status" begin="15" end="19">
+								<img src="/bookImg/book${list.book_id}.jpg" alt="">
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
@@ -480,17 +409,16 @@
 	</div>
 	</div>
 	
-	<!-- 별점 구현 -->
+<!-- 별점 구현 -->
 <script>
 	const starWidth = document.querySelector('.bookStarScore').offsetWidth;
 	const starCnt = document.querySelectorAll('.bookStarScore #default i').length;
-	const bookScore = Number(document.querySelector('.bookScoreWrap > .bookScore').textContent.trim());
+	let bookScore = Number(document.querySelector('.bookScoreWrap > .bookScore').textContent.trim());
 	const fullStar = document.querySelector('.bookStarScore #full');
 	
 	let score = (starWidth/starCnt) * bookScore;
 	fullStar.style.width = score+"px";
 	
-
 </script>
 			
 	<script>
@@ -498,12 +426,10 @@
     const bigBox = document.querySelector(".wrapperBox");
     const details = document.querySelectorAll(".detail");
     const btns = document.querySelectorAll(".clicnBtn");
-    // console.log(btns);
     let boxHeight = 110 + "px";
 
     bigBox.addEventListener("click", (event) => {
       if (event.target.nodeName == "INPUT") {
-        // console.log("clicked");
         const here = event.target.parentNode.querySelector(".detail");
         if (here.style.height == boxHeight) {
           here.style.height = "auto";
@@ -513,7 +439,7 @@
       }
     });
 
-    // 해시태그
+// 해시태그
 
     const hashTagBox = document.querySelector(".hashTag");
     const inputTag = document.querySelector(".emoTag");
@@ -536,7 +462,6 @@
 
     function addItem() {
       const value = inputTag.value;
-      //   console.log(t);
       if (index < 5) {
         const item = createItem(value, index + 1);
       } else {
@@ -552,7 +477,6 @@
     });
 
     inputTag.addEventListener("keypress", (event) => {
-      //   console.log(event);
       if (event.key === "Enter") {
         addItem();
       }
@@ -568,7 +492,6 @@
     let loveCnt = Number(countLike.innerHTML);
     const memId = document.querySelector('#member_name');
     const heartDefault = document.querySelector('.heartClick span');
-	
 
 	if(heartDefault) {
 		heartDefault.addEventListener('click', () => {
@@ -576,11 +499,9 @@
 				return;
 			}
 			alert('로그인 페이지로 이동합니다.');
-			location.href="/login";
-			
+			location.href="/login";	
 		});
-	}
-		
+	}	
 	
 	if(heart) {
 		heart.addEventListener('click', (event) => {
@@ -594,10 +515,8 @@
 		        }
 		});	
     }
-	
-	
-	
-    function changeHeart(yn) {
+
+function changeHeart(yn) {
                     		    	
     const status = document.querySelector('#status');
     const dupCheck = document.querySelector('#dup_chk');
@@ -627,7 +546,6 @@
 
     </script>
 
-
 	<!-- 찜하기 버튼 -->
 	<script>
     const zzim = document.querySelector('#zzim_chk')
@@ -644,7 +562,6 @@
 			alert('로그인 페이지로 이동합니다.');
 			location.href="/login";
 			return;
-			
     	}
     		if(!confirm('찜하시겠습니까?')) {
     			return;
@@ -685,7 +602,6 @@
     		}
     	});
     }
-
     
     //좋아요한 사람들 modal창 
     const likemodalBtn = document.querySelector('#peopleChkBtn');
@@ -701,7 +617,6 @@
     	likemodal.classList.remove('invisible');
     });
 
-    
     function showUserpage(nm) {
     	const memId = document.querySelector('#member_name').value=nm;
     	$('#frm').attr('action', '/member/mypage');
@@ -710,8 +625,7 @@
     
     </script>
     
-    <script>
-    
+    <script> 
     function goViewer() {
     	if(${orderchk} == 0 && ${sessionScope.userId == null}) {
     		if(!confirm('구매 후 이용 가능합니다. 로그인하시겠습니까?')) {
@@ -737,7 +651,7 @@
     }
     
     function goOrder() {
-    	const memNm = document.querySelector('#member_name');
+    	const memNm = document.querySelector('#member_name').value;
     	if(memNm == '' || memNm == null) {
     		if(!confirm('로그인 후 구매 가능합니다. 로그인하시겠습니까?')) {
 				return;
@@ -747,13 +661,16 @@
 			return;
     	}
     	
+    	if(${orderchk} > 0) {
+    		alert('이미 구매한 도서입니다. ID당 도서 1개씩만 구매 가능합니다.');
+    		return;
+    	}
+    	
     	$('#frm').attr("action", "/member/paycheck.do");
     	$('#frm').submit();
     }
     
     </script>
-
-	<%--  <%@ include file="template/footer.jsp" %> --%>
 
 </body>
 

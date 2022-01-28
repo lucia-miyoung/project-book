@@ -43,6 +43,7 @@ public class BookController {
 		model.addAttribute("paramMap", memService.getMemInfo(paramMap));
 		model.addAttribute("bookList", service.bookList(paramMap));
 		model.addAttribute("reviewList", memService.reviewListall(paramMap));
+		model.addAttribute("saleList", service.salebookList(paramMap));
 		
 		return "/main/main";
 	}

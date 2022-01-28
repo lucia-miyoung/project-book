@@ -1,6 +1,8 @@
 package total.member.web;
 
 import java.io.Console;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import total.basic.service.BasicService;
@@ -27,6 +30,7 @@ import total.member.service.MemberService;
 @RequestMapping("/member")
 public class MemberController {
 
+	private static final String filePath = "/var/lib/tomcat8/webapps/data/image";
 	protected ModelAndView mv = null;
 
 	@Resource(name = "MemberService")
@@ -56,6 +60,7 @@ public class MemberController {
 		model.addAttribute("orderList", service.orderList(paramMap));
 		model.addAttribute("orderCnt", service.orderListCnt(paramMap));
 		model.addAttribute("showdata", service.showalldata(paramMap));
+		model.addAttribute("userdata", service.getMemInfo(paramMap));
 		System.out.println(service.orderList(paramMap));
 
 		return "/login/mypage";
@@ -72,8 +77,8 @@ public class MemberController {
 			model.addAttribute("reviewdupChk", service.reviewdupChk(paramMap));
 			System.out.println(service.reviewdupChk(paramMap));
 			if (dupchk == 0) {
-				service.insertReview(paramMap);
-				System.out.println("저장됨");
+				int insertchk = service.insertReview(paramMap);
+				System.out.println("리뷰등록 완료1 미완료0 : " + insertchk);
 			}
 		}
 		if ("D".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
@@ -87,7 +92,8 @@ public class MemberController {
 	public String myaccount(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
 		System.out.println("myaccount {}:  " + paramMap);
-		model.addAttribute("paramMap", service.getMemInfo(paramMap));
+		service.getMemInfo(paramMap);
+		model.addAttribute("paramMap", paramMap);
 
 		return "/login/myaccount";
 	}
@@ -96,31 +102,140 @@ public class MemberController {
 	public String updatemypage(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
 		System.out.println("updatemypage {}:  " + paramMap);
-		model.addAttribute("memData", loginService.getMemberInfo(paramMap));
 		model.addAttribute("paramMap", loginService.getMemberInfo(paramMap));
-		return "/login/myInfoUpdate";
+		model.addAttribute("memData", service.getMemInfo(paramMap));
+		System.out.println("paramMap: " +paramMap);
+		System.out.println("memData: " +service.getMemInfo(paramMap));
+		return "/login/update";
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/setUpdateData")
-	public String setUpdateData(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
-			ModelMap model) throws Exception {
+	public Object setUpdateData(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+			 @RequestParam(value="camera") MultipartFile mfile, ModelMap model) throws Exception {
 		System.out.println("setUpdateData {}:  " + paramMap);
-		if ("U".equals(paramMap.get("status")) && paramMap.containsKey("member_id")) {
-			service.updatemyinfo(paramMap);
+		
+		int result = 0;
+		
+		if(mfile != null	&&  mfile.getSize() > 0) {
+
+			if ("U".equals(paramMap.get("status")) && paramMap.containsKey("member_name")) {
+			
+				String id = (String) paramMap.get("member_id");
+				String idnm = id.split("@")[0];
+				String newPath = filePath + "/" + idnm;
+			
+				File updir = new File(newPath);
+				if(!updir.exists()) {
+					updir.mkdirs();
+				}
+
+				String imgName = mfile.getOriginalFilename().toString();
+				System.out.println("imgName: " + imgName);
+				String realPath = "/" + idnm + "/" + imgName;
+				String imgpath = newPath + '/' + imgName;
+				File filechk = new File(imgpath);
+			
+				if(filechk.exists()) {
+					System.out.println("동일한 파일 존재 > 삭제할거야");
+					filechk.delete();
+				}
+				paramMap.put("member_image", realPath);
+				service.updatemyinfo(paramMap); 
+				mfile.transferTo(new File(imgpath));
+				System.out.println("파일 첨부 있음");
+				result = 1; 
+			
+			} 	else { 
+				result = 0; 
+			}
+			
+		} else {
+			//파일 첨부 없을때 
+			String orgName = (String) paramMap.get("orgin_img");
+				paramMap.put("member_image", orgName);
+				service.updatemyinfo(paramMap); 
+				System.out.println("파일 첨부 없음");
+				result = 2; 
 		}
 		model.addAttribute("paramMap", paramMap);
-		return "/login/myaccount";
+		model.addAttribute("result", result);
+
+		return model;
 	}
 	
-	@RequestMapping(value = "/deletemyaccount")
-	public String deletemyaccount(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+	@ResponseBody
+	@RequestMapping(value = "/setQuestionService")
+	public int setQuestionService(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+			@RequestParam(value="qst_image") MultipartFile mfile, ModelMap model) throws Exception {
+		System.out.println("setQuestionService {}:  " + paramMap);
+		
+		int result = 0;
+		if(mfile != null	&&  mfile.getSize() > 0) {
+			if ("I".equals(paramMap.get("status")) && paramMap.containsKey("member_name")) {
+
+				String svcPath = "/var/lib/tomcat8/webapps/data/service";
+
+				String imgRealnm = mfile.getOriginalFilename().toString();
+				System.out.println("imgRealnm: " + imgRealnm);
+				String imgName = "/" + imgRealnm;
+				String imgpath = svcPath + imgName;
+				File filechk = new File(imgpath);
+				System.out.println(filechk);
+				if(filechk.exists()) {
+					System.out.println("동일한 파일이름 존재 2");
+					result = 2;
+				}
+				paramMap.put("qst_image", imgName);
+				service.insertQuestion(paramMap);
+				mfile.transferTo(new File(imgpath));
+				result = 1; 
+				System.out.println("파일 첨부 있음");
+			} 	else { 
+				result = 0; 
+			}
+		}else {
+			paramMap.put("member_image", "/");
+			service.insertQuestion(paramMap);
+			System.out.println("파일 첨부 없음 1");
+			result = 1; 
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/godeletepage")
+	public String godeletepage(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
-		System.out.println("deletemyaccount {}:  " + paramMap);
+		System.out.println("deletepage {}:  " + paramMap);
 		
 		model.addAttribute("paramMap", paramMap);
+		model.addAttribute("reviewCnt", service.reviewCount(paramMap));
+		model.addAttribute("zzimCnt", service.myzzimCount(paramMap));
+		model.addAttribute("orderCnt", service.totalorderCnt(paramMap));
+		model.addAttribute("mileCal", service.showalldata(paramMap));
+		
 		return "/login/delete";
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/deletemyaccount")
+	public int deletemyaccount(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+			ModelMap model) throws Exception {
+		System.out.println("deletemyaccount11 {}:  " + paramMap);
+		int pwRechk = 0;
+		if(paramMap.containsKey("recheck_pw")) {
+			paramMap.put("member_pw", paramMap.get("recheck_pw"));
+			pwRechk = loginService.memberloginChk(paramMap);
+			System.out.println("찾는다 숫자: "+pwRechk);
+			if(pwRechk > 0) {
+				service.deletemyaccount(paramMap);
+			}
+		}
+		model.addAttribute("paramMap", paramMap);
+		
+		return pwRechk;
+	}
+	
 	@RequestMapping(value = "/notice")
 	public String notice(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
@@ -158,7 +273,7 @@ public class MemberController {
 		System.out.println("bookScore: " + bookService.bookScore(paramMap));
 		System.out.println("orderchk: " + service.orderdupchk(paramMap));
 		
-		return "/main/detailInfo";
+		return "/main/detail";
 	}
 
 	@RequestMapping(value = "/paycheck.do")
@@ -183,13 +298,15 @@ public class MemberController {
 			paramMap.put("orderList", chkArray);
 			int chk = service.orderCntCheck(paramMap);
 			model.addAttribute("orderChk", chk);
+			System.out.println("여러개의 책을 구입함: 몇개? " +chk);
 			model.addAttribute("bookList", bookArr);
 		}
-		
+		model.addAttribute("orderNum", basicService.orderAutonum(paramMap));
 		model.addAttribute("userinfo", service.getMemInfo(paramMap));	
 		model.addAttribute("shipmsg", basicService.shipMsg(paramMap));
 		model.addAttribute("cpnList", basicService.disCpn(paramMap));
-
+		model.addAttribute("saleList", bookService.salebookList(paramMap));
+		
 		return "/main/payment";
 	}
 
@@ -268,6 +385,10 @@ public class MemberController {
 		if ("D".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
 			paramMap.put("zzimList", chkArr);
 			service.zzimDelete(paramMap);
+		}
+		if ("R".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
+			paramMap.put("orderList", chkArr);
+			model.addAttribute("ordernumchk", service.orderCntCheck(paramMap));
 		}
 
 		return model;

@@ -917,8 +917,20 @@
   padding: 0 7px;
   font-family: 'Nanum Gothic', 'Roboto', 'Noto Sans KR', sans-serif;
   font-size: 15px;
+  padding: 2px 5px;
 }
-
+.paperbook-sale .text-wrapper .org_price {
+	position:relative;
+}
+.paperbook-sale .text-wrapper .org_price::after {
+    position: absolute;
+    content: '';
+    width: 42px;
+    height: 1px;
+    top: 9px;
+    left: 5px;
+    background-color: black;
+}
 .coming-soon ul {
   list-style: none;
 }

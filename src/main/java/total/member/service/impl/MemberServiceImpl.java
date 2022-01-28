@@ -20,17 +20,36 @@ public class MemberServiceImpl implements MemberService {
 	@Autowired
 	private MemberMapper mapper;
 	
-
+	@Override
+	public List showmyQstList(HashMap paramMap) throws Exception {
+		return mapper.showmyQstList(paramMap);
+	}
+	@Override
+	public int insertQuestion(HashMap paramMap) throws Exception {
+		return mapper.insertQuestion(paramMap);
+	}
+	@Override
+	public int totalorderCnt(HashMap paramMap) throws Exception{
+		return mapper.totalorderCnt(paramMap);
+	}
+	@Override
+	public int imgNameDupchk(HashMap paramMap) throws Exception {
+		return mapper.imgNameDupchk(paramMap);
+	}
+	@Override
+	public int deletemyaccount(HashMap paramMap) throws Exception {
+		return mapper.deletemyaccount(paramMap);
+	}
 	@Override 
 	public HashMap showalldata(HashMap paramMap) throws Exception {
 		return mapper.showalldata(paramMap);
 	}
 	@Override
-	public HashMap savemymile(HashMap paramMap) throws Exception {
+	public int savemymile(HashMap paramMap) throws Exception {
 		return mapper.savemymile(paramMap);
 	}
 	@Override
-	public HashMap insertOrder(HashMap paramMap) throws Exception {
+	public int insertOrder(HashMap paramMap) throws Exception {
 		return mapper.insertOrder(paramMap);
 	}
 	@Override 
@@ -51,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.orderCntCheck(paramMap);
 	}
 	@Override
-	public HashMap deleteReview(HashMap paramMap) throws Exception {
+	public int deleteReview(HashMap paramMap) throws Exception {
 		return mapper.deleteReview(paramMap);
 	}
 	
@@ -76,12 +95,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public HashMap insertReview(HashMap paramMap) throws Exception {
+	public int insertReview(HashMap paramMap) throws Exception {
 		return mapper.insertReview(paramMap);
 	}
 	
 	@Override
-	public HashMap updatemyinfo(HashMap paramMap) throws Exception {
+	public int updatemyinfo(HashMap paramMap) throws Exception {
 		String userPW = (String) paramMap.get("member_pw");
 		String userNewPW = EncryptUtil.encryptSha256(userPW);
 		paramMap.put("member_new_pw", userNewPW);
@@ -118,12 +137,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public HashMap heartUpdate(HashMap paramMap) throws Exception {
+	public int heartUpdate(HashMap paramMap) throws Exception {
 		return mapper.heartUpdate(paramMap);
 	}
 	
 	@Override
-	public HashMap heartInsert(HashMap paramMap) throws Exception {
+	public int heartInsert(HashMap paramMap) throws Exception {
 		return mapper.heartInsert(paramMap);
 	}
 	
@@ -143,12 +162,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public HashMap zzimInsert(HashMap paramMap) throws Exception {
+	public int zzimInsert(HashMap paramMap) throws Exception {
 		return mapper.zzimInsert(paramMap);
 	}
 
 	@Override 
-	public HashMap zzimUpdate(HashMap paramMap) throws Exception {
+	public int zzimUpdate(HashMap paramMap) throws Exception {
 		return mapper.zzimUpdate(paramMap);
 	}
 	
@@ -158,7 +177,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public HashMap zzimDelete(HashMap paramMap) throws Exception {
+	public int zzimDelete(HashMap paramMap) throws Exception {
 		return mapper.zzimDelete(paramMap);
 	}
 	

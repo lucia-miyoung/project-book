@@ -1,298 +1,460 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%-- <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>   --%>  
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+   <%--  <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> --%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-</head>
-<link rel="stylesheet" href="../../../resources/css/myInfoUpdate.css">
-    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat|Noto+Sans+KR|Open+Sans|Roboto&display=swap" rel="stylesheet">
-    <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+ 
    <script src="https://kit.fontawesome.com/3fb56dfe63.js" crossorigin="anonymous"></script>
-    <script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
-    <link rel="stylesheet" href="../../../resources/css/reset.css" />
+	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat|Noto+Sans+KR|Open+Sans|Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../resources/css/reset.css" />
+    <!-- individual page stylesheet -->
+    <link rel="stylesheet" href="../../../resources/css/update.css">
     <link rel="stylesheet" href="../../../resources/css/common.css" />
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-    <!-- slidify sliders and fadeInUp reveal -->
     <script src="../../../resources/js/common.js"></script>
-
+    <script type="text/javascript" src="/resources/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery-ui-1.10.3.custom.js"></script>
+  
+</head>
 <body>
-<sec:authentication property="principal" var="member"/>
-    <header class="topbar">
+<!-- 
+	<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal" var="member"/>
+</sec:authorize> -->
+<header class="topbar">
         <nav>
-          <div class="container">
-            <a href="javascript: history.back();"><i class="far fa-arrow-left"></i></a>
-            <h2> 개인정보수정 </h2>
-          </div>
+            <div class="container">
+                 <a href="javascript: history.back();"><i class="fas fa-arrow-left"></i><span>이전</span></a>
+                 <a href="/book/main"><i class="fas fa-home"></i><span>홈</span></a>
+                <h2>개인 정보 수정</h2>
+
+                <div class="login-out">
+                 <c:choose>
+            		<c:when test="${sessionScope.userId != null }">
+                		<span>${ sessionScope.userId }</span>님 환영합니다.
+                		<button type="button" id="logoutBtn" onclick="gologinout(0)">로그아웃</button>
+                	</c:when>
+            		<c:otherwise>
+            			<button type="button" id="loginBtn" onclick="gologinout(1)">로그인</button>
+            		</c:otherwise>
+            	</c:choose>
+                </div>
+            </div>
         </nav>
-      </header>
-      <form action="/member/update" method="post" id="updateForm" enctype="multipart/form-data">
-    <div class="newMyInfo">
-        <div class="imageBox">
-            <img id="myFaceImage" src="${pageContext.request.contextPath}${member.member.memberProfile}" >
-            <!-- 사진 넣을거임 -->
-            <label for="camera">
-                <i class="fas fa-camera-retro"></i>
-                <input type="file" name="files" id="camera" onchange="uploadMyImg(this);">
-            </label>
-                   <button type="button" id="deleteBtn" onclick="deletePhoto();"><i class="fas fa-times"></i></button> 
-        </div>
-        <!-- imageBox end -->
-        <div class="wrapperOne">
+</header>
+<script>
+
+
+	
+	function gologinout(num) {
+		
+		if(num == 0) {
+			if(!confirm('로그아웃 하시겠습니까?')) {
+				return;
+			}
+
+			  $.ajax({
+				url: '/logout',
+				data: {
+					"member_id" : $('#member_id').val()
+				}
+				,success: function(rs) {
+					alert('로그아웃 됐습니다.');
+					location.reload();
+				
+				}, error : function(xhr, status, error) {
+					alert('오류');
+				}
+			});  
+			
+		} else {
+			alert('로그인 페이지로 이동합니다.');
+			location.href='/login';
+		}
+		
+	}
+	
+</script>
+
+
+ <div class="newMyInfo">
+ 
+ 	<form id="frm" method="post" action="" enctype="multipart/form-data">
+ 	<input type="hidden" name="status" id="status" value=""/>
+ 	<input type="hidden" name="member_id" id="member_id" value="${paramMap.member_id }"/>
+      <div class="imageBox">
+        <img id="myFaceImage" src="/image${memData.member_image}"/>
+        <!-- 사진 넣을거임 -->
+        <label for="camera">
+          <i class="fas fa-camera-retro"></i>
+          <input type="file" name="camera" id="camera" />
+        </label>
+        <button type="button" id="deleteBtn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <!-- imageBox end -->
+      <div class="wrapperOne">
         <p>필명</p>
         <div class="updateLists">
-            <script type="text/javascript" >
-            	document.addEventListener("DOMContentLoaded", function() {
-            		$("#nickNameChk").on("click", function() {
-            			chkNickName();
-            		});
-            		$("input[name=nickName]").on("focus blur keyup", function() {
-            			chkNickName();
-            		});
-            		
-            		function chkNickName() {
-            			var memberVO = [];
-	            		var currentNickname = $("input[name=nickName]").val().toLowerCase();
-            			memberVO.push({memberNickName : currentNickname});
-	            		$.ajax({
-	            			url : "/member/signUpCheck",
-	            			type : "POST",
-	            			data : { memberNickName : currentNickname }
-	            		})
-	            		.done(function(data) {
-	            			//true면 없는거, false면 있는거
-	            			var result = data.result;
-	            			$("button[class=chkBtn]").attr("disabled", false);
-	            			if(result == true) {
-	            				$("div.nickNameAlert").css("display",  "none");
-	            				$("button[class=chkBtn]").attr("disabled", false);
-	            			} else {
-	            				$("div.nickNameAlert").css("display",  "block");
-	            				$("button[class=chkBtn]").attr("disabled", true);
-	            			}
-	            		})
-	            		.fail(function() {
-	            			console.dir("중복체크 실패!");
-	            		});
-            		};
-            	});
-            </script>
-            <input type="text" name="memberNickName" id="nickName ">
-           	<%-- <button type="button" id="nickNameChk">중복확인</button> --%>
+          <input type="text" name="member_name" id="nickName" placeholder="이름" value="${memData.member_name}"/>
+          <button type="button" id="nickNameChk">중복확인</button>
         </div>
-        <div class="nickNameAlert" ><i class='fas fa-exclamation-circle'></i>중복된 닉네임입니다.</div>
-        <span style ="color:rgb(194, 16, 16)">  <i class='fas fa-exclamation-circle'></i> 욕설, 비속어 사용 시 서비스 이용이 제한될 수 있습니다. </span>
+        <span class="data-chk" style="color: rgb(194, 16, 16);">
+          <i class="fas fa-exclamation-circle"></i> 욕설, 비속어 사용 시 서비스
+          이용이 제한될 수 있습니다.
+        </span>
+      </div>
+      <!-- wrapperOne end -->
+      <div class="wrapperOne_half">
+        <p>비밀번호</p>
+        <input
+          type="password"
+          id="inputPw"
+          maxlength="16"
+          placeholder="비밀번호" />
+        <span id="hereText">8자 이상, 16자 이하로 입력해주세요.</span>
+        <input
+          type="password"
+          id="inputPwAgain" 
+          name="member_pw"
+          placeholder="비밀번호 확인"/>
+        <span class="data-chk" id="rechkPW"></span>
+      </div>
+      <hr class="firstLine" />
+      <!-- updateLists end -->
+      <div class="wrapperTwo">
+        <p>핸드폰 번호</p>
+        <div class="phoneUpdate">
+          <input type="text" name="member_phone" id="phoneNum" placeholder="핸드폰 번호" value="${memData.member_phone}"/>
+          <span class="data-chk"> ※ ' - ' 없이 숫자로만 입력해주세요. </span>
         </div>
-<!-- wrapperOne end -->
-        <div class="wrapperOne_half">
-            <p>비밀번호 </p>
-            <input type="password" name="memberPw" id="inputPw" maxlength="16" onKeyup="inputText(this);" placeholder="비밀번호 입력">
-            <span id="hereText">8자 이상, 16자 이하로 입력해주세요.</span>
-            <input type="password" name="memberPwChk" id="inputPwAgain" placeholder="비밀번호 재입력" onkeyup="pwRechk();">
-            <span id="rechkPW"></span>
+
+        <!-- mailChoice end -->
+        <hr class="secondLine" />
+      </div>
+      <!-- wrapperTwo end -->
+      <div class="wrapperFour">
+        <p>주소</p>
+        <div class="address1">
+          <button type="button" id="zipCodeSearch" onclick="zipCodeClick()">
+            검색
+          </button>
+          <input type="text" name="member_home1" id="homeZipcode" value="${memData.member_home1}" readonly />
+          <input type="text" name="member_home2" id="homeAdrs" value="${memData.member_home2}" readonly />
         </div>
-        <hr class="firstLine">
-        <!-- updateLists end -->
-        <div class="wrapperTwo">
-            <p>핸드폰 번호</p>
-            <div class="phoneUpdate">
-            <input type="text" name="memberTel" id="phoneNum">
-            <span> ※ ' - ' 없이 숫자로만 입력해주세요. </span>
-            </div>
-    
-            <!-- <div class="updateMail">    
-            <div class="input">
-                <input type="text" name="mailAdrsB" id="mailAdrsA" placeholder="이메일 입력">
-            </div> 
-            <span> @ </span>    
-            <div class="dis">
-                <input type="text" name="mailAdrsA" id="mailAdrsB" placeholder="직접 입력" disabled>
-            </div>       
-            </div>
-            <div class="mailChoice">
-                <select name="mchoice" id="mchoice" onchange="clickHere();">
-                    <option value="hotmail.com">hotmail.com</option>
-                    <option value="naver.com">naver.com</option>
-                    <option value="gmail.com">gmail.com</option>
-                    <option value="hanmail.com">hanmail.net</option>
-                    <option value="nate.com">nate.com</option>
-                    <option value="selfInput" id="selfInput" selected>직접입력</option>
-                </select>
-             </div>     -->
-             
-            <!-- mailChoice end -->
-            <hr class="secondLine">        
-           </div>
-    <!-- wrapperTwo end -->
-       <div class="wrapperFour">
-        <p> 주소 </p>
-     <div class="address1">
-        <button type="button" id="zipCodeSearch" onclick="zipCodeClick()">검색</button>
-        <input type="text" name="memberZipcode" id="homeZipcode" >
-        <input type="text" name="memberAddress" id="homeAdrs">
-     </div>
-     <div class="address2">       
-        <input type="text" name="memberDaddress" id="homeDetail" placeholder="상세 주소를 입력해주세요.">
+        <div class="address2">
+          <input
+            type="text"
+            name="member_home3"
+            id="homeDetail"
+            placeholder="상세 주소"
+            value="${memData.member_home3}"
+          />
         </div>
-     </div>
-       <div class="wrapperThree">   
-        <div class="infoAgree"> 
-            <label for="infoChk"><input type="checkbox" name="infoChk" id="infoChk"> <span>개인정보 수집 및 이용 동의</span> </label>
-        </div>  
+      </div>
+      <div class="wrapperThree">
+        <div class="infoAgree">
+          <label for="infoChk"
+            ><input type="checkbox" name="infoChk" id="infoChk" />
+            <span>개인정보 수집 및 이용 동의</span>
+          </label>
+        </div>
         <div class="infoChkList">
-            <ul>
-                <li>개인정보 수집 목적: 원활한 서비스 이용을 위해 정보를 수집합니다.</li>
-                <li>개인정보 수집항목: 프로필 이미지, 필명, 아이디, 비밀번호, 이메일, 주소 </li>
-                <li>개인정보 이용기간: 회원 탈퇴 시 또는 개인정보처리방침에 따라 보유 및 파기 됩니다.</li>            </ul>
+          <ul>
+            <li>
+              개인정보 수집 목적: 원활한 서비스 이용을 위해 정보를 수집합니다.
+            </li>
+            <li>
+              개인정보 수집항목: 프로필 이미지, 필명, 아이디, 비밀번호, 이메일,
+              주소
+            </li>
+            <li>
+              개인정보 이용기간: 회원 탈퇴 시 또는 개인정보처리방침에 따라 보유
+              및 파기 됩니다.
+            </li>
+          </ul>
         </div>
-    <div class="finishBtn">
-        <div class="btn1">
-        <button type="button" class="resetBtn" onclick="history.back()">취소</button>
-    </div>
-    <div class="btn2">
-        <button type="button" class="chkBtn" onclick="updateFinish();">확인</button>
-    </div>
-    </div>
-       </div>
+        <div class="finishBtn">
+          <div class="btn1">
+            <button
+              type="button"
+              class="resetBtn">
+              취소
+            </button>
+          </div>
+          <div class="btn2">
+            <button type="button" class="chkBtn">
+              확인
+            </button>
+          </div>
         </div>
-        <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
-        </form>
+      </div>
+      </form>
+    </div>
     <!-- 제일 큰 박스 end -->
 
- <!--이메일 주소 자동입력 &직접입력  -->
-    <script>
-        function clickHere() {
-            var selectHere = document.getElementById('mchoice').value;
-                // document.getElementById('mailAdrsB').value=selectHere;
-            if(selectHere=='selfInput'){
-                var x = document.getElementById('mailAdrsB');
-                x.disabled = false;
-                x.style.backgroundColor='white';
-                // x.style.color='#e8e8e8';
-                x.value="";
-
-            }else {
-               var y= document.getElementById('mailAdrsB');
-                y.disabled = true;
-                y.value=selectHere;
-                y.style.backgroundColor='#f5f5f5';
-                // alert(y);
-            }
-        }
-    </script>
-
-<!-- 프로필 사진 미리보기 -->
 <script>
-        
-    function uploadMyImg(here) {
-           if(here.files[0]) {
-               var reader = new FileReader();
-               reader.onload = function(e) {
-                   $('#myFaceImage').attr('src', e.target.result);
-               }
-               reader.readAsDataURL(here.files[0]);
-           }
-       }
+alert("회원님의 정보 보호 및 정확한 확인을 위해 \n회원 정보 수정시 다시 로그인하셔야 합니다. \n이용시 참고 바랍니다.");
+
+const resetBtn = document.querySelector(".resetBtn");
+resetBtn.addEventListener('click', () => {
+	if(!confirm("정보 수정을 취소하시겠습니까?")) {
+		return;
+	}
+	location.href="/member/myaccount";
+});
+
+const deleteBtn = document.querySelector('#deleteBtn');
+
+deleteBtn.addEventListener('click', () => {
+	if(!confirm("기본 이미지로 수정하시겠습니까?")) {
+		return;
+	}
+	const imgthumb = document.querySelector('.imageBox > img');
+	imgthumb.setAttribute('src', "/image/default.png");
+});
 
 </script>
 
-<!-- 프로필사진 x 버튼 누를시 삭제기능 -->
-    <script>   
-    function deletePhoto() {
-        // var aa = document.getElementById('');
-        
-        if(confirm('기본이미지로 변경하시겠습니까?')==true) {
-        document.getElementById('myFaceImage').src="../../../../resources/images/myLibrary/picture1.png";
-        }else {
-            return false;
+<script>
+//파일 첨부 & 썸네일
+const userimg = document.querySelector('#camera');
+userimg.addEventListener('change', (event) => {
+	onsetimage(event); 
+}); 
+
+function onsetimage(e) {
+let imgtype = ['jpg', 'jpeg', 'png', 'svg'];
+
+	let file = e.target.files[0];
+	let filetype = file.type.split('/')[1];
+	
+ 	if(imgtype.indexOf(filetype) == -1) {
+	 	alert('이미지는 jpg, jpeg, png, svg만 첨부 가능합니다.');
+	 	return;
+	}
+
+	let reader = new FileReader();
+	reader.readAsDataURL(file);
+	reader.onload = event => {
+		let url = event.target.result;
+		const imgthumb = document.querySelector('.imageBox > img');
+		imgthumb.setAttribute('src', url);
+
+	};
+}
+
+
+
+</script>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+function zipCodeClick() {
+	const zipcode = document.querySelector('#homeZipcode');
+	const address = document.querySelector('#homeAdrs');
+	const addressD = document.querySelector('#homeDetail');
+	
+    new daum.Postcode({
+        oncomplete: function(data) {
+        	 zipcode.value = data.zonecode;
+        	 address.value = data.roadAddress;
+        	 addressD.focus();
         }
-    }
-    </script>
+    }).open();
+    
+}
+</script>
+<script>
 
-<!-- 비밀번호 유효성 검사 -->
-    <script>
-        function pwRechk(){
-            var pw = document.getElementById('inputPw').value;
-            var pwChk = document.getElementById('inputPwAgain').value;
-            var chk = document.getElementById("rechkPW");
 
-            if(pw==""||pwChk=="") {
-                chk.innerHTML="비밀번호를 입력해주세요.";
-                chk.style.color="#999";
-            }else if(pw!=pwChk) {
-                chk.innerHTML="<i class='fas fa-exclamation-circle'></i>"+" 비밀번호가 맞지 않습니다. 다시 입력해주세요.";
-                chk.style.color="red";
-            }else if(pw.length<=7){
-                chk.innerHTML="<i class='fas fa-exclamation-circle'></i>"+" 8자이상 16자 이하로 입력해주세요.";
-                chk.style.color="red";
-            }else {
-                chk.innerHTML="<i class='far fa-check-circle'></i>"+" 비밀번호가 일치합니다.";
-                chk.style.color ="#0099FF";
-            }
-        }
-    </script>
+//이름 중복 확인
+const nameChkBtn = document.querySelector('#nickNameChk');
+const nameMsg = document.querySelector('.wrapperOne span');
 
-     <script>
-        function inputText(here) {
-            var pw = here.value;
-            var msg = ""; 
+nameChkBtn.addEventListener('click', () => {
+	const nameVal = document.querySelector('#nickName');
+	nameCheck(nameVal);
+});
 
-            if(pw.length) {
-                if(pw.length==""||pw.length<=4) {
-                    msg = "8자 이상, 16자 이하로 입력해주세요.";
-                }else if(pw.length <9) {
-                    msg= " 보안이 취약한 비밀번호입니다.";
-                }else {
-                    msg = " 보안이 강력한 비밀번호입니다.";
-                } 
-            }
-            document.getElementById("hereText").innerHTML = msg;         
-        }
-    </script>
-<!-- 주소 검색 -->
-    <script>
-       function zipCodeClick() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                $('[name=memberZipcode]').val(data.zonecode);
-                $('[name=memberAddress]').val(data.address);
-                $('[name=memberDaddress]').val(data.buildingName);
-            }
-        }).open();
-     }
-    </script>
+function nameCheck(name) {
+	const value = name.value;
+	 if(value == null || value == '') {
+			alert('이름을 입력해주세요.');
+			name.focus();
+			return;
+	} 
+		
+	if(!isValidNickNameFormat(value)) {
+		alert('이름 형식이 맞지 않습니다. 한글만 사용 가능합니다.');
+		name.focus();
+		return;
+	}
+	
+	$.ajax({
+		url : "/signupCheck",
+		data : {
+			"member_name" : value
+		},
+		success : function(rs) {
+			if(rs.nameCheck > 0) {
+				alert('이미 동일한 이름이 있습니다.');
+			} else {
+				alert('사용 가능합니다.');
+				nameMsg.setAttribute('data-check', 'yes');
+			}
+		}, 
+		error : function(xhr, status, error) {
+			alert('오류');
+		}
+	}); 
+	
+}
 
-    <!-- 마지막 확인버튼 누를시  -->
-    <script>
-        function updateFinish(){
-            var infoChk =document.getElementById('infoChk');
-            var inputChk = document.getElementsByTagName("input");
-            var inputTag="";
-            var cnt=0;
-            // for(var i=0; i< inputChk.length; i++) {
-            //     var inputTag =inputChk[i];
-            //     if(inputTag.value==""){
-            //         cnt++;
-            //        alert(cnt);
-            //     }
-            // }
-            if(infoChk.checked==false){
-                    alert("개인정보 수집 및 이용에 동의해주세요.");
-                    return;
-            }
-            document.getElementById('updateForm').submit();
-        }
-    </script>
-  <script>
-    $(document).ready(() => {
-      const li = document.querySelector('footer.fixed a[href="/myaccount"]').parentElement;
-      const ul = li.parentElement;
-      [ul, li].forEach(element => element.classList.add('active'));
-    });
-  </script>
+//비밀번호 확인
+const pw = document.querySelector('#inputPw');
+const pwChk = document.querySelector('#inputPwAgain');
+const msg = document.querySelector(".wrapperOne_half #rechkPW");
+pwChk.addEventListener('blur', () => {
+	if(!isValidPasswdFormat(pwChk.value)) {
+		msg.innerHTML = "<i class='fas fa-exclamation'></i> 비밀번호 형식이 맞지 않습니다.";
+		msg.style.color = "red";
+		return;
+	}
+	if(pw.value != pwChk.value) {
+		msg.innerHTML = "<i class='fas fa-exclamation'></i> 비밀번호가 일치하지 않습니다.";
+		msg.style.color = "red";
+		return;
+	}
+	if(isValidPasswdFormat(pwChk.value) && pw.value == pwChk.value) {
+		msg.innerHTML = "<i class='far fa-check-circle'></i> 비밀번호가 일치합니다.";
+		msg.style.color = 'blue';
+		msg.setAttribute('data-check', 'yes');
+	}
+});
+
+const telInput = document.querySelector('#phoneNum');
+const telmsg = document.querySelector('.phoneUpdate span');
+	
+	telInput.addEventListener('blur', () => {
+		const tel = telInput.value.replace(/ /g, '').replace(/-/g, '');
+		telInput.value = tel;
+		
+		if(!isValidTelFormat(tel)) {
+			telmsg.innerHTML = 	"<i class='fas fa-exclamation'></i> 전화번호 형식이 맞지 않습니다.";
+			telmsg.style.color = "red";
+			return;
+		}
+		if(isValidTelFormat(tel)) {
+			telmsg.innerHTML = "<i class='far fa-check-circle'></i>";
+			telmsg.style.color = 'blue';
+			telmsg.setAttribute('data-check', 'yes');
+		}
+	});
+	
+const infoChk = document.querySelector('#infoChk');
+const chkBtn = document.querySelector('.chkBtn');
+	chkBtn.addEventListener('click', () => {
+		
+		if(!infoChk.checked) {
+			alert('개인 정보 수집에 동의해주세요.');
+			return;
+		}
+		
+			submitChecks(); 
+	});
+	    
+
+function isValidNickNameFormat(nickname) {
+    const nicknamePattern = /^[가-힣]+$/;
+    return nicknamePattern.test(nickname);
+}
+
+function isValidPasswdFormat(passwd) {
+    const passwdPattern = /^(?=.*?[^\s])[\w\d]{8,}$/;
+    return passwdPattern.test(passwd);
+}
+function isValidTelFormat(tel) {
+    const telPattern = /\d{11}/;
+    return telPattern.test(tel);
+ }
+    
+function submitChecks() {
+	
+	const spanArr = document.querySelectorAll('span.data-chk');
+	const nickName = document.querySelector('#nickName');
+	const inputPw = document.querySelector('#inputPw');
+	const inputPwAgain = document.querySelector('#inputPwAgain');
+	const phone = document.querySelector('#phoneNum');
+	const inputs = [nickName, inputPw, inputPwAgain, phone];
+
+   		for(let i=0; i<inputs.length; i++) {
+   			if(inputs[i].value.trim() == '' || inputs[i].value.trim() == null) {
+   				alert(inputs[i].placeholder + '를 입력해주세요.');
+   				inputs[i].focus();
+   				return;
+   			}
+   		}     
+	
+		for(let i=0; i<spanArr.length; i++) {
+			const id = spanArr[i].parentNode.querySelector('input').getAttribute('id');
+			if(spanArr[i].getAttribute('data-check') != 'yes'){
+				if(id=="nickName") {
+					alert('이름 중복 확인을 해주세요.');
+					spanArr[i].parentNode.querySelector('input').focus();
+					return;
+				}
+				if(id=="inputPw") {
+					alert('비밀번호를 일치하게 입력해주세요.');
+					spanArr[i].parentNode.querySelector('input').focus();
+					return;
+				}
+				if(id=="phoneNum") {
+					alert('핸드폰 번호를 정확하게 입력해주세요.');
+					spanArr[i].parentNode.querySelector('input').focus();
+					return;
+				}	
+			}	
+		}
+		
+		if(!confirm('수정하시겠습니까?')) {
+			return;
+		}		
+		
+		$('#status').val('U');	
+		
+		const orginImg = document.querySelector('.imageBox > img').getAttribute('src').split('/image')[1];
+		console.log(orginImg);
+		const formvalue = $('#frm')[0];
+		let formdata = new FormData(formvalue);
+		formdata.append("orgin_img", orginImg);
+		
+		$.ajax({
+			url: "/member/setUpdateData",
+			data: formdata,
+			enctype:'multipart/form-data',
+			processData: false,
+			contentType:false,
+			type: 'POST',
+			success: function(rs) {
+				if(rs.result > 0) {
+					alert('정보수정이 완료되었습니다. 다시 로그인 해주세요.');
+					location.href="/login";
+				} else {
+					alert('정보 수정이 실패했습니다. 다시 확인해주세요.');
+				}
+			}, 
+			error: function(xhr, status, error) {
+				alert('오류 발생');
+			}
+		});
+}    
+
+</script>
 
 </body>
 </html>

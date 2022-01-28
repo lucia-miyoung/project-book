@@ -74,43 +74,7 @@
 			</div>
 		</nav>
 	</header>
-	<script>
-
-
 	
-	function gologinout(num) {
-		
-		if(num == 0) {
-			if(!confirm('로그아웃 하시겠습니까?')) {
-				return;
-			}
-		$('#member_id').val('');
-		
-			$.ajax({
-				url: '/logout',
-				data: {
-					"member_id" : ''
-				},
-				success: function(rs) {
-					alert('로그아웃이 완료됐습니다.');
-					location.reload();
-					
-				}, error : function(xhr, status, error) {
-					alert('오류');
-				}
-			});
-			
-		} else {
-			if(!confirm('로그인 하시겠습니까?')) {
-				return;
-			}
-			alert('로그인 페이지로 이동합니다.');
-			location.href='/login';
-		}
-		
-	}
-	
-</script>
 
 	<div class="wrapper">
 	<form id="frm" method="post">
@@ -125,16 +89,16 @@
             <div id="gogoSub">
             <div>
                 <p>
-                    정기구독 신청하기
+                    이번 달 마지막 찬스!! 
                 </p>
                 <p>
                     독서 습관을 길러서 지식인이 되어보아요.
                 </p>
                 <p>
-                    정기구독 신청하고 첫 달 무료 혜택받기!!
+                    한달 동안 종이책 3권 이상 구입시 마일리지 +3% 추가 적립!!
                 </p>
                 <div class="image">
-                    <img src="../../../resources/images/myLibrary/photoImg.png" >
+                    <img src="../../../resources/images/photoImg.png" >
                 </div>
             </div>
             </div>
@@ -144,7 +108,7 @@
         <p> 정보 관리 </p>
         <ul>
             <li><a href="javascript:goview('/member/updatemypage');">회원정보수정 <i class="far fa-chevron-right"></i></a></li>
-            <li><a href="javascript:goview('/member/deletemyaccount');">회원탈퇴<i class="far fa-chevron-right"></i></a> </li>
+            <li><a href="javascript:goview('/member/godeletepage');">회원탈퇴<i class="far fa-chevron-right"></i></a> </li>
         	<li><a href="javascript:goview('/member/mypage');">마이 페이지<i class="far fa-chevron-right"></i></a></li>
         </ul>
     </div>
@@ -153,14 +117,44 @@
         <p> 서비스 안내 </p>
         <ul>
             <li><a href="/member/notice">공지사항<i class="far fa-chevron-right"></i></a></li>
-            <li><a href="/common/servicecenter">고객센터<i class="far fa-chevron-right"></i></a></li>
+            <li><a href="javascript:goview('/common/servicecenter');">고객센터<i class="far fa-chevron-right"></i></a></li>
         </ul>
     </div>
     <div class="lastColumn">
-      <button type="button">로그아웃</button>
+      <button type="button" onclick="gologinout(0)">로그아웃</button>
     </div>
   </div>
 <script>
+
+function gologinout(num) {
+	
+	if(num == 0) {
+		if(!confirm('로그아웃 하시겠습니까?')) {
+			return;
+		}
+		
+		alert('로그아웃 됐습니다.');
+		
+		$.ajax({
+			url: '/logout',
+			data: {
+				"member_id" : ''
+			},
+			success: function(rs) {
+				location.reload();
+				$('#member_id').val('');
+			
+			}, error : function(xhr, status, error) {
+				alert('오류');
+			}
+		});
+		
+	} else {
+		alert('로그인 페이지로 이동합니다.');
+		location.href='/login';
+	}
+	
+}
 
 function goview(url) {
 	const userid = document.querySelector('#member_name').value;
@@ -171,89 +165,9 @@ function goview(url) {
 	$('#frm').attr('action', url);
 	$('#frm').submit();
 }
+
 </script>
 
-<script>
-    $(document).ready(() => {
-      const li = document.querySelector('footer.fixed a[href="my-account"]').parentElement;
-      const ul = li.parentElement;
-      [ul, li].forEach(element => element.classList.add('active'));
-    });
-  </script>
-
-
-<footer class="fixed">
-    <div class="container">
-      <ul>
-        <li>
-          <a href="/">
-            <i class="fas fa-home"></i>
-            <span>홈</span>
-          </a>
-        </li>
-        <li>
-          <a href="search">
-            <i class="fas fa-search"></i>
-            <span>검색</span>
-          </a>
-        </li>
-        <li>
-          <a href="feed">
-            <i class="fas fa-stream"></i>
-            <span>피드</span>
-          </a>
-        </li>
-        <li>
-          <a href="myLibrary.html">
-            <i class="fas fa-book"></i>
-            <span>내서재</span>
-          </a>
-        </li>
-        <li>
-          <a href="myAccount.html">
-            <i class="fas fa-user"></i>
-            <span>관리</span>
-          </a>
-        </li>
-      </ul>
-      <button type="button" class="scroll-to-top">
-        <i class="fas fa-chevron-double-up"></i>
-      </button>
-      <!-- add scroll-to-top function -->
-      <script>
-        $(document).ready(function () {
-          const button = document.querySelector("footer .scroll-to-top");
-          button.addEventListener("click", () => {
-            document.documentElement.style.scrollBehavior = "smooth";
-            document.documentElement.scrollTop = 0;
-            document.documentElement.style.scrollBehavior = "";
-          });
-  
-          let timeoutID = null;
-          window.addEventListener("scroll", () => {
-            if (document.documentElement.scrollTop === 0) {
-              button.classList.remove("visible");
-              return;
-            }
-            if (!button.classList.contains("visible")) {
-              button.style.transition = "";
-              button.classList.add("visible");
-            }
-            timeoutID =
-              clearTimeout(timeoutID) ||
-              setTimeout(() => {
-                button.style.transition = "0.4s ease";
-                button.classList.remove("visible");
-              }, 1200);
-          });
-        });
-        
-        
-      </script>
-    </div>
-  </footer>
-	
-	
 	
 </body>
 

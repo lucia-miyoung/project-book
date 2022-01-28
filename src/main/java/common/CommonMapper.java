@@ -15,11 +15,34 @@ public class CommonMapper {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
-	 * Master
-	 *  insert, update, delete
+	 * Master 작업에 사용되는 DAO
+	 * - insert, update, delete
+	 */
+	/*
+	 * @Autowired
+	 * 
+	 * @Resource(name="sqlSessionMaster") protected SqlSession ssm;
+	 */
+	
+	
+	/*
+	 * Slave 작업에 사용되는 DAO 
+	 * - select
 	 */
 	@Autowired
 	@Resource(name="sqlSessionTemplate")
 	protected SqlSession sss;
+	
+	
+	public HashMap sssSelectMap(String statement, Object parameter) {
+		List<?> list = sss.selectList(statement, parameter);
+		
+		HashMap hashMap = new HashMap();
+		if(list != null && list.size() > 0) {
+			hashMap = (HashMap)list.get(0);
+		}
+		return hashMap;
+	}
+	
 
 }

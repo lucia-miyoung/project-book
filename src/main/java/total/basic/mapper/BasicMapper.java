@@ -10,6 +10,9 @@ import common.CommonMapper;
 @Repository("BasicMapper")
 public class BasicMapper extends CommonMapper {
 
+	public int orderAutonum(HashMap paramMap) {
+		return sss.selectOne("BasicMapper.orderAutonum", paramMap);
+	}
 	public List shipMsg(HashMap paramMap) {
 		return sss.selectList("BasicMapper.shipMsg", paramMap);
 	}

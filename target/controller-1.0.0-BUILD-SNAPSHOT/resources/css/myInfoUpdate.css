@@ -32,7 +32,9 @@ li {
   z-index: 100;
   /* margin-bottom: 100px; */
 }
-
+.infoChkList {
+	margin: 10px 0 20px 0;
+}
 .myInfoDeleteBtn {
   /* float:right; */
   /* display: block; */
@@ -272,13 +274,9 @@ hr {
   margin-bottom: 0px;
 }
 
-.infoAgree label {
-     display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-.infoChkList {
-	margin: 15px 10px;
+.infoAgree input[type="checkbox"] + label {
+  vertical-align: middle;
+  margin-bottom: 10px;
 }
 
 .infoChkList ul li {
@@ -357,8 +355,6 @@ hr {
   width: 90px;
   /* box-sizing: border-box; */
   margin: 4px;
-  cursor: auto;
-  background-color: #f9f9f9;
 }
 
 .address1 button {
@@ -375,10 +371,7 @@ hr {
   cursor: pointer;
   margin: 4px;
 }
-#homeAdrs {
-	cursor: pointer;
-    background-color: #f9f9f9;
-}
+
 .address1 input,
 .address2 input {
   color: #333;

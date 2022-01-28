@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface BookService {
+	
+	public List salebookList(HashMap paramMap) throws Exception;
 
 	public List bookAllList(HashMap paramMap) throws Exception;
 	

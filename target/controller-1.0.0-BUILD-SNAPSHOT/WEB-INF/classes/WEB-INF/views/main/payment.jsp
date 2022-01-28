@@ -49,7 +49,7 @@
                     	<li>${status.index+1 }
                     	<input type="hidden" name="book_id" id="book_id" value="${book.book_id}"/>
                     	</li>
-                        <li><img src="../../../resources/images/books/book${book.book_id}.jpg" alt="오류"></li>
+                        <li><img src="/bookImg/book${book.book_id}.jpg" alt="오류"></li>
                         <li><span>${book.book_name }</span></li>
                         <li>KRW <span id="price">${book.book_price }</span>원</li>
                     </ul>

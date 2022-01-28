@@ -27,9 +27,10 @@
 	<form id="orderfrm" method="post">
 	<input type="hidden" name="status" id="status" value="I"/>
 	<input type="hidden" name="mileage" id="mileage" value=""/>
+	<input type="hidden" name="order_number" id="order_number" value="${orderNum }"/>
         <div class="orderDetail">
             <div class="orderInformation">
-                주문번호 (9987454321) / 주문 날짜 :
+                주문번호 (${orderNum}) / 주문 날짜 :
                 <input type="text" id="order_date" name="order_date" value="" readonly/>
             </div>
 		
@@ -49,15 +50,19 @@
                     	<li>${status.index+1 }
                     	<input type="hidden" name="book_id" id="book_id" value="${book.book_id}"/>
                     	</li>
-                        <li><img src="../../../resources/images/books/book${book.book_id}.jpg" alt="오류"></li>
+                        <li><img src="/bookImg/book${book.book_id}.jpg" alt="오류"></li>
                         <li><span>${book.book_name }</span></li>
-                        <li>KRW <span id="price">${book.book_price }</span>원</li>
+                        <li> 
+                        	<span class="org_price">KRW <span id="price"> ${book.book_price } </span>원</span> 
+                        	 <c:forEach var="sale" items="${saleList}" >
+                         	<c:if test="${book.book_id == sale.book_id }">
+                        	<span class="sale_price">KRW <span id="price" style="color:red;"> ${sale.sale_price } </span> 원</span> 
+                        	</c:if> 
+                        </c:forEach>
+                        </li>
                     </ul>
                   </c:forEach>
                 </div>
-                <!-- <div class="total">
-                    <p>총 <span>1개</span> <span>9800</span>원</p>
-                </div> -->
             </div>
 
             <div class="user-info">
@@ -155,8 +160,7 @@
         </div>
  	</form>
     </div>
-
-
+    
    	<script>
    		const cancelBtn = document.querySelector('.cancel-button');
    		cancelBtn.addEventListener('click', () => {
@@ -171,7 +175,6 @@
    		const inputs = document.querySelectorAll('.orderDetail input:not(#book_id)');
 	   		
    		payBtn.addEventListener('click', () => {
-   	   		
    	   		for(let i=0; i<inputs.length; i++){
    	   			if(inputs[i].value == null || inputs[i].value == '') {
    	   				alert('빈칸을 입력해주세요.');
@@ -259,7 +262,21 @@
 
     </script>
     <script>
-    	const bookPrices = document.querySelectorAll('.order-info-detail .content #price');
+    	const saleprice = document.querySelectorAll('.sale_price');		
+    	
+    	if(saleprice) {
+			saleprice.forEach(sale=>{
+				let span = sale.querySelector('#price');
+				let salespan = span.textContent.split('.')[0];
+				span.textContent = salespan;
+
+				const sibling = sale.previousElementSibling;
+					sibling.style.cssText = "font-size: 11px; display: block; font-weight:normal; text-decoration:line-through; ";
+			});
+		}
+
+		const orgPrices = document.querySelectorAll('.order-info-detail .content .org_price');
+    	const bookPrices = document.querySelectorAll('.order-info-detail .content .org_price #price');
     	const priceSpan = document.querySelector('#item_price');
     	const discSpan = document.querySelector('#disc_cpn'); 
     	let shipSpan = Number('2500');
@@ -269,11 +286,14 @@
         let disc = Number(document.querySelector('.pay-info-detail #percent').textContent);
     	let price = 0;
 		let maxPrice = 50000;
-    	
-    	bookPrices.forEach(item=> {
-    		 price += Number(item.textContent);	
-    	});
-    	
+
+		//할인되는 책이 있을 경우, 할인 금액으로 계산
+		bookPrices.forEach(item=> {
+			const salefare = item.parentNode.parentNode.querySelector('.sale_price > span');
+			let sales = salefare == null ? item.textContent : salefare.textContent;
+			price += Number(sales);	
+   	});
+
     	//결제 정보 자동 입력
     	let disPrice = (price*disc)/100;
     	discSpan.textContent = disPrice.toLocaleString();

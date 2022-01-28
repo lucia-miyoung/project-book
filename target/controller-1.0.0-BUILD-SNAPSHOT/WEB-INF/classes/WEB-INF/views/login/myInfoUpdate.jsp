@@ -82,14 +82,11 @@
 
  <div class="newMyInfo">
  
- 	<form id="frm" method="post" action="">
+ 	<form id="frm" method="post" action="" enctype="multipart/form-data">
  	<input type="hidden" name="status" id="status" value=""/>
  	<input type="hidden" name="member_id" id="member_id" value="${paramMap.member_id }"/>
       <div class="imageBox">
-        <img
-          id="myFaceImage"
-          src="../../../resources/images/myLibrary/picture1.png"
-        />
+        <img id="myFaceImage" src="/image/${memData.member_image}"/>
         <!-- 사진 넣을거임 -->
         <label for="camera">
           <i class="fas fa-camera-retro"></i>
@@ -103,7 +100,7 @@
       <div class="wrapperOne">
         <p>필명</p>
         <div class="updateLists">
-          <input type="text" name="member_name" id="nickName" placeholder="이름"/>
+          <input type="text" name="member_name" id="nickName" placeholder="이름" value="${memData.member_name}"/>
           <button type="button" id="nickNameChk">중복확인</button>
         </div>
         <span class="data-chk" style="color: rgb(194, 16, 16);">
@@ -118,13 +115,13 @@
           type="password"
           id="inputPw"
           maxlength="16"
-          placeholder="비밀번호" />
+          placeholder="비밀번호" value="${memData.member_pw}"/>
         <span id="hereText">8자 이상, 16자 이하로 입력해주세요.</span>
         <input
           type="password"
           id="inputPwAgain" 
           name="member_pw"
-          placeholder="비밀번호 확인" />
+          placeholder="비밀번호 확인" value="${memData.member_pw}"/>
         <span class="data-chk" id="rechkPW"></span>
       </div>
       <hr class="firstLine" />
@@ -132,7 +129,7 @@
       <div class="wrapperTwo">
         <p>핸드폰 번호</p>
         <div class="phoneUpdate">
-          <input type="text" name="member_phone" id="phoneNum" placeholder="핸드폰 번호"/>
+          <input type="text" name="member_phone" id="phoneNum" placeholder="핸드폰 번호" value="${memData.member_phone}"/>
           <span class="data-chk"> ※ ' - ' 없이 숫자로만 입력해주세요. </span>
         </div>
 
@@ -146,8 +143,8 @@
           <button type="button" id="zipCodeSearch" onclick="zipCodeClick()">
             검색
           </button>
-          <input type="text" name="member_home1" id="homeZipcode" value="${paramMap.member_home1}" readonly />
-          <input type="text" name="member_home2" id="homeAdrs" value="${paramMap.member_home2}" readonly />
+          <input type="text" name="member_home1" id="homeZipcode" value="${memData.member_home1}" readonly />
+          <input type="text" name="member_home2" id="homeAdrs" value="${memData.member_home2}" readonly />
         </div>
         <div class="address2">
           <input
@@ -155,7 +152,7 @@
             name="member_home3"
             id="homeDetail"
             placeholder="상세 주소"
-            value="${paramMap.member_home3}"
+            value="${memData.member_home3}"
           />
         </div>
       </div>
@@ -199,6 +196,37 @@
       </form>
     </div>
     <!-- 제일 큰 박스 end -->
+
+<script>
+//파일 첨부 & 썸네일
+const userimg = document.querySelector('#camera');
+userimg.addEventListener('change', (event) => {
+	onsetimage(event); 
+}); 
+
+function onsetimage(e) {
+let imgtype = ['jpg', 'jpeg', 'png', 'svg'];
+
+	let file = e.target.files[0];
+	let filetype = file.type.split('/')[1];
+	
+ 	if(imgtype.indexOf(filetype) == -1) {
+	 	alert('이미지는 jpg, jpeg, png, svg만 첨부 가능합니다.');
+	 	return;
+	}
+
+	let reader = new FileReader();
+	reader.readAsDataURL(file);
+	reader.onload = event => {
+		let url = event.target.result;
+		const imgthumb = document.querySelector('.imageBox > img');
+		imgthumb.setAttribute('src', url);
+
+	};
+}
+
+
+</script>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
@@ -370,10 +398,34 @@ function submitChecks() {
 		
 		if(!confirm('수정하시겠습니까?')) {
 			return;
-		}
-		$('#frm').attr('action', '/member/setUpdateData');
-		$('#status').val('U');
-		$('#frm').submit(); 
+		}		
+		
+		$('#status').val('U');	
+		
+		const formvalue = $('#frm')[0];
+		let formdata = new FormData(formvalue);
+		
+		$.ajax({
+			url: "/member/setUpdateData",
+			data: formdata,
+			enctype:'multipart/form-data',
+			processData: false,
+			contentType:false,
+			type: 'POST',
+			success: function(rs) {
+				console.log(rs);
+				if(rs.result > 0) {
+					alert('정보수정이 완료되었습니다. 다시 로그인 해주세요.');
+					location.href="/login";
+				} else {
+					alert('동일한 이름의 이미지가 존재합니다. 이름을 변경해주세요.');
+				}
+			}, 
+			error: function(xhr, status, error) {
+				alert('오류 발생');
+			}
+		});
+		
 }    
 
 </script>

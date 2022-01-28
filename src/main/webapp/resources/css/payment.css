@@ -36,8 +36,8 @@ input {
 .orderInformation #order_date {
 	border-radius: 2px;
     padding: 3px 10px;
-    width: 120px;
-    font-size: 12px;
+    width: 135px;
+    font-size: 14px;
 }
 .orderDetail {
     width:100%;
@@ -96,7 +96,7 @@ input {
 .order-info .order-info-detail .content:last-child {
 	border-bottom:none;
 }
-.order-info .order-info-detail .content span {
+.order-info .order-info-detail .content span#price {
     font-weight: bold;
 }
 .user-info .user-info-title {
@@ -218,7 +218,7 @@ input {
     display: none;
 }
 
-/* °áÁ¦Á¤º¸ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 .pay-info .pay-info-title {
     font-size: 15px;
     font-weight: bold;

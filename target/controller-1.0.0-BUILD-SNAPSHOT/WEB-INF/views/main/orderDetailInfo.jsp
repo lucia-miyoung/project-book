@@ -43,7 +43,7 @@
                     
                 </tr>
                     <tr>
-                        <td> <img src="../../../resources/images/books/book${bookInfo.book_id}.jpg" alt="오류" width=100> </td>
+                        <td> <img src="/bookImg/book${bookInfo.book_id}.jpg" alt="오류" width=100> </td>
                         <td> ${bookInfo.book_name} </td>
                         <td> KRW <span class="bookPrice" style="font-weight:bold;">${bookInfo.book_price}</span> 원  </td>
                     </tr>

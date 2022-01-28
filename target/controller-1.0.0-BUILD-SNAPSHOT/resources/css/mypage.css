@@ -60,7 +60,8 @@ input[type="radio"] {
 	position:sticky;
 }
 .secondColumn .consBtn label {
-    padding:10px 25px 10px 25px;
+    position:sticky;
+    padding:10px 25px;
     margin:0px;
     color:rgb(90, 90, 90);
     cursor: pointer;
@@ -86,6 +87,8 @@ input[type="radio"] {
     color: #777777;
     font-size:16px;
     font-weight:bold;
+    border:1px solid #ccc;
+	margin-top:9px;
 }
 .content.invisible {
 	display:none;
@@ -374,6 +377,7 @@ input[type="radio"] {
     font-size:14px;
     background-color: #e8e8e8;
     color: #333;
+    text-index:0;
 }
 .myPostCheck table th {
     border-bottom:1px solid #e8e8e8;
@@ -382,6 +386,9 @@ input[type="radio"] {
 .myPostCheck table td {
     font-weight: normal;
     padding:5px;  
+}
+.myPostCheck table tr:nth-child(2)>td:nth-child(2) {
+width:0%;
 }
 #postTitleChk {
     background-color: rgba(218, 218, 218, 0.226);
@@ -781,4 +788,31 @@ input[type="radio"] {
 .starWrap i {
   font-size: 30px;
   flex:1;
+}
+.mystarScore {
+	display: inline-block;
+    position: relative;
+    width: 90px;
+}
+.mystarScore i {
+	font-size: 16px;
+}		
+.mystarScore #default i {
+	color: #979797;
+}
+
+.mystarScore #default, .mystarScore #full {
+	display:flex;
+}
+
+.mystarScore #full {
+	position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0px;
+    top: 0;
+}
+
+.mystarScore #full i {
+	color: #FFA200;
 }

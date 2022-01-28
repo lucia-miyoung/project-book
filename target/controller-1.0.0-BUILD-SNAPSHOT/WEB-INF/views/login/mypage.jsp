@@ -47,8 +47,6 @@
 </header>
 <script>
 
-
-	
 	function gologinout(num) {
 		
 		if(num == 0) {
@@ -105,7 +103,7 @@
   </div>
 <div class="bigbox">
 <div class="myImage"> 
-    <a href="#"><img id="myFaceImage" src="${pageContext.request.contextPath }/resources/images/myLibrary/picture1.png" ></a>   
+    <a href="/image${userdata.member_image}"><img id="myFaceImage" src="/image${userdata.member_image}" ></a>   
 	<c:if test="${paramMap.member_name == sessionScope.userId }">
 		<span id="point"><span>${showdata.mile}</span>miles</span>
 	</c:if>
@@ -152,10 +150,10 @@
         <div class="myBookbook">
           <ul>
             <c:forEach var="list" items ="${orderList}">
-						<li><a href="/book/bookdetail?booknumber=${list.book_id }">
+						<li><a href="javascript:goView('${list.book_id}');">
 							<div class="books">
 								<div class="mybookimage">
-										<img src="../../../resources/images/books/book${list.book_id}.jpg" alt="없음">
+										<img src="/bookImg/book${list.book_id}.jpg" alt="없음">
 								</div>
 								<div class="names">
 									<strong>${list.book_name}</strong> <br> <span>${list.book_author}</span>
@@ -210,7 +208,7 @@
                         </c:if>
                         <td>
                           <a href="javascript:goView('${book.book_id}');"> 
-                  			<img src="../../../resources/images/books/book${book.book_id}.jpg" alt="없음">
+                  			<img src="/bookImg/book${book.book_id}.jpg" alt="없음">
                   		  </a>
                   		</td>
                   		<td>
@@ -307,81 +305,6 @@
          </c:otherwise>
 	   </c:choose> 
     </div>
-
-<style>
-.firstColumn .myImage #point {
-   	position: absolute;
-    bottom: 0;
-    right: -90px;
-    color: #333;
-    font-size:12px;
-    opacity: 0.8;
-    font-family: 'Noto Sans KR', sans-serif;
-}
-.firstColumn .myImage #point span {
-	display: inline-block;
-    margin-right: 2px;
-    width: 65px;
-    text-align: right;
-}
-.secondColumn .consBtn label {
-    position:sticky;
-    padding:10px 25px;
-    margin:0px;
-    color:rgb(90, 90, 90);
-    cursor: pointer;
-    background-color:tranparent;
-    border-radius: 10px 10px 0 0;
-}
-.secondColumn .consBtn input[type="radio"]:checked + label {
-    background-color: #fff;
-    color: #333;
-    font-weight: bold;
-    border: 1px solid #ccc;
-    border-bottom: 0;
-}
-.content {
-border:1px solid #ccc;
-margin-top:9px;
-}
-.mystarScore {
-	display: inline-block;
-    position: relative;
-    width: 90px;
-}
-.mystarScore i {
-	font-size: 16px;
-}		
-.mystarScore #default i {
-	color: #979797;
-}
-
-.mystarScore #default, .mystarScore #full {
-	display:flex;
-}
-
-.mystarScore #full {
-	position: absolute;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0px;
-    top: 0;
-}
-
-.mystarScore #full i {
-	color: #FFA200;
-}
-.myPostCheck table {
-text-indent: 0;
-}
-.myPostCheck table tr:nth-child(2)>td:nth-child(2) {
-width:0%;
-}
-				
-</style>
-
-
-
   <form id="postRegister" method="post">  
      <div class="postInsert invisible" id="postInsert">
        <div id="selWrap">
@@ -397,34 +320,7 @@ width:0%;
             </ul>
         </div>
     </div>    
-        <%-- <c:choose>
-          <c:when test="${paramMap.member_name != null && zzimList.size() >0 }">
-        <div class="myBookbook">
-          <ul>
-            <c:forEach var="zzim" items="${zzimList}">
-						<li>
-							<div class="books">
-								<div class="mybookimage">
-										<img src="../../../resources/images/books/book${zzim.book_id}.jpg" alt="없음">
-								</div>
-								<div class="names">
-									<strong>${zzim.book_name}</strong>
-								</div>
-							</div> <!-- books end -->
-						</li>
-			</c:forEach>
-          </ul>
-   		 </div> <!-- myBookbook end -->  
-   		 </c:when>     
-           	<c:otherwise>
-           		 <div class="mybook_Content">
-        	   <span> <i class="fas fa-books"></i></span>
-        	    	구매한 도서가 없습니다.
-      		     </div>
-           	</c:otherwise>
-          </c:choose>  --%> 	
-<!-- 			<span style="margin: 10px 20px; display: block; padding-left: 10px;">도서 이름: <span id="booknm"></span></span> -->
-
+     
       <div class="starWrap">
         <div class="starLabel" style="z-index:1;">
             <label for="start1">
@@ -473,13 +369,7 @@ width:0%;
             <i class="fas fa-star"></i>
         </div>
     </div>
-           <span class="starScore" style="
-    position: absolute;
-    display: inline-block;
-    margin-top: 27px;
-    margin-left: 5px;
-    width: 50px;">
-    <span style="color:#979797; width:27px; display:inline-block; text-align:right;">0</span> 점</span>
+	           <span class="starScore"> <span>0</span> 점</span>
            
             <input type="text" name="review_title" id="postTitle" placeholder="제목을 입력하세요"/>
             <input type="text" name="review_content" id="post_Content" placeholder="한줄 리뷰를 남겨주세요."/>

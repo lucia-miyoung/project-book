@@ -3,6 +3,10 @@
 
 <mapper namespace = "BasicMapper">
 	
+	<select id="orderAutonum" parameterType="hashMap" resultType="int">
+		select max(order_number)+1 as order_number from order_history;
+	</select>
+	
 	<select id="shipMsg" parameterType="hashMap" resultType="hashMap">
 		SELECT ship_msg FROM shipment;
 	</select>

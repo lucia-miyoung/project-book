@@ -370,7 +370,7 @@ function gologinout(num) {
 								<div class="search ${book.book_id}" >
 									<div class="book" >
 										<!-- 책 커버 -->
-										<img class="cover" src="../../../resources/images/books/book${book.book_id}.jpg" />
+										<img class="cover" src="/bookImg/book${book.book_id}.jpg" />
 										<!-- 책 정보 -->
 										<div class="info" >
 											<div class="title" >${book.book_name }</div>

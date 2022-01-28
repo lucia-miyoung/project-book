@@ -16,6 +16,11 @@ public class BasicServiceimpl implements BasicService {
 	private BasicMapper mapper;
 	
 	@Override
+	public int orderAutonum(HashMap paramMap) throws Exception {
+		return mapper.orderAutonum(paramMap);
+	}
+	
+	@Override
 	public List shipMsg(HashMap paramMap) throws Exception {
 		return mapper.shipMsg(paramMap);
 	}

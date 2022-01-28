@@ -2,17 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace = "MemberMapper">
+
+	<select id="totalorderCnt" parameterType="hashMap" resultType="int">
+		select count(member_name) as cnt from order_history where member_name=#{member_name};
+	</select>
+	<select id="imgNameDupchk" parameterType="hashMap" resultType="int">
+		select count(member_image) as cnt from members where member_image = #{member_image};
+	</select>
+
+	<delete id="deletemyaccount" parameterType="hashMap">
+		delete from members where member_name = #{member_name} and member_id = #{member_id}
+	</delete>
 	
-	<select id="updatemyinfo" parameterType="hashMap">
+	<update id="updatemyinfo" parameterType="hashMap">
 		UPDATE members SET member_pw = #{member_new_pw}, 
 		MEMBER_NAME = #{member_name}, MEMBER_PHONE = #{member_phone}, 
 		MEMBER_HOME1 = #{member_home1}, MEMBER_HOME2 = #{member_home2}, 
-		MEMBER_HOME3 = #{member_home3} WHERE MEMBER_ID = #{member_id}
+		MEMBER_HOME3 = #{member_home3}, member_image= #{member_image} 
+		WHERE member_id = #{member_id}
 	
-	</select>
+	</update>
 	
 	<select id="getMemInfo" parameterType="hashMap" resultType="hashMap">
-			SELECT member_id, member_name, member_phone, member_home1, member_home2, member_home3 
+			SELECT member_id, member_name, member_phone, member_home1, 
+			member_home2, member_home3, member_image  
 			FROM members 
 			WHERE member_name = #{member_name}
 
@@ -20,7 +33,7 @@
 
 	<select id="myzzimCount" parameterType="hashMap" resultType="int">
 		select count(case when zzim_check = 'Y' then 1 end) as cnt FROM mypage as a 
-		left outer join MEMBERS as b on a.member_id = b.member_id 
+		left outer join members as b on a.member_id = b.member_id 
 		WHERE b.member_name = #{member_name}
 	</select>	
 	
@@ -43,7 +56,7 @@
 	
 	<select id="heartChk" parameterType="hashMap" resultType="hashMap">
 		SELECT a.member_id, b.member_name, heart_check as heartChk 
-		FROM MYPAGE as a left outer join members as b on a.member_id = b.member_id  
+		FROM mypage as a left outer join members as b on a.member_id = b.member_id  
 		WHERE b.member_name = #{member_name} and book_id = #{book_id}
 	</select>
 	
@@ -111,12 +124,12 @@
 	<insert id="insertReview" parameterType="hashMap">
 		INSERT INTO review(member_name, book_id, book_name, review_title, review_content, review_date, review_score) 
 		VALUES(#{member_name}, #{book_id}, #{book_name}, #{review_title}, 
-		#{review_content}, convert(char(19),now(),20), #{star})
+		#{review_content}, NOW(), #{star})
 	</insert>
 	
 	<select id="reviewListall" parameterType="hashMap" resultType="hashMap">
-		SELECT member_name, book_id, book_name, review_title, 
-		review_content, review_date, review_score FROM review order by review_date desc
+		SELECT a.member_name, a.member_image, book_id, book_name, review_title, review_content, review_date, review_score 
+FROM members as a inner join review as b on a.member_name = b.member_name order by b.review_date desc
 	</select>
 	
 	<select id="reviewList" parameterType="hashMap" resultType="hashMap">
@@ -159,10 +172,10 @@
 		#{order_email}, #{ship_msg}, #{total_price}, #{order_date})
 	</insert>
 	<update id="savemymile" parameterType="hashMap">
-		UPDATE member_data SET mile = mile + convert(int, #{mileage}) WHERE member_name = #{member_name}
+		UPDATE member_data SET mile = mile + cast(#{mileage} AS signed integer) WHERE member_name = #{member_name}
 	</update>
 	<select id="showalldata" parameterType="hashMap" resultType="hashMap">
-		SELECT member_name, mile, follow1, follow2, follow3, follow4, follow5 FROM member_data 
+		SELECT member_name, mile FROM member_data 
 		WHERE member_name = #{member_name}
 	</select>
 </mapper>

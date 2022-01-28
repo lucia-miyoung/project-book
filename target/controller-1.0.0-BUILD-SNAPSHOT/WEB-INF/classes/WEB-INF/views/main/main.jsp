@@ -78,15 +78,14 @@ function gologinout(num) {
 		if(!confirm('로그아웃 하시겠습니까?')) {
 			return;
 		}
-		
-		alert('로그아웃 됐습니다.');
-		
+			
 		$.ajax({
 			url: '/logout',
 			data: {
 				"member_id" : ''
 			},
 			success: function(rs) {
+				alert('로그아웃이 완료되었습니다.');
 				location.reload();
 				$('#member_id').val('');
 			
@@ -202,72 +201,6 @@ function gologinout(num) {
         		
         </script>
         
-
-       <!--  <script>
-          function getSearchResult(type, keyword) {
-            return new Promise((resolve, reject) => {
-              const xhr = new XMLHttpRequest();
-              xhr.open('GET', '/search-preview?type=' + type + '&keyword=' + keyword);
-              xhr.onreadystatechange = function() {
-                if (!(xhr.readyState === 4 && xhr.status === 200)) return;
-                resolve(JSON.parse(xhr.response));
-              }
-              xhr.send();
-            });
-          }
-          async function searchKeyword() {
-            const searchResult = document.querySelector('.search-wrapper .search-result');
-            const searchResultList = document.querySelector('.search-wrapper .search-result ul');
-            const type = document.getElementById('search-type').value.trim();
-            const keyword = document.getElementById('search-input').value.trim();
-
-            // do not request on empty keyword
-            if (keyword === null || keyword === undefined || keyword.length === 0) return;
-
-            // do not request on single korean vowel or consonant (ㄱ, ㄴ, ㄷ, ㅏ, ㅣ, ㅔ, ...)
-            const lastKeywordUnicode = keyword.charAt(keyword.length-1).charCodeAt(0);
-            if (12593 <= lastKeywordUnicode && lastKeywordUnicode <= 12643) return;
-
-            // get result from server
-            const bookList = await getSearchResult(type, keyword);
-  
-            let searchResultListHTML = '';
-            if (bookList.length === 0)
-              searchResultListHTML = '<li style="padding: 10px 20px"><p><b>"<span class="no-search-result-keyword">' + keyword + '</span>"</b>에 대한 결과가 없습니다.</p></li>';
-            bookList.forEach(book => {
-              searchResultListHTML += '<li>' +
-                                        '<a href="/search?type=' + type + '&keyword=' + keyword + '">' +
-                                          '<span class="title">' + book.bookTitle + '</span><span class="seperator"> :: </span><span class="writer">' + book.bookWriter + '</span>' +
-                                        '</a>' +
-                                      '</li>';
-            });
-            searchResultList.innerHTML = searchResultListHTML;
-            searchResult.classList.add('hasResult');
-          }
-          $(document).ready(function() {
-            const searchResult = document.querySelector('.search-wrapper .search-result');
-            const searchInput = document.getElementById('search-input');
-            let timeoutID = undefined;
-            
-            searchInput.addEventListener('input', () => {
-              if (searchInput.value.trim().length === 0)
-                searchResult.classList.remove('hasResult');
-
-              // cancel previous search-preview request on new input
-              if (timeoutID) clearTimeout(timeoutID);
-              // schedule search-preview request
-              timeoutID = setTimeout(() => searchKeyword(), 850);
-            });
-            searchInput.addEventListener('focus', () => {
-              if (searchInput.value.trim().length !== 0)
-                searchResult.classList.add('hasResult');
-            });
-            searchResult.addEventListener('mouseover', () => searchResult.classList.add('isHovered'));
-            searchResult.addEventListener('mouseout', () => searchResult.classList.remove('isHovered'));
-          });
-        </script> -->
-        <!-- toggle filter menu on click -->
-        
         <script>
           $(document).ready(function() {
             const filterList = document.querySelector('.head .search-wrapper .filter ul');
@@ -309,17 +242,17 @@ function gologinout(num) {
               </a>
             </li>
             <li>
-              <a href="/book/best">
+              <a href="javascript:notopenyet();">
                 <span>베스트 셀러</span>
               </a>
             </li>
             <li>
-              <a href="/book/books">
+              <a href="javascript:notopenyet();">
                 <span>도서 구매</span>
               </a>
             </li>
             <li>
-              <a href="event">
+              <a href="javascript:notopenyet();">
                 <span>이벤트</span>
               </a>
             </li>
@@ -342,6 +275,10 @@ function gologinout(num) {
     	  
     	  $('#frm').attr('action', '/member/myaccount');
     	  $('#frm').submit();
+      }
+      
+      function notopenyet() {
+    	  alert('아직 오픈 준비 중입니다.');
       }
       
       </script>
@@ -416,9 +353,9 @@ function gologinout(num) {
             </div>
             <div class="slider infinite-slider">
             	<c:forEach items="${bookList}" var="list" varStatus="status"
-			 	begin="0" end="3">
+			 	begin="6" end="12">
             		<div class="slide infinite-slide">
-            		<a href="#"><img src="../../../resources/images/books/book${list.book_id}.jpg" alt=""></a></div>
+            		<a href="#"><img src="/bookImg/book${list.book_id}.jpg" alt=""></a></div>
             	</c:forEach>
             </div>
           </div>
@@ -434,18 +371,17 @@ function gologinout(num) {
             	</c:otherwise>
             </c:choose>
           </h2>
-
-          
+ 
           <div class="bookshelf-wrapper">
             <div class="shelf">
               <div class="bookend-left"></div>
               <div class="bookend-right"></div>
               <div class="reflection"></div>
               <ul>
-              	<c:forEach var="inter" items="${interests }">
+              	<c:forEach var="list" items="${bookList}" varStatus="status" begin="16" end="19">
               		<li>
-                  		<a href="#">
-                    	<img src="${pageContext.request.contextPath}${inter.bookThumbnail}" width="65px" height="85px" alt="">
+                  		<a href="javascript:goView('${list.book_id}');">
+                    	<img src="/bookImg/book${list.book_id}.jpg" width="65px" height="85px" alt="">
                   		</a>
                 	</li>
               	</c:forEach>
@@ -458,11 +394,10 @@ function gologinout(num) {
               <ul>
               <c:choose>
 				<c:when test="${bookList.size() > 0}">
-			 	<c:forEach items="${bookList}" var="list" varStatus="status"
-			 	begin="0" end="3">
+			 	<c:forEach items="${bookList}" var="list" varStatus="status" begin="5" end="9">
                 <li>
                   <a href="javascript:goView('${list.book_id}');">
-                    <img src="../../../resources/images/books/book${list.book_id}.jpg" alt="">
+                    <img src="/bookImg/book${list.book_id}.jpg" alt="">
                   </a>
                 </li>
 				</c:forEach>
@@ -473,17 +408,6 @@ function gologinout(num) {
 				</c:choose>
               </ul>
             </div>
-          
-          <script>
-          	
-          		function goView(num) {
-          			$("#book_id").val(num);
-              		$("#frm").attr("action","/member/detail");
-            		$("#frm").submit();
-          		}
-          
-          
-          </script>
             <div class="shelf">
               <div class="bookend-left"></div>
               <div class="bookend-right"></div>
@@ -491,11 +415,10 @@ function gologinout(num) {
               <ul>
                  <c:choose>
 				<c:when test="${bookList.size() > 0}">
-			 	<c:forEach items="${bookList}" var="list" varStatus="status"
-			 	begin="4">
+			 	<c:forEach items="${bookList}" var="list" varStatus="status" begin="10" end="14">
                 <li>
                   <a href="javascript:goView('${list.book_id}');">
-                    <img src="../../../resources/images/books/book${list.book_id}.jpg" alt="">
+                    <img src="/bookImg/book${list.book_id}.jpg" alt="">
                   </a>
                 </li>
 				</c:forEach>
@@ -534,7 +457,7 @@ function gologinout(num) {
             <i class="fas fa-clock"></i>
             <span></span>
           </div>
-          사람들이 많이 읽은 책
+          <!-- 사람들이 많이 읽은 책 -->
         </h2>
         <!-- initialize clock -->
         <script>
@@ -581,153 +504,39 @@ function gologinout(num) {
           </ul>
         </div>
       </section>
-      <section class="best-seller fadeInUp">
-        <h2 class="section-heading">베스트셀러</h2>
-        <div class="content-wrapper">
-          <div class="filter-container">
-            <div class="time-filter">
-              <ul>
-                <li>월간</li>
-              </ul>
-              <span class="far fa-chevron-down"></span>
-            </div>
-            <div class="category-filter">
-              <ul>
-                <li><button type="button">종합</button></li>
-                <li class="selected"><button type="button">소설</button></li>
-                <li><button type="button">트렌딩</button></li>
-                <li><button type="button">교양</button></li>
-              </ul>
-            </div>
-          </div>
-          <!-- toggle filter click -->
-          <script>
-            // ajax callback
-            function updateBestSeller() {
-              const timeFilter = document.querySelector('.best-seller .time-filter li').textContent.trim();
-              const categoryFilter = document.querySelector('.best-seller .category-filter li.selected button').textContent.trim();
-              const slider = document.querySelector('.best-seller .flexible-slider');
-
-              const xhr = new XMLHttpRequest();
-              xhr.open('GET', '/best-seller?time=' + timeFilter + '&category=' + categoryFilter);
-              xhr.onreadystatechange = () => {
-                if (!(xhr.readyState === 4 && xhr.status === 200)) return;
-                const result = JSON.parse(xhr.response);
-                if (result.length === 0) return;
-
-                // create new list
-                let newList = '';
-                result.forEach((book, index) => {
-                  newList += `
-                  <li class="flexible-slide">
-                    <a href="${"/book/bookdetail?booknumber=${book.bookNum}"}">
-                      <div class="thumbnail-wrapper">
-                        <img src="${"${book.bookThumbnail}"}" alt="">
-                      </div>  
-                      <div class="text-wrapper">
-                        <div class="meta-data">
-                          <h3>${"${index + 1}"}</h3>
-                          <strong>${"${book.bookTitle}"}</strong>
-                          <span>${"${book.bookWriter}"}</span>
-                        </div>
-                      </div>
-                    </a>
-                  </li>`;
-                });
-                slider.innerHTML = newList;
-              };
-              xhr.send();
-            }
-            // initiate best seller list fetch
-            $(document).ready(function() {
-              updateBestSeller();
-            });
-            // add time filter click event
-            $(document).ready(function() {
-              const filterList = document.querySelector('.best-seller .time-filter ul');
-              const filterMenus = ['월간', '일간', '주간', '연간'];
-
-              filterList.addEventListener('click', event => {
-                // prevent event.target being parent itself
-                if (event.target === filterList) return;
-
-                filterList.classList.toggle('active');
-                // append other menu lists on click
-                if (filterList.classList.contains('active')) {
-                  filterMenus.forEach(menu => {
-                    if (menu === event.target.textContent) return;
-                    const list = document.createElement('li');
-                    list.textContent = menu;
-                    filterList.appendChild(list);
-                  });
-                }
-                // switch to selected menu list
-                else {
-                  filterList.innerHTML = '';
-                  event.target.classList.add('selected');
-                  filterList.appendChild(event.target);
-                  updateBestSeller();
-                }
-              });
-            });
-            // add category filter click event
-            $(document).ready(function() {
-              const filterButtonContainer = document.querySelector('.best-seller .category-filter ul');
-              const filterButtons = [...(document.querySelectorAll('.best-seller .category-filter li'))];
-              filterButtonContainer.addEventListener('click', event => {
-                if (event.target.type !== 'button') return;
-
-                // remove selected class from all li
-                filterButtons.forEach(button => button.classList.remove('selected'));
-                // add selected class to clicked li
-                event.target.parentElement.classList.add('selected');
-
-                // if time filter is opened then close
-                const timeFilterContainer = document.querySelector('.best-seller .time-filter ul');
-                const currentTimeFilter = document.querySelector('.best-seller .time-filter li');
-                if (timeFilterContainer.classList.contains('active')) 
-                  currentTimeFilter.click();
-                else
-                  updateBestSeller();
-              });
-            });
-          </script>
-          <div class="list-container slider-wrapper flexible-slider-window">
-            <ul class="slider flexible-slider">
-              <li class="flexible-slide">
-                <a href="#">
-                  <div class="thumbnail-wrapper">
-                    <img src="https://via.placeholder.com/100x150" alt="">
-                  </div>  
-                  <div class="text-wrapper">
-                    <div class="meta-data">
-                      <h3>1</h3>
-                      <strong>title</strong>
-                      <span>author  </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
+  <style>
+          	.org_price {
+          		position:relative;
+          	}
+          	.org_price::after {
+          		position: absolute;
+    content: '';
+    width: 42px;
+    height: 1px;
+    top: 9px;
+    left: 5px;
+    background-color: black;
+          	}
+          
+          </style>
       <section class="paperbook-sale content-area fadeInUp">
         <h2 class="section-heading">빈 책장을 채우는 기회</h2>
         <div class="content-wrapper">
           <h3><span class="fal fa-file-check"></span>이달의 할인</h3>
           <div class="list-container flexible-slider-window">
             <ul class="flexible-slider"> 
-              <c:forEach var="book" items="${bookList}">
+              <c:forEach var="sale" items="${saleList}">
               			<li class="flexible-slide">
-                			<a href="${pageContext.request.contextPath}/book/bookdetail?booknumber=${disCount.bookNum}">
+                			<a href="javascript:goView('${sale.book_id}');">
                   		<div class="thumbnail-wrapper">
-                    		<span class="discount-rate">${book.book_price }<span>%</span></span>
-                    		<img src="../../../resources/images/books/book${book.book_id}.jpg" alt="">
+                    		<span class="discount-rate">${sale.sale }<span>%</span></span>
+                    		<img src="/bookImg/book${sale.book_id}.jpg" alt="">
                   		</div>
                   		<div class="text-wrapper">
-                    		<strong>${book.book_name }</strong>
-                    		<span>${book.book_author }</span>
+                    		<strong>${sale.book_name }</strong>
+                    		<span>${sale.book_author }</span>
+                    		<span class="org_price" style="font-size:13px;">${sale.book_price }</span>
+                    		<span class="sale_price" style="color:red; font-weight:bold;">${sale.sale_price }</span>
                   		</div>
                 		</a>
               		</li>
@@ -736,76 +545,7 @@ function gologinout(num) {
           </div>
         </div>
       </section>
-      <section class="coming-soon content-area fadeInUp">
-        <h2 class="section-heading">출시 예정 도서</h2>
-        <div class="content-wrapper slider-wrapper flexible-slider-window">
-          <ul class="slider flexible-slider">
-          <c:forEach var="alarm" items="${AlarmBook}">
-            <li class="book flexible-slide">
-              <a href="/book/bookdetail?booknumber=${alarm.bookNum }">
-                <div class="thumbnail-wrapper">
-                  <img src="${pageContext.request.contextPath }${alarm.bookThumbnail}" alt="">
-                  <div class="overlay">
-                    <div class="meta-data">
-                      <span></span>
-                       <strong>D - ${alarm.commingBook }</strong> 
-                    </div>
-                  </div>
-                </div>
-                <div class="text-wrapper">
-                  <strong>${alarm.bookTitle }</strong>
-                  <span>${alarm.bookWriter }</span>
-                </div>
-              </a>
-              <button>
-                <div class="button-content-wrapper">
-                  <div class="icon">
-               	   <i class="far fa-bell"></i>
-               	   </div>
-                  <span>알람받기</span> 
-                </div>
-              </button>
-            </li>
-            </c:forEach>
-          </ul>
-        </div>
-        <!-- 알람 받기 AJAX -->
-        <script>
-          function requestAlarm(bookNumber, memberEmail, alarmButton) {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/booklist/alarm?booknumber=' + bookNumber +'&memberEmail=' + memberEmail);
-            xhr.onreadystatechange = function() {
-              if (!(xhr.readyState === 4 && xhr.status === 200)) return;
 
-              const result = xhr.response.trim() === 'true' ? true : false;
-              // if result is false then return;
-              if (!result) return;
-
-              alarmButton.classList.add('alarmSet');
-            }
-            xhr.send();
-          }
-          $(document).ready(function() {
-            const bookList = [...(document.querySelectorAll('.coming-soon li.book'))];
-            bookList.forEach(book => {
-              const bookLink = book.querySelector('a');
-              const alarmButton = book.querySelector('button');
-
-              const bookNumber = bookLink.getAttribute('href').trim().split('=')[1] || undefined;
-              if (bookNumber === undefined) return;
-
-              alarmButton.addEventListener('click', () => {
-                const memberEmail = '${member.member.memberEmail}' || undefined;
-                if (memberEmail === undefined) {
-                  alert('login needed'); 
-                } else {
-                  requestAlarm(bookNumber, memberEmail, alarmButton);    
-                }
-              });
-            });
-          });
-        </script>
-      </section>
       <section class="recent-posts content-area fadeInUp">
         <h2 class="section-heading">최신 리뷰엉이</h2>
         <div class="content-wrapper">
@@ -814,7 +554,7 @@ function gologinout(num) {
           		 <li>
               <div class="profile-thumbnail-wrapper">
                 <a href="/booklist/myLibList?clickId=${review.member_name}">
-                  <img src="../../../resources/images/books/book${review.book_id}.jpg" width="42px" height="42px" alt="">
+                  <img src="/image/${review.member_image}" width="42px" height="42px" alt="">
                 </a>
               </div>
               <div class="message-bubble">
@@ -834,6 +574,22 @@ function gologinout(num) {
       </section>
     </div>
   </div>
+            <script>
+          	
+          		function goView(num) {
+          			$("#book_id").val(num);
+              		$("#frm").attr("action","/member/detail");
+            		$("#frm").submit();
+          		}        
+          		
+          		const prices = document.querySelectorAll('.sale_price');
+          		prices.forEach(price => {
+          			let newprice = price.textContent.split('.')[0];
+          			price.textContent = newprice + "원";
+          		});
+          		
+          </script>
+         
   <footer class="main-footer">
     <div class="footer-above">
       <div class="container">
@@ -866,14 +622,6 @@ function gologinout(num) {
     </div>
   </footer>
   <!-- activate 'home' tab -->
-  <script>
-    $(document).ready(() => {
-      const li = document.querySelector('footer.fixed a[href="/"]').parentElement;
-      const ul = li.parentElement;
-      [ul, li].forEach(element => element.classList.add('active'));
-    });
-  </script>
- 
- <%--  <%@ include file="template/footer.jsp" %> --%>
+
 </body>
 </html>

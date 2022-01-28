@@ -12,12 +12,16 @@ import common.CommonMapper;
 @Repository("BookMapper")
 public class BookMapper extends CommonMapper{
 	
+	public List salebookList(HashMap paramMap) {
+		return sss.selectList("BookMapper.salebookList", paramMap);
+	}
+	
 	public List bookAllList(HashMap paramMap) {
 		return sss.selectList("BookMapper.bookAllList", paramMap);
 	}
 	
-	public HashMap bookScore(HashMap paramMap) {
-		return sss.selectOne("BookMapper.bookScore", paramMap);
+	public HashMap<String, Object> bookScore(HashMap paramMap) {
+		return sssSelectMap("BookMapper.bookScore", paramMap);
 	}
 	
 	public List bookList(HashMap paramMap) {
@@ -28,8 +32,8 @@ public class BookMapper extends CommonMapper{
 		return sss.selectOne("BookMapper.bookListCount", paramMap);
 	}
 	
-	public HashMap bookDetail(HashMap paramMap) {
-		return sss.selectOne("BookMapper.bookDetail",paramMap);
+	public HashMap<String, Object> bookDetail(HashMap paramMap) {
+		return sssSelectMap("BookMapper.bookDetail",paramMap);
 	}
 	
 	public List booklikeUsers(HashMap paramMap) {

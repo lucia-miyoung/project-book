@@ -21,8 +21,8 @@ public class LoginMapper extends CommonMapper {
 		return sss.selectOne("LoginMapper.namedupCheck", paramMap);
 	}
 	
-	public HashMap membersignup(HashMap paramMap) {
-		return sss.selectOne("LoginMapper.membersignup", paramMap);
+	public HashMap<String, Object> membersignup(HashMap paramMap) {
+		return sssSelectMap("LoginMapper.membersignup", paramMap);
 	}
 	
 	public void insertdatabox(HashMap paramMap) {
@@ -38,12 +38,12 @@ public class LoginMapper extends CommonMapper {
 		sss.insert("LoginMapper.insertLoginHistory", paramMap);
 	}
 	
-	public HashMap getMemberList(HashMap paramMap) {
-		return sss.selectOne("LoginMapper.getMemberList", paramMap);
+	public HashMap<String, Object> getMemberList(HashMap paramMap) {
+		return sssSelectMap("LoginMapper.getMemberList", paramMap);
 	}
 	
-	public HashMap getMemberInfo(HashMap paramMap) {
-		return sss.selectOne("LoginMapper.getMemberInfo", paramMap);
+	public HashMap<String, Object> getMemberInfo(HashMap paramMap) {
+		return sssSelectMap("LoginMapper.getMemberInfo", paramMap);
 	}
 }
 

@@ -2,17 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace = "MemberMapper">
+	<select id="showmyQstList" parameterType="hashMap" resultType="hashMap">
+		select qst_index, member_name, qst_title, qst_content, qst_image, qst_type, 
+		email, qst_date, qst_answer 
+		from service where member_name =#{member_name};
+	</select>
+	<insert id="insertQuestion" parameterType="hashMap">
+		insert into service values(#{member_name}, #{qst_title}, 
+		#{qst_content}, #{qst_image}, #{qst_type}, #{email}, now(),
+		'', (select IFNULL(max(qst_index)+1,1) from service b));
+	</insert>
+	<select id="totalorderCnt" parameterType="hashMap" resultType="int">
+		select count(member_name) as cnt from order_history where member_name=#{member_name};
+	</select>
+	<select id="imgNameDupchk" parameterType="hashMap" resultType="int">
+		select count(member_image) as cnt from members where member_image = #{member_image};
+	</select>
+
+	<delete id="deletemyaccount" parameterType="hashMap">
+		delete from members where member_name = #{member_name} and member_id = #{member_id}
+	</delete>
 	
-	<select id="updatemyinfo" parameterType="hashMap">
+	<update id="updatemyinfo" parameterType="hashMap">
 		UPDATE members SET member_pw = #{member_new_pw}, 
 		MEMBER_NAME = #{member_name}, MEMBER_PHONE = #{member_phone}, 
 		MEMBER_HOME1 = #{member_home1}, MEMBER_HOME2 = #{member_home2}, 
-		MEMBER_HOME3 = #{member_home3} WHERE MEMBER_ID = #{member_id}
+		MEMBER_HOME3 = #{member_home3}, member_image= #{member_image} 
+		WHERE member_id = #{member_id}
 	
-	</select>
+	</update>
 	
 	<select id="getMemInfo" parameterType="hashMap" resultType="hashMap">
-			SELECT member_id, member_name, member_phone, member_home1, member_home2, member_home3 
+			SELECT member_id, member_name, member_phone, member_home1, 
+			member_home2, member_home3, member_image  
 			FROM members 
 			WHERE member_name = #{member_name}
 
@@ -111,12 +133,12 @@
 	<insert id="insertReview" parameterType="hashMap">
 		INSERT INTO review(member_name, book_id, book_name, review_title, review_content, review_date, review_score) 
 		VALUES(#{member_name}, #{book_id}, #{book_name}, #{review_title}, 
-		#{review_content}, DATE_FORMAT(NOW(), '%Y-%m-%d %T'), #{star})
+		#{review_content}, NOW(), #{star})
 	</insert>
 	
 	<select id="reviewListall" parameterType="hashMap" resultType="hashMap">
-		SELECT member_name, book_id, book_name, review_title, 
-		review_content, review_date, review_score FROM review order by review_date desc
+		SELECT a.member_name, a.member_image, book_id, book_name, review_title, review_content, review_date, review_score 
+FROM members as a inner join review as b on a.member_name = b.member_name order by b.review_date desc
 	</select>
 	
 	<select id="reviewList" parameterType="hashMap" resultType="hashMap">
@@ -132,8 +154,8 @@
 		SELECT count(*) as cnt FROM review WHERE member_name=#{member_name}
 	</select>
 	<select id="orderList" parameterType="hashMap" resultType="hashMap">
-		SELECT a.member_name, b.book_id, b.book_name, book_author, book_type FROM order_history as a left outer join books as b 
-		on a.book_id = b.book_id WHERE member_name = #{member_name}
+		SELECT a.order_number, a.member_name, b.book_id, b.book_name, book_author, book_type FROM order_history as a left outer join books as b 
+		on a.book_id = b.book_id WHERE member_name = #{member_name} order by order_number;
 	</select>
 	<select id="orderListCnt" parameterType="hashMap" resultType="int">
 		SELECT count(*) as cnt FROM order_history WHERE member_name = #{member_name}
@@ -154,17 +176,15 @@
 	</delete>
 	<insert id="insertOrder" parameterType="hashMap">
 		INSERT INTO order_history(member_name, book_id, order_phone, order_address, 
-		order_email, ship_msg, order_price, order_date) 
+		order_email, ship_msg, order_price, order_date, order_number) 
 		VALUES(#{member_name}, #{book_id}, #{order_phone}, #{order_address}, 
-		#{order_email}, #{ship_msg}, #{total_price}, #{order_date})
+		#{order_email}, #{ship_msg}, #{total_price}, #{order_date}, #{order_number})
 	</insert>
 	<update id="savemymile" parameterType="hashMap">
 		UPDATE member_data SET mile = mile + cast(#{mileage} AS signed integer) WHERE member_name = #{member_name}
 	</update>
 	<select id="showalldata" parameterType="hashMap" resultType="hashMap">
-		SELECT member_name, mile 
-		
-		FROM member_data 
+		SELECT member_name, mile FROM member_data 
 		WHERE member_name = #{member_name}
 	</select>
 </mapper>
