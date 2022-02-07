@@ -53,8 +53,8 @@ public class LoginController extends CommonController {
 
 	@ResponseBody
 	@RequestMapping(value="/loginChk.do")
-	public Object loginUser(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception{
-		log.info("loginChk.do : {} ", paramMap );
+	public HashMap<String,Object> loginUser(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception{
+		System.out.println("loginChk.do : {} " + paramMap );
 		int loginChk = service.memberloginChk(paramMap);
 		String login_ip = req.getHeader("X_FORWARDED_FOR"); 
 		 if(login_ip == null) { login_ip = req.getRemoteAddr(); } 
@@ -65,12 +65,14 @@ public class LoginController extends CommonController {
 			service.getMemberList(paramMap);
 			String nickName = (String) service.getMemberInfo(paramMap).get("member_name");
 			session.setAttribute("userId", nickName);	
-			
+			System.out.println("loginChk: " +loginChk);
 		}		
-		model.addAttribute("paramMap", service.getMemberInfo(paramMap));
-		model.addAttribute("loginCheck", loginChk);
+
+		HashMap rsMap = new HashMap();
+		rsMap.put("paramMap", service.getMemberInfo(paramMap));
+		rsMap.put("loginCheck", loginChk);
 		
-		return model;
+		return rsMap;
 	}
 	
 	@RequestMapping(value="/login")
@@ -80,14 +82,18 @@ public class LoginController extends CommonController {
 		return "/login/signin";
 	}
 	
+	@ResponseBody
 	@RequestMapping(value="/logout")
-	public void logout(HttpServletRequest req, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
+	public String logout(HttpServletRequest req, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
 		model.addAttribute("paramMap", paramMap);
-		  HttpSession session = req.getSession();
-	        session.invalidate();
+		System.out.println("paramMap "+paramMap);
+		HttpSession session = req.getSession();
+	         session.invalidate();
 	      String cp = req.getContextPath();
+			System.out.println("로그아웃 완료");
+		return "success";
 	}
-	
+
 	@RequestMapping(value="/signup")
 	public String signup(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
 		
@@ -110,25 +116,24 @@ public class LoginController extends CommonController {
 	
 	@ResponseBody
 	@RequestMapping(value="/signupCheck")
-	public Object signupCheck(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
-		
+	public HashMap<String, Object> signupCheck(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception {
 		System.out.println("signupCheck {} : " + paramMap);
 		
-
+		HashMap rsMap = new HashMap(paramMap);
 		if(paramMap.containsKey("member_email")) {
 		int emailChk = service.emaildupCheck(paramMap);
-		System.out.println(service.emaildupCheck(paramMap));
-		model.addAttribute("emailCheck", emailChk);
+			System.out.println(service.emaildupCheck(paramMap));
+			rsMap.put("emailCheck", emailChk);
 		}
 
 		if(paramMap.containsKey("member_name")) {
 		int namechk = service.namedupCheck(paramMap);
-		model.addAttribute("nameCheck", namechk);
+			rsMap.put("nameCheck", namechk);
 		}		
 		model.addAttribute("paramMap", paramMap);
-		return model;
+
+		return rsMap;
 	}
-	
 	
 	
 	@ResponseBody

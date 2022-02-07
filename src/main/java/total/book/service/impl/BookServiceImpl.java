@@ -16,6 +16,11 @@ public class BookServiceImpl implements BookService {
 	private BookMapper mapper;
 
 	@Override
+	public List relatedBookList(HashMap paramMap) throws Exception {
+		return mapper.relatedBookList(paramMap);
+	}
+	
+	@Override
 	public List salebookList(HashMap paramMap) throws Exception {
 		return mapper.salebookList(paramMap);
 	}

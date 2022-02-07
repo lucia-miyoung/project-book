@@ -16,7 +16,7 @@
     <script src="../../../resources/js/common.js"></script>
 </head>
 <body>
-<sec:authentication property="principal" var="member"/>
+<!-- <sec:authentication property="principal" var="member"/> -->
 <header class="topbar">
 		<nav>
 			<div class="container">
@@ -30,7 +30,8 @@
         <h3> 서재 이용 현황 </h3>
         <form id="frm" onsubmit="return false">
         <input type="hidden" id="member_name" name="member_name" value="${sessionScope.userId }"/>
-        <input type="hidden" id="member_id" name="member_id" value="${paramMap.member_id}"/>
+        <input type="hidden" id="member_id" name="member_id" value="${memInfo.member_id }"/>
+        <input type="hidden" id="status" name="status" value="D"/>
         <div class="useInfo">
             <p>${sessionScope.userId } 님의 서재</p>
             <ul>
@@ -91,7 +92,7 @@
     <!-- wrapper end -->
 
 <script>
-	/*  팝업창 */
+	/*  탈퇴 전, 비밀번호 재확인 팝업창 */
 	const deletebtn = document.querySelector('#godeletecheck');
 	const popwrap = document.querySelector('.pop_wrap');
 	const canbtn = document.querySelector('.cancel_btn');
@@ -164,7 +165,6 @@
 			});
 	}
 
-	
 </script>
 
 </body>

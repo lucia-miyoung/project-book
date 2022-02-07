@@ -41,15 +41,11 @@
   <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
   <!-- slidify sliders and fadeInUp reveal -->
   <script src="../../../resources/js/common.js"></script>
-  
-  <sec:authorize access="isAuthenticated()">
-    <sec:authentication property="principal" var="member"/>
-  </sec:authorize>
 </head>
 <body>
-<sec:authorize access="isAuthenticated()">
+<!-- <sec:authorize access="isAuthenticated()">
 	<sec:authentication property="principal" var="member"/>
-</sec:authorize>
+</sec:authorize> -->
 <header class="topbar">
         <nav>
             <div class="container">
@@ -71,36 +67,6 @@
             </div>
         </nav>
 </header>
-<script>
-function gologinout(num) {
-	
-	if(num == 0) {
-		if(!confirm('로그아웃 하시겠습니까?')) {
-			return;
-		}
-			
-		$.ajax({
-			url: '/logout',
-			data: {
-				"member_id" : ''
-			},
-			success: function(rs) {
-				alert('로그아웃이 완료되었습니다.');
-				location.reload();
-				$('#member_id').val('');
-			
-			}, error : function(xhr, status, error) {
-				alert('오류');
-			}
-		});
-		
-	} else {
-		alert('로그인 페이지로 이동합니다.');
-		location.href='/login';
-	}
-	
-}
-</script>
   <div class="container">
           <form id="frm" method="post">
            	<input type="hidden" id="member_name" name="member_name" value="${sessionScope.userId }"/>
@@ -119,7 +85,6 @@ function gologinout(num) {
               <li class="selected">제목</li>
             </ul>
           </div>
-
           <form  method="GET" id="cfrm"> 
             <button id="search-button"><span class="far fa-search"></span></button>
             <input id="search-input" name="keyword" type="text" placeholder="제목, 저자, 해쉬태그 검색" autocomplete="off" spellcheck="false"
@@ -142,96 +107,6 @@ function gologinout(num) {
             </div>
 	 	 </form> 
         </div> 
-        <!-- search preview ajax request -->
-        <script>
-        	const searchInput = document.querySelector('#search-input');
-        	const searchResult = document.querySelector('.search-result');
-        	const searchList = document.querySelectorAll('.search-result > ul > li');	
-        		searchInput.addEventListener('keyup', () => {
-        			
-        			const searchVal = searchInput.value.trim().replace(/ /g, '');
-        			if(searchVal.length > 0) {
-        				searchResult.style.display = "block";
-        				goPreview(searchVal);
-        			}
-        			else {
-        				searchResult.style.display = "none";
-        			}
-        		});
-        		
-        	 /* searchInput.addEventListener('blur', () => {
-        			searchResult.style.display = "none";
-        		});  */
-        		
-        	const searchBtn = document.querySelector('#search-button');
-        	searchBtn.addEventListener('click', (event) => {
-        		
-        		 const searchVal = searchInput.value.trim().replace(/ /g, '');;
-        		if(searchVal.length == 0) {
-        			alert('검색어를 입력해주세요.');
-        			return;
-        		}  
-        		goSearch();
-        	});
-
-
-        	function goPreview(value) {
-        		
-        		searchList.forEach(list => {
-        			const text = list.textContent;
-    				const textVal = text.trim().replace(/ /g, '');
-    				if(text.indexOf(value) > -1 || textVal.indexOf(value) > -1) {
-    					list.classList.remove('invisible');
-    				} else {
-    					list.classList.add('invisible');
-    				}
-    			});
-        	}
-        	
-        function goSearch() {
-        	$('#cfrm').attr('action', '/book/search');
-        	$('#cfrm').submit();
-        }	
-        
-        function ongoSearch(name) {
-        	$('#search-input[name=keyword]').val(name);
-        	$('#cfrm').attr('action', '/book/search');
-         	$('#cfrm').submit(); 
-        }	
-        		
-        </script>
-        
-        <script>
-          $(document).ready(function() {
-            const filterList = document.querySelector('.head .search-wrapper .filter ul');
-            const filterMenus = ['제목', '저자'];
-            const filterItems = {
-              '제목': 'title',
-              '저자': 'author'
-            };
-            const filterHiddenInput = document.querySelector('.search-wrapper input[name="type"]');
-
-            filterList.addEventListener('click', event => {
-              filterList.classList.toggle('active');
-              // append other menu lists on click
-              if (filterList.classList.contains('active')) {
-                filterMenus.forEach(menu => {
-                  if (menu === event.target.textContent) return;
-                  const list = document.createElement('li');
-                  list.textContent = menu;
-                  filterList.appendChild(list);
-                });
-              }
-              // switch to selected menu list
-              else {
-                filterList.innerHTML = '';
-                event.target.classList.add('selected');
-                filterHiddenInput.value = filterItems[event.target.textContent];
-                filterList.appendChild(event.target);
-              }
-            });
-          });
-        </script>
       </div>
       <div class="head-lower">
         <nav class="lnb">
@@ -260,63 +135,7 @@ function gologinout(num) {
           <div class="accent-slider"></div>
         </nav>
       </div>
-      
-      <script>
-      function goview() {
-    	  const memNm = document.querySelector('#member_name').value;
-    	  if(memNm == '') {
-    		  if(!confirm('로그인이 필요합니다. 로그인하시겠습니까?')) {
-    			  return;
-    		  }
-    		  $('#frm').attr('action', '/login');
-    		  $('#frm').submit();
-    		  return;
-    	  }
-    	  
-    	  $('#frm').attr('action', '/member/myaccount');
-    	  $('#frm').submit();
-      }
-      
-      function notopenyet() {
-    	  alert('아직 오픈 준비 중입니다.');
-      }
-      
-      </script>
-      <!-- make it sticky on scroll -->
-      <script>
-        $(document).ready(function() {
-          const headLower = document.querySelector('.head .head-lower');
-          window.addEventListener('scroll', () => {
-            if (headLower.getBoundingClientRect().top < 0)
-              headLower.classList.add('sticky');
-            else
-              headLower.classList.remove('sticky');
-          });
-        });
-      </script>
-      <!-- move accent slider on hover -->
-      <script>
-        $(document).ready(function() {
-          const accentSlider = document.querySelector('.lnb .accent-slider');
-          const lnbMenus = [...(document.querySelectorAll('.lnb li'))];
-          const lnb = document.querySelector('.lnb');
-
-          lnbMenus.forEach((menu, index) => {
-            menu.addEventListener('mouseover', () => {
-              accentSlider.classList.add('isBeingHovered');
-              menu.classList.add('isBeingHovered');
-              accentSlider.style.transform = 'translateX(' + 100 * index + '%)';
-            });
-            menu.addEventListener('mouseout', () => {
-              menu.classList.remove('isBeingHovered');
-            });
-          });
-
-          lnb.addEventListener('mouseout', () => {
-            accentSlider.classList.remove('isBeingHovered');
-          });
-        });
-      </script>
+       
     </div>
     <div class="body-wrapper">
       <section class="recommendation">
@@ -430,25 +249,7 @@ function gologinout(num) {
               </ul>
             </div>
           </div>
-          <!-- emphasize shelf on hover -->
-         <script>
-            $(document).ready(function() {
-              const bookshelfWrapper = document.querySelector('.recommendation .bookshelf-wrapper');
-              const bookshelfList = [...(bookshelfWrapper.querySelectorAll('.shelf'))];
-              let previousShelf = undefined;
-              bookshelfWrapper.addEventListener('mouseover', event => {
-                const bookshelf = bookshelfList.filter(bookshelf => bookshelf.contains(event.target))[0];
-
-                // if bookshelf to be emphasized is the same bookshelf as previously selected then ignore
-                if (!bookshelf || previousShelf === bookshelf) return;
-               
-                bookshelfList.forEach(bookshelf => bookshelf.classList.remove('emphasized'));
-                bookshelf.classList.add('emphasized');
-
-                previousShelf = bookshelf;
-              });
-            });
-          </script> 
+        
         </div>
       </section>
       <section class="trending">
@@ -459,26 +260,7 @@ function gologinout(num) {
           </div>
           <!-- 사람들이 많이 읽은 책 -->
         </h2>
-        <!-- initialize clock -->
-        <script>
-          $(document).ready(function() {
-            const clock = document.querySelector('div.clock span');
-            function updateClock() {
-              const date = new Date();
-              const hour = date.getHours();
-              const minutes = String(date.getMinutes()).length === 1 ? '0' + date.getMinutes() : date.getMinutes();
-              const timeString = hour + '시 ' + minutes + '분';
-              clock.textContent = timeString;
-            }
-            // initialize clock
-            updateClock();
-
-            // renew clock every second
-            setInterval(function() {
-              updateClock();
-            }, 1000);
-          });
-        </script>
+          
         <div class="list-container">
           <ul>
           	<c:set var="count" value="${1}"/>
@@ -504,21 +286,6 @@ function gologinout(num) {
           </ul>
         </div>
       </section>
-  <style>
-          	.org_price {
-          		position:relative;
-          	}
-          	.org_price::after {
-          		position: absolute;
-    content: '';
-    width: 42px;
-    height: 1px;
-    top: 9px;
-    left: 5px;
-    background-color: black;
-          	}
-          
-          </style>
       <section class="paperbook-sale content-area fadeInUp">
         <h2 class="section-heading">빈 책장을 채우는 기회</h2>
         <div class="content-wrapper">
@@ -545,7 +312,6 @@ function gologinout(num) {
           </div>
         </div>
       </section>
-
       <section class="recent-posts content-area fadeInUp">
         <h2 class="section-heading">최신 리뷰엉이</h2>
         <div class="content-wrapper">
@@ -553,12 +319,12 @@ function gologinout(num) {
           	<c:forEach var="review" items="${reviewList}">
           		 <li>
               <div class="profile-thumbnail-wrapper">
-                <a href="/booklist/myLibList?clickId=${review.member_name}">
-                  <img src="/image/${review.member_image}" width="42px" height="42px" alt="">
+                <a href="javascript:goView('${review.book_id }')">
+                  <img src="/bookImg/book${review.book_id}.jpg" width="42px" height="42px" alt="">
                 </a>
               </div>
               <div class="message-bubble">
-                <a href="/booklist/myLibList?clickId=${review.member_name}" class="user-nickname">${review.member_name }</a>
+                <a href="javascript:goView('${review.book_id }')" class="user-nickname">${review.member_name }</a>
                 <div class="message-wrapper">
                   <span class="message">
                     <pre>${review.review_content }</pre>
@@ -568,37 +334,20 @@ function gologinout(num) {
               </div>
             </li>
           	</c:forEach>
-           
           </ul>
         </div>
       </section>
     </div>
-  </div>
-            <script>
-          	
-          		function goView(num) {
-          			$("#book_id").val(num);
-              		$("#frm").attr("action","/member/detail");
-            		$("#frm").submit();
-          		}        
-          		
-          		const prices = document.querySelectorAll('.sale_price');
-          		prices.forEach(price => {
-          			let newprice = price.textContent.split('.')[0];
-          			price.textContent = newprice + "원";
-          		});
-          		
-          </script>
-         
+  </div>        
   <footer class="main-footer">
     <div class="footer-above">
       <div class="container">
         <ul>
-          <li><a href="#">공지사항</a></li>
-          <li><a href="#">1:1 문의</a></li>
-          <li><a href="#">FAQ</a></li>
+          <li><a href="/member/notice">공지사항</a></li>
+          <li><a href="javascript:gopage('/common/servicecenter');">1:1 문의</a></li>
+          <li><a href="/common/showqstlist/">FAQ</a></li>
           <li><a href="#">회사소개</a></li>
-          <li><a href="#">이용약관</a></li>
+          <li><a href="/member/notice">이용약관</a></li>
         </ul>
       </div>
     </div>
@@ -622,6 +371,240 @@ function gologinout(num) {
     </div>
   </footer>
   <!-- activate 'home' tab -->
+  <script>
+function gologinout(num) {
+	/* 로그아웃하기 */
+	if(num == 0) {
+		if(!confirm('로그아웃 하시겠습니까?')) {
+			return;
+		}	
+		$.ajax({
+			url: '/logout',
+			data: {
+				"member_name" : ''
+			},
+			success: function(rs) {
+					alert('로그아웃이 완료되었습니다.');
+					location.reload();
+					$('#member_name').val('');
+			}, error : function(xhr, status, error) {
+				alert('오류');
+			}
+		});	
+	} else {
+		alert('로그인 페이지로 이동합니다.');
+		location.href='/login';
+	}
+}
+</script>
+        <!-- search preview ajax request -->
+        <script>
+        /* 검색 미리보기 */
+        	const searchInput = document.querySelector('#search-input');
+        	const searchResult = document.querySelector('.search-result');
+        	const searchList = document.querySelectorAll('.search-result > ul > li');	
+        		searchInput.addEventListener('keyup', () => {
+        			
+        			const searchVal = searchInput.value.trim().replace(/ /g, '');
+        			if(searchVal.length > 0) {
+        				searchResult.style.display = "block";
+        				goPreview(searchVal);
+        			}
+        			else {
+        				searchResult.style.display = "none";
+        			}
+        		});
+        		
+        	 /* searchInput.addEventListener('blur', () => {
+        			searchResult.style.display = "none";
+        		});  */
+        		
+        	const searchBtn = document.querySelector('#search-button');
+        	searchBtn.addEventListener('click', (event) => {
+        		
+        		 const searchVal = searchInput.value.trim().replace(/ /g, '');;
+        		if(searchVal.length == 0) {
+        			alert('검색어를 입력해주세요.');
+        			return;
+        		}  
+        		goSearch();
+        	});
+        	function goPreview(value) {
+        		
+        		searchList.forEach(list => {
+        			const text = list.textContent;
+    				const textVal = text.trim().replace(/ /g, '');
+    				if(text.indexOf(value) > -1 || textVal.indexOf(value) > -1) {
+    					list.classList.remove('invisible');
+    				} else {
+    					list.classList.add('invisible');
+    				}
+    			});
+        	}
+        	
+        function goSearch() {
+        	$('#cfrm').attr('action', '/book/search');
+        	$('#cfrm').submit();
+        }	
+        
+        function ongoSearch(name) {
+        	$('#search-input[name=keyword]').val(name);
+        	$('#cfrm').attr('action', '/book/search');
+         	$('#cfrm').submit(); 
+        }	
+        		
+        </script>
+        <script>
+        /* 검색 카테고리 필터 */
+          $(document).ready(function() {
+            const filterList = document.querySelector('.head .search-wrapper .filter ul');
+            const filterMenus = ['제목', '저자'];
+            const filterItems = {
+              '제목': 'title',
+              '저자': 'author'
+            };
+            const filterHiddenInput = document.querySelector('.search-wrapper input[name="type"]');
 
+            filterList.addEventListener('click', event => {
+              filterList.classList.toggle('active');
+              // append other menu lists on click
+              if (filterList.classList.contains('active')) {
+                filterMenus.forEach(menu => {
+                  if (menu === event.target.textContent) return;
+                  const list = document.createElement('li');
+                  list.textContent = menu;
+                  filterList.appendChild(list);
+                });
+              }
+              // switch to selected menu list
+              else {
+                filterList.innerHTML = '';
+                event.target.classList.add('selected');
+                filterHiddenInput.value = filterItems[event.target.textContent];
+                filterList.appendChild(event.target);
+              }
+            });
+          });
+        </script>
+      <script>
+      /* 내 서재가기 */
+      function goview() {
+    	  const memNm = document.querySelector('#member_name').value;
+    	  if(memNm == '') {
+    		  if(!confirm('로그인이 필요합니다. 로그인하시겠습니까?')) {
+    			  return;
+    		  }
+    		  $('#frm').attr('action', '/login');
+    		  $('#frm').submit();
+    		  return;
+    	  }
+    	  $('#frm').attr('action', '/member/myaccount');
+    	  $('#frm').submit();
+      }
+      /* 오픈 전 페이지 */
+      function notopenyet() {
+    	  alert('아직 오픈 준비 중입니다.');
+      }
+      
+      </script>
+      <!-- make it sticky on scroll -->
+      <script>
+      /* 헤더 sticky */
+        $(document).ready(function() {
+          const headLower = document.querySelector('.head .head-lower');
+          window.addEventListener('scroll', () => {
+            if (headLower.getBoundingClientRect().top < 0)
+              headLower.classList.add('sticky');
+            else
+              headLower.classList.remove('sticky');
+          });
+        });
+      </script>
+      <!-- move accent slider on hover -->
+      <script>
+        $(document).ready(function() {
+          const accentSlider = document.querySelector('.lnb .accent-slider');
+          const lnbMenus = [...(document.querySelectorAll('.lnb li'))];
+          const lnb = document.querySelector('.lnb');
+
+          lnbMenus.forEach((menu, index) => {
+            menu.addEventListener('mouseover', () => {
+              accentSlider.classList.add('isBeingHovered');
+              menu.classList.add('isBeingHovered');
+              accentSlider.style.transform = 'translateX(' + 100 * index + '%)';
+            });
+            menu.addEventListener('mouseout', () => {
+              menu.classList.remove('isBeingHovered');
+            });
+          });
+
+          lnb.addEventListener('mouseout', () => {
+            accentSlider.classList.remove('isBeingHovered');
+          });
+        });
+      </script>
+	<script>
+        /* 해당 책 상세페이지로 가기 */  	
+         function goView(num) {
+          	$("#book_id").val(num);
+            $("#frm").attr("action","/member/detail");
+            $("#frm").submit();
+          }        
+          		
+         const prices = document.querySelectorAll('.sale_price');
+           prices.forEach(price => {
+           let newprice = price.textContent.split('.')[0];
+           price.textContent = newprice + "원";
+         });
+          		
+         function gopage(url) {
+        	 const userid = document.querySelector('#member_name').value;
+        		if(userid == '' || userid == null) {
+        		 alert('1:1 문의는 로그인 후 가능합니다.');
+        		 return;
+        	 }
+        	 $("#frm").attr("action", url);
+             $("#frm").submit();
+         }
+     </script>
+     <!-- emphasize shelf on hover -->
+         <script>
+            $(document).ready(function() {
+              const bookshelfWrapper = document.querySelector('.recommendation .bookshelf-wrapper');
+              const bookshelfList = [...(bookshelfWrapper.querySelectorAll('.shelf'))];
+              let previousShelf = undefined;
+              bookshelfWrapper.addEventListener('mouseover', event => {
+                const bookshelf = bookshelfList.filter(bookshelf => bookshelf.contains(event.target))[0];
+
+                // if bookshelf to be emphasized is the same bookshelf as previously selected then ignore
+                if (!bookshelf || previousShelf === bookshelf) return;
+               
+                bookshelfList.forEach(bookshelf => bookshelf.classList.remove('emphasized'));
+                bookshelf.classList.add('emphasized');
+
+                previousShelf = bookshelf;
+              });
+            });
+          </script> 
+        <!-- initialize clock -->
+        <script>
+          $(document).ready(function() {
+            const clock = document.querySelector('div.clock span');
+            function updateClock() {
+              const date = new Date();
+              const hour = date.getHours();
+              const minutes = String(date.getMinutes()).length === 1 ? '0' + date.getMinutes() : date.getMinutes();
+              const timeString = hour + '시 ' + minutes + '분';
+              clock.textContent = timeString;
+            }
+            // initialize clock
+            updateClock();
+
+            // renew clock every second
+            setInterval(function() {
+              updateClock();
+            }, 1000);
+          });
+        </script>
 </body>
 </html>

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import common.CommonController;
 import total.basic.service.BasicService;
 import total.book.service.BookService;
 import total.login.service.LoginService;
@@ -28,9 +29,10 @@ import total.member.service.MemberService;
 
 @Controller
 @RequestMapping("/member")
-public class MemberController {
+public class MemberController extends CommonController {
 
 	private static final String filePath = "/var/lib/tomcat8/webapps/data/image";
+	private static final String svcPath = "/var/lib/tomcat8/webapps/data/service";
 	protected ModelAndView mv = null;
 
 	@Resource(name = "MemberService")
@@ -68,13 +70,15 @@ public class MemberController {
 
 	@ResponseBody
 	@RequestMapping(value = "/review")
-	public Object review(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+	public HashMap<String, Object> review(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
 		System.out.println("review {}:  " + paramMap);
+		
+		HashMap rsMap = new HashMap(paramMap);
 		model.addAttribute("paramMap", paramMap);
 		if ("I".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
 			int dupchk = service.reviewdupChk(paramMap);
-			model.addAttribute("reviewdupChk", service.reviewdupChk(paramMap));
+			rsMap.put("reviewdupChk", dupchk);
 			System.out.println(service.reviewdupChk(paramMap));
 			if (dupchk == 0) {
 				int insertchk = service.insertReview(paramMap);
@@ -82,10 +86,11 @@ public class MemberController {
 			}
 		}
 		if ("D".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
-			service.deleteReview(paramMap);
+			int delchk = service.deleteReview(paramMap);
+			System.out.println("리뷰삭제 완료1 미완료0 : " + delchk);
 		}
 
-		return model;
+		return rsMap;
 	}
 
 	@RequestMapping(value = "/myaccount")
@@ -111,10 +116,10 @@ public class MemberController {
 
 	@ResponseBody
 	@RequestMapping(value = "/setUpdateData")
-	public Object setUpdateData(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+	public HashMap<String, Object> setUpdateData(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			 @RequestParam(value="camera") MultipartFile mfile, ModelMap model) throws Exception {
 		System.out.println("setUpdateData {}:  " + paramMap);
-		
+		HashMap rsMap = new HashMap();
 		int result = 0;
 		
 		if(mfile != null	&&  mfile.getSize() > 0) {
@@ -126,10 +131,12 @@ public class MemberController {
 				String newPath = filePath + "/" + idnm;
 			
 				File updir = new File(newPath);
+				System.out.println(updir);
 				if(!updir.exists()) {
 					updir.mkdirs();
 				}
 
+				
 				String imgName = mfile.getOriginalFilename().toString();
 				System.out.println("imgName: " + imgName);
 				String realPath = "/" + idnm + "/" + imgName;
@@ -141,6 +148,7 @@ public class MemberController {
 					filechk.delete();
 				}
 				paramMap.put("member_image", realPath);
+				System.out.println("realPath: " + realPath);
 				service.updatemyinfo(paramMap); 
 				mfile.transferTo(new File(imgpath));
 				System.out.println("파일 첨부 있음");
@@ -156,12 +164,13 @@ public class MemberController {
 				paramMap.put("member_image", orgName);
 				service.updatemyinfo(paramMap); 
 				System.out.println("파일 첨부 없음");
-				result = 2; 
+				result = 1; 
 		}
-		model.addAttribute("paramMap", paramMap);
-		model.addAttribute("result", result);
+		
+		rsMap.put("paramMap", paramMap);
+		rsMap.put("result", result);
 
-		return model;
+		return rsMap;
 	}
 	
 	@ResponseBody
@@ -173,8 +182,6 @@ public class MemberController {
 		int result = 0;
 		if(mfile != null	&&  mfile.getSize() > 0) {
 			if ("I".equals(paramMap.get("status")) && paramMap.containsKey("member_name")) {
-
-				String svcPath = "/var/lib/tomcat8/webapps/data/service";
 
 				String imgRealnm = mfile.getOriginalFilename().toString();
 				System.out.println("imgRealnm: " + imgRealnm);
@@ -200,7 +207,26 @@ public class MemberController {
 			System.out.println("파일 첨부 없음 1");
 			result = 1; 
 		}
+		System.out.println("service result: " +result);
 		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/deletemyqstService")
+	public int deletemyqstService(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap, ModelMap model) throws Exception {
+		System.out.println("deletemyqstService {}:  " + paramMap);
+		
+		int deletechk = 0;
+		
+		if("D".equals(paramMap.get("status")) && paramMap.containsKey("qst_index")) {
+			deletechk = service.deleteQuestion(paramMap);
+			System.out.println(paramMap);
+			System.out.println("삭제됨 " +deletechk);
+			
+		}
+		model.addAttribute("paramMap", paramMap);
+		
+		return deletechk;
 	}
 	
 	@RequestMapping(value = "/godeletepage")
@@ -213,6 +239,7 @@ public class MemberController {
 		model.addAttribute("zzimCnt", service.myzzimCount(paramMap));
 		model.addAttribute("orderCnt", service.totalorderCnt(paramMap));
 		model.addAttribute("mileCal", service.showalldata(paramMap));
+		model.addAttribute("memInfo",service.getMemInfo(paramMap));
 		
 		return "/login/delete";
 	}
@@ -223,7 +250,8 @@ public class MemberController {
 			ModelMap model) throws Exception {
 		System.out.println("deletemyaccount11 {}:  " + paramMap);
 		int pwRechk = 0;
-		if(paramMap.containsKey("recheck_pw")) {
+		
+		if("D".equals(paramMap.get("status")) && paramMap.containsKey("recheck_pw")) {
 			paramMap.put("member_pw", paramMap.get("recheck_pw"));
 			pwRechk = loginService.memberloginChk(paramMap);
 			System.out.println("찾는다 숫자: "+pwRechk);
@@ -263,19 +291,39 @@ public class MemberController {
 		model.addAttribute("emotag", service.emotagList(paramMap));
 		model.addAttribute("bookScore", bookService.bookScore(paramMap));
 		model.addAttribute("orderchk", orderchk);
-		
-		System.out.println("heartCnt: " + service.heartCount(paramMap));
-		System.out.println("heartChk: " + service.heartChk(paramMap));
-		System.out.println("emotag: " + service.emotagList(paramMap));
-		System.out.println("bookInfo: " + bookService.bookDetail(paramMap));
-		System.out.println("zzimCnt: " + service.zzimChk(paramMap));
-		System.out.println("likedlist: " + bookService.booklikeUsers(paramMap));
-		System.out.println("bookScore: " + bookService.bookScore(paramMap));
-		System.out.println("orderchk: " + service.orderdupchk(paramMap));
+		model.addAttribute("relbookList", bookService.relatedBookList(paramMap));
+		model.addAttribute("reviewallList",basicService.reviewallList(paramMap));
 		
 		return "/main/detail";
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/setdetailInfo")
+	public int setdetailInfo(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+			ModelMap model) throws Exception {
+		System.out.println("paramMap"+ paramMap);
+		int mytagdupchk = service.myemotagdupchk(paramMap);
+		
+		int emotagChk = 0;
+		if("I".equals(paramMap.get("status")) && paramMap.containsKey("emo_tag")) {
+			if(mytagdupchk == 0) {
+				service.insertEmotag(paramMap);
+				emotagChk = 1;
+				System.out.println("감성 태그 추가됨");
+			}else {
+				emotagChk = 0;
+			}
+		}
+		
+		if("D".equals(paramMap.get("status")) && paramMap.containsKey("member_name")) {
+			service.deleteEmotag(paramMap);
+			System.out.println("감성 태그 삭제됨");
+				emotagChk = 2;
+		}
+		System.out.println("해시태그 결과: " + emotagChk);
+		return emotagChk;
+	}
+	
 	@RequestMapping(value = "/paycheck.do")
 	public String paycheck(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap, ModelMap model) throws Exception {
 		System.out.println("paycheck:: " + paramMap);
@@ -312,9 +360,9 @@ public class MemberController {
 
 	@ResponseBody
 	@RequestMapping(value = "/setOrderitem.do")
-	public Object setOrderitem(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap, ModelMap model) throws Exception {
+	public HashMap<String, Object> setOrderitem(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap, ModelMap model) throws Exception {
 		System.out.println("setOrderitem11:: " + paramMap);
-		
+		HashMap rsMap = new HashMap();
 		paramMap.put("member_name", paramMap.get("order_name"));
 		model.addAttribute("paramMap", paramMap);
 		
@@ -326,14 +374,17 @@ public class MemberController {
 				} 
 				service.savemymile(paramMap);
 		 }
-		return model;
+		rsMap.put("paramMap", paramMap);
+		return rsMap;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/heartCheck.do")
-	public Object heartCheck(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+	public HashMap<String, Object> heartCheck(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
 		System.out.println("here:: " + paramMap);
+		HashMap rsMap = new HashMap();
+		
 		paramMap.put("member_id", service.getMemInfo(paramMap).get("member_id"));
 
 		int status = service.dupCheck(paramMap);
@@ -344,20 +395,19 @@ public class MemberController {
 		if (status > 0 && "U".equals(paramMap.get("dup_chk")) && paramMap.containsKey("member_id")) {
 			service.heartUpdate(paramMap);
 		}
-		model.addAttribute("paramMap", paramMap);
-		model.addAttribute("loveChk", service.heartCount(paramMap));
+		rsMap.put("paramMap", paramMap);
+		rsMap.put("loveChk", service.heartCount(paramMap));
 
 		System.out.println(service.heartCount(paramMap));
-
-		return model;
+		return rsMap;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/mypageInfo")
-	public Object mypageInfo(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+	public HashMap<String, Object> mypageInfo(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			ModelMap model) throws Exception {
-
 		System.out.println("mypageInfo {}:  " + paramMap);
+		HashMap rsMap = new HashMap();
 		paramMap.put("member_id", service.getMemInfo(paramMap).get("member_id"));
 		int zzimCnt = service.zzimChk(paramMap);
 		model.addAttribute("zzimCnt", service.zzimChk(paramMap));
@@ -369,18 +419,19 @@ public class MemberController {
 		if ("U".equals(paramMap.get("dup_chk")) && paramMap.containsKey("member_name")) {
 			service.zzimUpdate(paramMap);
 		}
-
-		return model;
+		rsMap.put("paramMap", paramMap);
+		
+		return rsMap;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/setmypageInfo")
-	public Object setmypageInfo(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
+	public HashMap<String, Object> setmypageInfo(HttpServletRequest req, HttpServletResponse res, @RequestParam HashMap paramMap,
 			@RequestParam(value = "chk_array[]") List<String> chkArr, ModelMap model) throws Exception {
 		System.out.println("setmypageInfo {}:  " + paramMap);
 
+		HashMap rsMap = new HashMap();
 		paramMap.put("member_id", service.getMemInfo(paramMap).get("member_id"));
-		model.addAttribute("paramMap", paramMap);
 
 		if ("D".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
 			paramMap.put("zzimList", chkArr);
@@ -388,9 +439,11 @@ public class MemberController {
 		}
 		if ("R".equals(paramMap.get("status")) && paramMap.containsKey("status")) {
 			paramMap.put("orderList", chkArr);
-			model.addAttribute("ordernumchk", service.orderCntCheck(paramMap));
+			rsMap.put("ordernumchk", service.orderCntCheck(paramMap));
 		}
+		
+		rsMap.put("paramMap", paramMap);
 
-		return model;
+		return rsMap;
 	}
 }

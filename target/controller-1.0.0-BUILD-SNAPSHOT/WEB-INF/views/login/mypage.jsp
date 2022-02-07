@@ -45,37 +45,6 @@
             </div>
         </nav>
 </header>
-<script>
-
-	function gologinout(num) {
-		
-		if(num == 0) {
-			if(!confirm('로그아웃 하시겠습니까?')) {
-				return;
-			}
-
-			  $.ajax({
-				url: '/logout',
-				data: {
-					"member_id" : $('#member_id').val()
-				}
-				,success: function(rs) {
-					alert('로그아웃 됐습니다.');
-					location.reload();
-				
-				}, error : function(xhr, status, error) {
-					alert('오류');
-				}
-			});  
-			
-		} else {
-			alert('로그인 페이지로 이동합니다.');
-			location.href='/login';
-		}
-		
-	}
-	
-</script>
 
 <div class="wrapper">
 	<form id="frm" method="post">
@@ -127,9 +96,7 @@
   <i class="fas fa-arrow-circle-right"></i>
 </a>
 </c:if>
-    
 </div>
-
 </div>
 <!-- firstColumn end -->
 
@@ -191,8 +158,7 @@
             </div>
            	<button type="button" class="buyBtn">구매하기</button>
             </c:if>
-            
-            
+
             <div class="ebookList" id="ebooklist" > 
             <form id="chkform" >
                <c:choose>
@@ -229,18 +195,14 @@
                      <c:otherwise>
                          <span style="display:block; text-align: center; padding: 100px 0;"> <i class="fas fa-books"></i>
                          찜한 도서가 없습니다. </span>    
-                       <!-- <button type="button" id=makeBookCart> <i class="fas fa-plus"></i> 새 책장 만들기 </button> -->
                      </c:otherwise>
              </c:choose>     
              </form>        
           </div>
     </div>
     </div>
-    
-    
-    <%-- <c:if test="${checkId eq false}"> --%>
-     <div class="content four invisible" data-name="post" style="background-color:#fff;">
 
+     <div class="content four invisible" data-name="post" style="background-color:#fff;">
         <div class="mybookTitle">
         	   나의 포스트 <a>${reviewList.size()}</a> 개
         </div>
@@ -285,7 +247,7 @@
 
 					</td>
                   <td>${list.review_date}</td>
-                  	<td> <a href="javascript:ondeletereview('${list.book_name}', '${list.book_id}');">삭제</a></td>
+                  	<td> <a href="javascript:ondeletereview('${list.book_name}', '${list.book_id}');"><i class="fas fa-trash-alt"></i></a></td>
                 </tr>   
                 <tr> 
                     <td colspan="4" style="border-bottom: 2px solid gray; padding-bottom:10px;">
@@ -369,8 +331,7 @@
             <i class="fas fa-star"></i>
         </div>
     </div>
-	           <span class="starScore"> <span>0</span> 점</span>
-           
+	     <span class="starScore"> <span>0</span> 점</span>
             <input type="text" name="review_title" id="postTitle" placeholder="제목을 입력하세요"/>
             <input type="text" name="review_content" id="post_Content" placeholder="한줄 리뷰를 남겨주세요."/>
             <div class="postEndBtn">
@@ -380,7 +341,6 @@
              </div> 
           </form>
      </div>
-   <%--   </c:if> --%>
 </div>
 </div>
 </div>
@@ -400,12 +360,12 @@
     <c:choose>
     <c:when test="${followerList.size() > 0 }">
 	<c:forEach var="foll" items="${followerList }">
-          <li><img id="myFace" src="${pageContext.request.contextPath }/resources/images/myLibrary/picture1.png" ></li>
+          <li><img id="myFace" src="${pageContext.request.contextPath }/resources/images/default.png" ></li>
           <li><a href="/booklist/myLibList?clickId=${foll.fkMemberFollow2 }"> ${foll.memberNickName} </a>님</li>
      </c:forEach>
      </c:when>
      <c:otherwise>
-     	<li><img id="myFace" src="${pageContext.request.contextPath }/resources/images/myLibrary/picture1.png" ></li>
+     	<li><img id="myFace" src="${pageContext.request.contextPath }/resources/images/default.png" ></li>
      	<li>친애하는 셀럽님이 없습니다</li>
      </c:otherwise>
 </c:choose>
@@ -414,18 +374,43 @@
   </div>
 </div>
 </div>
-
-
 <script>
+function gologinout(num) {
+	/* 로그아웃하기 */
+	if(num == 0) {
+		if(!confirm('로그아웃 하시겠습니까?')) {
+			return;
+		}	
+		$.ajax({
+			url: '/logout',
+			data: {
+				"member_name" : ''
+			},
+			success: function(rs) {
+					alert('로그아웃이 완료되었습니다.');
+					location.reload();
+					$('#member_name').val('');
+			}, error : function(xhr, status, error) {
+				alert('오류');
+			}
+		});	
+	} else {
+		alert('로그인 페이지로 이동합니다.');
+		location.href='/login';
+	}
+}
+</script>
+<script>
+	/* 상세페이지 가기 */
     function goView(num) {
     	const id = $('#member_id').val();
     	const load = "/member/detail?member_id="+ id + "&book_id=" + num;
     	$('#frm').attr('method', 'post'); 
     	$('#frm').attr('action', load);
     	$('#frm').submit();
-    } 
-    
+    }
 	
+	/* 찜한 책 삭제하기 */
 	const deleteBtn = document.querySelector('#deleteBtn');
 	const chkboxs = document.querySelectorAll('#chkbox');
 	if(deleteBtn) {
@@ -436,8 +421,7 @@
 					const chkVal = box.value;
 						chkArray.push(chkVal);
 					}
-				});
-				
+				});			
 				if(chkArray == null || chkArray == '') {
 					alert('선택된 도서가 없습니다.');
 					return;
@@ -470,14 +454,64 @@
     		},
     		error: function(xhr, error) {
     			alert('오류');
+    		}	
+    	});
+    }
+	</script>
+    <!-- 도서 구매 -->
+<script>
+	/* 찜한 책 구매하기 */
+	const buyBtn = document.querySelector('.ebooks .buyBtn');
+	const checks = document.querySelectorAll('#chkbox');
+	
+	if(buyBtn) {
+		buyBtn.addEventListener('click', () => {
+			let chkArray = [];
+			checks.forEach(box => {
+				if(box.checked) {
+				const chkVal = box.value;
+					chkArray.push(chkVal);
+				}
+			});
+			if(chkArray == null || chkArray == '') {
+				alert('구매할 도서를 선택해주세요.');
+				return;
+			}
+			onchkOrderdup(chkArray);
+		});
+	}
+	
+	/* 찜한책 중에서 구매한 책인지 확인(ID당 각 도서 1개 구매가능) */
+	function onchkOrderdup(array) {
+		const memName = document.querySelector('#member_name').value;
+		
+    	$.ajax({
+    		url : "/member/setmypageInfo",
+    		type : 'POST',
+    		async: true,
+    		data : {
+    			"status" : 'R',
+    			"member_name" : memName,
+    			"chk_array" : array
+    		},
+    		success: function(rs) {
+    			let num = rs.ordernumchk;
+    			if(num > 0) {
+    				alert("이미 구매한 도서 "+ num+"권이 있습니다. \nID당 각 도서 1권씩만 구매 가능합니다.\n재확인해주세요.");
+    				return;
+    			}
+    			$("#chkform").attr('action', '/member/paycheck.do');
+    			$("#chkform").submit();
+    		},
+    		error: function(xhr, error) {
+    			alert('오류');
     		}
     		
     	});
     }
-	
-	</script>
-    
+</script>
 <script>
+	/* 리뷰 글 삭제하기 */
  function ondeletereview(name, id) {
 	 if(!confirm("'"+ name +"'의 리뷰를 삭제하시겠습니까?")) {
 		 return;
@@ -500,16 +534,14 @@
 		}	
 	 });
  }
-
 </script>
 
 <script>
-
+	/* 마이페이지 탭 누르기 */
 	const postChkCont = document.querySelector('.myPostCheck');
 	const postInsCont = document.querySelector('.postInsert');
 	const postCanCel = document.querySelector('.postCancel');
 	const postInputBtn = document.querySelector('.postInputBtn');
-
 	const cons = document.querySelectorAll('.content');
 	const radioBtns = document.querySelectorAll('.secondColumn .consBtn input[type="radio"]');
 	
@@ -527,6 +559,7 @@
 		 });
 	 }); 
 	 
+ 	 /* 주문한 책 리뷰 작성하러 가기 */
  	function onOpenpost() {		
 		const conf = confirm('포스트를 작성하시겠습니까?');
 		if(!conf) {
@@ -537,7 +570,7 @@
 		postInsCont.classList.remove('invisible');
 		postInputBtn.style.display='none';
 	}
-
+ 
 	function onClickSubmit(text) {
 		if(text) {
 			const conf = confirm(text + '하시겠습니까?');
@@ -551,15 +584,13 @@
 		postInputBtn.style.display='block';
 	}
 	 	
+	/* 리뷰 등록할때, 별점 구현하기 */
 	const reviewTitle = document.querySelector('#postTitle');
     const reviewCont = document.querySelector('#post_Content'); 
-    const array  = [reviewTitle, reviewCont];
-    
-	
+    const array  = [reviewTitle, reviewCont];	
 	const saveBtn = document.querySelector('#postSave');
 	saveBtn.addEventListener('click', () => {
-	
-		const starText = Number(document.querySelector('.starScore span').textContent);
+	const starText = Number(document.querySelector('.starScore span').textContent);
 	 
 		for(let i=0; i<array.length; i++) {
 	    	if(array[i].value.length == 0) {
@@ -568,20 +599,16 @@
 	    		return;
 	    	}
 	    }
-	    
 	    if(starText == 0 ) {
 			alert('별점을 등록해주세요.');
 			return;
 		}
-
 		oninsertreview(); 
 	});
 	
     const memName = document.querySelector('#member_name').value;
-   /*  const bookId = document.querySelector('.postInsert #book_id').value; */
-    
-	function oninsertreview() {
-		
+   
+	function oninsertreview() {	
 		const starCnt = document.querySelector('input[name="star"]:checked').value;
 		const bookNm = document.querySelector('.default').textContent;
 		const bookId = document.querySelector('.defaultId').textContent;
@@ -591,7 +618,6 @@
     	$.ajax({
     		url : "/member/review",
     		type : 'POST',
-    		async: true,
     		data : {
     			"status" : 'I',
     			"member_name" : memName,
@@ -606,23 +632,18 @@
     				alert('이미 리뷰 등록된 도서입니다.');
     				return;
     			}
-    			
-    			if(!confirm('저장하시겠습니까?')) {
-    				return;		
-    			}
-    			
-    			alert('저장이 완료되었습니다.');
-    			location.reload();
+    				alert('저장이 완료되었습니다.');
+        			location.reload();
     		},
     		error: function(xhr, error) {
     			alert('오류');
     		}
     	});
 	}
-	
 </script>
 
  <script>
+ /* 체크박스 */
   var $allChk = $('#allChk');
   $allChk.change(function () {
       var $this = $(this);
@@ -720,29 +741,7 @@
 	}
 
 </script>
-<script>
-	const buyBtn = document.querySelector('.ebooks .buyBtn');
-	const checks = document.querySelectorAll('#chkbox');
-	
-	if(buyBtn) {
-		buyBtn.addEventListener('click', () => {
-			let chkArray = [];
-			checks.forEach(box => {
-				if(box.checked) {
-				const chkVal = box.value;
-					chkArray.push(chkVal);
-				}
-			});
-			if(chkArray == null || chkArray == '') {
-				alert('구매할 도서를 선택해주세요.');
-				return;
-			}
-			$("#chkform").attr('action', '/member/paycheck.do');
-			$("#chkform").submit();
-		});
-	}
-	
-</script>
+
 
 </body>
 </html>

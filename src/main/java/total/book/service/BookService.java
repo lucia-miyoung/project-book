@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface BookService {
 	
+	public List relatedBookList(HashMap paramMap) throws Exception;
+	
 	public List salebookList(HashMap paramMap) throws Exception;
 
 	public List bookAllList(HashMap paramMap) throws Exception;

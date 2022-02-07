@@ -9,6 +9,8 @@ public interface MemberService {
 	
 	public int insertQuestion(HashMap paramMap) throws Exception;
 	
+	public int deleteQuestion(HashMap paramMap) throws Exception;
+	
 	public int totalorderCnt(HashMap paramMap) throws Exception;
 	
 	public int imgNameDupchk(HashMap paramMap) throws Exception;
@@ -61,7 +63,11 @@ public interface MemberService {
 	
 	public List emotagList(HashMap paramMap) throws Exception;
 	
-	public int emotagInsert(HashMap paramMap) throws Exception;
+	public int deleteEmotag(HashMap paramMap) throws Exception;
+	
+	public int insertEmotag(HashMap paramMap) throws Exception;
+	
+	public int myemotagdupchk(HashMap paramMap) throws Exception;
 	
 	public List zzimList(HashMap paramMap) throws Exception;
 	

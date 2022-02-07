@@ -12,6 +12,10 @@ import common.CommonMapper;
 @Repository("BookMapper")
 public class BookMapper extends CommonMapper{
 	
+	public List relatedBookList(HashMap paramMap) {
+		return sss.selectList("BookMapper.relatedBookList", paramMap);
+	}
+	
 	public List salebookList(HashMap paramMap) {
 		return sss.selectList("BookMapper.salebookList", paramMap);
 	}

@@ -29,6 +29,10 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.insertQuestion(paramMap);
 	}
 	@Override
+	public int deleteQuestion(HashMap paramMap) throws Exception {
+		return mapper.deleteQuestion(paramMap);
+	}
+	@Override
 	public int totalorderCnt(HashMap paramMap) throws Exception{
 		return mapper.totalorderCnt(paramMap);
 	}
@@ -150,12 +154,20 @@ public class MemberServiceImpl implements MemberService {
 	public List emotagList(HashMap paramMap) throws Exception { 
 		return mapper.emotagList(paramMap);
 	}
-	
 	@Override
-	public int emotagInsert(HashMap paramMap) throws Exception {
-		return mapper.emotagInsert(paramMap);
+	public int deleteEmotag(HashMap paramMap) throws Exception {
+		return mapper.deleteEmotag(paramMap);
 	}
 	
+	@Override
+	public int insertEmotag(HashMap paramMap) throws Exception {
+		return mapper.insertEmotag(paramMap);
+	}
+	
+	@Override
+	public int myemotagdupchk(HashMap paramMap) throws Exception {
+		return mapper.myemotagdupchk(paramMap);
+	}
 	@Override
 	public List zzimList(HashMap paramMap) throws Exception {
 		return mapper.zzimList(paramMap);

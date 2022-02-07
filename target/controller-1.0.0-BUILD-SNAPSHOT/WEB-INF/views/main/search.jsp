@@ -53,11 +53,176 @@
 	if(pageNum == null)
 		pageNum = "1";
 %>
-<sec:authorize access="isAuthenticated()">
+<!-- <sec:authorize access="isAuthenticated()">
 	<sec:authentication property="principal" var="member"/>
-</sec:authorize>
+</sec:authorize> -->
+</head>
+<body>
+	<header class="topbar">
+        <nav>
+            <div class="container">
+                <a href="javascript: history.back();"><i class="fas fa-arrow-left"></i><span>이전</span></a>
+                 <a href="/book/main"><i class="fas fa-home"></i><span>홈</span></a>
+                <h2>메인 페이지</h2>
 
-<script type="text/javascript" >
+                <div class="login-out">
+                 <c:choose>
+            		<c:when test="${sessionScope.userId != null }">
+                		<span>${ sessionScope.userId }</span>님 환영합니다.
+                		<button type="button" id="logoutBtn" onclick="gologinout(0)">로그아웃</button>
+                	</c:when>
+            		<c:otherwise>
+            			<button type="button" id="loginBtn" onclick="gologinout(1)">로그인</button>
+            		</c:otherwise>
+            	</c:choose>
+                </div>
+            </div>
+        </nav>
+</header>
+	<div class="main-container" >
+	<!-- 검색바 -->
+	<!-- <form action="/search/searchtest" method="GET" > -->
+	<form class="search-form" action="/book/search" method="GET" >
+		<div class="search-bar" >
+			<select class="type" name="type" >
+				<option value="title" ${paramMap.type == 'title' ? 'selected="selected"' : ''}>제목</option>
+				<option value="author" ${paramMap.type == 'author' ? 'selected="selected"' : ''}>저자</option>
+				<option value="publisher" ${paramMap.type == 'publisher' ? 'selected="selected"' : ''}>출판사</option>
+			</select>
+			<input class="keyword" type="text" name="keyword" placeholder="검색어를 입력해주세요" autocomplete="off" spellcheck="false"/>
+			<button class="btn-search fas fa-search" name="category" value="all" ></button>
+		</div>
+	</form>
+	<%-- 빈 화면에 내보낼 것들 --%>
+	<c:if test="${empty paramMap.keyword }" >
+		<div class="empty-spot" >
+			<h3>검색 결과가 없습니다. </h3>
+		</div>
+	</c:if>
+	<!-- 검색 결과 요약 -->
+	<c:if test="${not empty paramMap.keyword }" >
+		<!-- 카테고리 선택 -->
+		<form action="/book/search" method="GET" >
+			<div class="category-list" >
+				<input class="type" type="hidden" name="type" />
+				<input class="keyword" type="hidden" name="keyword" value="${paramMap.keyword}"/>
+				<input type="hidden" name="page" value="1" />
+				<button name="category" value="all" class="btn-category selected">통합검색</button>
+				<button name="category" value="paper" class="btn-category">종이책</button>
+			</div>
+		</form>
+		<div class="search-summary" >
+			<div>
+				'<span class="skeyword" >${paramMap.keyword }</span><span>'에 대한</span>
+			</div>
+			<span class="scount" >총 
+			<span class="result-count" >${bookCount }</span> 개의 검색결과</span>
+			<div class="layout" >
+					<button class="btn-layout btn-list list fas fa-list"></button>
+					<button class="btn-layout btn-grid fas grid fa-th-large"></button>
+			</div>
+		</div>
+	</c:if>
+	<!-- paper -->
+			<div class="search-list fadeInUp">
+				<div class="category-belt" >
+					<form action="/search" method="GET" id="frm">
+						<input class="type" type="hidden" name="type" />
+						<input class="keyword" type="hidden" name="keyword" />
+						<input type="hidden" name="page" value="1" />
+						<button name="category" value="paper" class="btn-category-belt" >
+							<span class="category-title" >종이책</span>
+							<span class="category-count" >${paperCount }</span>
+							<c:choose>
+								<c:when test="${sessionScope.userId != null }"> 
+									<span class="to-cart" ><span class="btn-cart-outer far fa-check-square" ><span class="btn-cart" >&nbsp;장바구니 추가</span></span></span>
+									<span class="fas fa-chevron-right" style="display:none;"></span>
+								 </c:when>
+								<c:otherwise>
+									<span class="fas fa-chevron-right"></span>
+								</c:otherwise>
+							</c:choose>
+						</button>
+					</form>
+				</div>
+				<c:choose>
+					<c:when test="${bookList.size() == 0 }" >
+						<div class="empty-spot" >
+							<h3>검색 결과가 없습니다. </h3>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="search-result" >
+							<c:forEach var="book" items="${bookList}">
+								<div class="search ${book.book_id}" >
+									<div class="book" >
+										<!-- 책 커버 -->
+										<img class="cover" src="/bookImg/book${book.book_id}.jpg" />
+										<!-- 책 정보 -->
+										<div class="info" >
+											<div class="title" >${book.book_name }</div>
+											<div>
+												<span class="author" >${book.book_author }</span>
+												<span class="publisher" >${book.book_type }</span>
+											</div>
+										</div>
+									</div>
+									<div class="interact" >
+										<button class="btn-purchase" >구매</button>
+											<c:if test="${sessionScope.userId !=null }" > 
+											<input class="checkbox-cart btn-list-cart" type="checkbox" name="cart" value="${book.book_id }" />
+											</c:if> 
+									</div>
+								</div>
+							</c:forEach>
+						</div>
+					</c:otherwise>
+				</c:choose>
+			</div>
+	<c:if test="${(param.category ne null) }" >
+		<c:if test="${param.category ne 'all'}" >
+		<div class="page" >
+			<form action="/search" method="GET">
+				<input type="hidden" name="type" value="${param.type }" />
+				<input type="hidden" name="keyword" value="${param.keyword }" />
+				<input type="hidden" name="category" value="${param.category }" />
+				<button class="btn page before" name="page" ><</button>
+				<c:forEach var="i" begin="0" end="9" >
+					<button class="btn page num" name="page" ></button>
+				</c:forEach>
+				<button class="btn page after" name="page" >></button>
+			</form>
+		</div>
+		</c:if>
+	</c:if>
+	</div>
+ <script>
+ function gologinout(num) {
+		/* 로그아웃하기 */
+		if(num == 0) {
+			if(!confirm('로그아웃 하시겠습니까?')) {
+				return;
+			}	
+			$.ajax({
+				url: '/logout',
+				data: {
+					"member_name" : ''
+				},
+				success: function(rs) {
+						alert('로그아웃이 완료되었습니다.');
+						location.reload();
+						$('#member_name').val('');
+				}, error : function(xhr, status, error) {
+					alert('오류');
+				}
+			});	
+		} else {
+			alert('로그인 페이지로 이동합니다.');
+			location.href='/login';
+		}
+	}
+</script>
+ 	<script type="text/javascript" >
 	$(document).ready(function() {
 		var type = "<%=type %>";
 		var keyword = "<%=keyword %>";
@@ -230,197 +395,5 @@
 		});
 	});
 </script>
-</head>
-<body>
-
-	<header class="topbar">
-        <nav>
-            <div class="container">
-                <a href="javascript: history.back();"><i class="fas fa-arrow-left"></i><span>이전</span></a>
-                 <a href="/book/main"><i class="fas fa-home"></i><span>홈</span></a>
-                <h2>메인 페이지</h2>
-
-                <div class="login-out">
-                 <c:choose>
-            		<c:when test="${sessionScope.userId != null }">
-                		<span>${ sessionScope.userId }</span>님 환영합니다.
-                		<button type="button" id="logoutBtn" onclick="gologinout(0)">로그아웃</button>
-                	</c:when>
-            		<c:otherwise>
-            			<button type="button" id="loginBtn" onclick="gologinout(1)">로그인</button>
-            		</c:otherwise>
-            	</c:choose>
-                </div>
-            </div>
-        </nav>
-</header>
-<script>
-function gologinout(num) {
-	
-	if(num == 0) {
-		if(!confirm('로그아웃 하시겠습니까?')) {
-			return;
-		}
-		
-		alert('로그아웃 됐습니다.');
-		
-		$.ajax({
-			url: '/logout',
-			data: {
-				"member_id" : ''
-			},
-			success: function(rs) {
-				location.reload();
-				$('#member_id').val('');
-			
-			}, error : function(xhr, status, error) {
-				alert('오류');
-			}
-		});
-		
-	} else {
-		alert('로그인 페이지로 이동합니다.');
-		location.href='/login';
-	}
-	
-}
-</script>
-	<div class="main-container" >
-	<!-- 검색바 -->
-	<!-- <form action="/search/searchtest" method="GET" > -->
-	<form class="search-form" action="/book/search" method="GET" >
-		<div class="search-bar" >
-			<select class="type" name="type" >
-				<option value="title" ${paramMap.type == 'title' ? 'selected="selected"' : ''}>제목</option>
-				<option value="author" ${paramMap.type == 'author' ? 'selected="selected"' : ''}>저자</option>
-				<option value="publisher" ${paramMap.type == 'publisher' ? 'selected="selected"' : ''}>출판사</option>
-			</select>
-			<input class="keyword" type="text" name="keyword" placeholder="검색어를 입력해주세요" autocomplete="off" spellcheck="false"/>
-			<button class="btn-search fas fa-search" name="category" value="all" ></button>
-		</div>
-	</form>
-	<%-- 빈 화면에 내보낼 것들 --%>
-	<c:if test="${empty paramMap.keyword }" >
-		<div class="empty-spot" >
-			<h3>검색 결과가 없습니다. </h3>
-		</div>
-	</c:if>
-	<!-- 검색 결과 요약 -->
-	<c:if test="${not empty paramMap.keyword }" >
-		<!-- 카테고리 선택 -->
-		<form action="/book/search" method="GET" >
-			<div class="category-list" >
-				<input class="type" type="hidden" name="type" />
-				<input class="keyword" type="hidden" name="keyword" value="${paramMap.keyword}"/>
-				<input type="hidden" name="page" value="1" />
-				<button name="category" value="all" class="btn-category selected">통합검색</button>
-				<button name="category" value="paper" class="btn-category">종이책</button>
-			</div>
-		</form>
-		<div class="search-summary" >
-			<div>
-				'<span class="skeyword" >${paramMap.keyword }</span><span>'에 대한</span>
-			</div>
-			<span class="scount" >총 
-			<span class="result-count" >${bookCount }</span> 개의 검색결과</span>
-			<div class="layout" >
-					<button class="btn-layout btn-list list fas fa-list"></button>
-					<button class="btn-layout btn-grid fas grid fa-th-large"></button>
-			</div>
-		</div>
-	</c:if>
-	<%-- 검색결과 --%>
-	<!-- paper -->
-	<%-- <c:if test="${param.category ne 'ebook' }" >
-		<c:if test="${param.keyword ne null and param.keyword ne ''}" > --%>
-			<div class="search-list fadeInUp">
-				<%-- 카테고리 벨트 --%>
-				<div class="category-belt" >
-					<form action="/search" method="GET" id="frm">
-						<input class="type" type="hidden" name="type" />
-						<input class="keyword" type="hidden" name="keyword" />
-						<input type="hidden" name="page" value="1" />
-						<button name="category" value="paper" class="btn-category-belt" >
-							<span class="category-title" >종이책</span>
-							<span class="category-count" >${paperCount }</span>
-							<c:choose>
-								<c:when test="${sessionScope.userId != null }"> 
-									<%-- 종이책일때는 장바구니 추가 버튼 생성 --%>
-									<span class="to-cart" ><span class="btn-cart-outer far fa-check-square" ><span class="btn-cart" >&nbsp;장바구니 추가</span></span></span>
-									<span class="fas fa-chevron-right" style="display:none;"></span>
-								 </c:when>
-								<c:otherwise>
-									<span class="fas fa-chevron-right"></span>
-								</c:otherwise>
-							</c:choose>
-						</button>
-					</form>
-				</div>
-				<%-- 카테고리 벨트 끝 --%>
-				<%-- 책리스트 --%>
-				<c:choose>
-					<c:when test="${bookList.size() == 0 }" >
-						<div class="empty-spot" >
-							<h3>검색 결과가 없습니다. </h3>
-						</div>
-					</c:when>
-					<c:otherwise>
-						<div class="search-result" >
-							<c:forEach var="book" items="${bookList}">
-								<div class="search ${book.book_id}" >
-									<div class="book" >
-										<!-- 책 커버 -->
-										<img class="cover" src="/bookImg/book${book.book_id}.jpg" />
-										<!-- 책 정보 -->
-										<div class="info" >
-											<div class="title" >${book.book_name }</div>
-											<div>
-												<span class="author" >${book.book_author }</span>
-												<span class="publisher" >${book.book_type }</span>
-											</div>
-										</div>
-									</div>
-									<div class="interact" >
-										<button class="btn-purchase" >구매</button>
-											<c:if test="${sessionScope.userId !=null }" > 
-											<input class="checkbox-cart btn-list-cart" type="checkbox" name="cart" value="${book.book_id }" />
-											</c:if> 
-									</div>
-								</div>
-							</c:forEach>
-						</div>
-					</c:otherwise>
-				</c:choose>
-				<%-- 책리스트 끝 --%>
-			</div>
-		<%-- </c:if>
-	</c:if> --%>
-	<%--검색결과 끝 --%>
-	<%-- 페이징 --%>
-	<c:if test="${(param.category ne null) }" >
-		<c:if test="${param.category ne 'all'}" >
-		<div class="page" >
-			<form action="/search" method="GET">
-				<input type="hidden" name="type" value="${param.type }" />
-				<input type="hidden" name="keyword" value="${param.keyword }" />
-				<input type="hidden" name="category" value="${param.category }" />
-				<button class="btn page before" name="page" ><</button>
-				<c:forEach var="i" begin="0" end="9" >
-					<button class="btn page num" name="page" ></button>
-				</c:forEach>
-				<button class="btn page after" name="page" >></button>
-			</form>
-		</div>
-		</c:if>
-	</c:if>
-	</div>
- 
- 	<script>
-	    $(document).ready(() => {
-	      const li = document.querySelector('footer.fixed a[href="/search"]').parentElement;
-	      const ul = li.parentElement;
-	      [ul, li].forEach(element => element.classList.add('active'));
-	    });
-	</script>
 </body>
 </html>

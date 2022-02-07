@@ -26,9 +26,7 @@
   <body>
     <header class="topbar">
       <nav>
-        <div class="container">
-            <a href="javascript: history.back();"><i class="fas fa-arrow-left"></i><span>이전</span></a>
-            <a href="/book/main"><i class="fas fa-home"></i><span>홈</span></a>
+        <div class="container">       
           <h2>로그인</h2>
         </div>
       </nav>
@@ -55,16 +53,13 @@
     </form>
     
     <script>
-
+	/* 로그인 validation 확인 */
     const loginBtn = document.querySelector('.loginBtn');
-    const signupBtn = document.querySelector('.signupBtn');
-  
-    
+    const signupBtn = document.querySelector('.signupBtn');    
     loginBtn.addEventListener('click', () => {
     	gologin();
 		
     });
-     
     signupBtn.addEventListener('click', () => {
     	$('#frm').attr('action', '/signup');
 		$('#frm').submit();
@@ -74,52 +69,42 @@
     const memId = document.querySelector('#member_id');
     
 	function gologin() {
-  
        	for(let i=0; i<inputs.length; i++) {
        		if(inputs[i].value.trim() == '' || inputs[i].value.trim() == null) {
        			alert(inputs[i].placeholder + '를 입력해주세요.');
        			inputs[i].focus();
        			return;
        		}
-       	}           	
-       	
+       	}           		
        	if(!isValidEmailFormat(memId.value)) {
        		alert('유효한 형식이 아닙니다. 이메일 형식으로 입력해주세요.');
        		memId.focus();
        		return;
        	}
-       	
 	 	 $.ajax({
 			url: "/loginChk.do"
 			, data: $('#frm').serialize()
 			, success : function(rs) {
+				console.log(rs);
 				if(rs.loginCheck == 0) {
 					alert('아이디 또는 비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
 					$('#member_id').focus();
 					return;
 				}
-			
 				$('#frm').attr('action', "/book/main.do");
 				$('#frm').submit();
-				
 			}
 			, error : function(xhr, status, error) {
 				alert('오류');
 			}
-		
 		}); 
-	 	 
-	 	
-	
 	}
-    
+	
+	/* 이메일 형식 체크 */
     function isValidEmailFormat(email) {
     	const emailPattern =/^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
         return emailPattern.test(email);
     } 
-    
     </script>
-
-    
   </body>
 </html>

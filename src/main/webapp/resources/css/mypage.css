@@ -800,11 +800,9 @@ width:0%;
 .mystarScore #default i {
 	color: #979797;
 }
-
 .mystarScore #default, .mystarScore #full {
 	display:flex;
 }
-
 .mystarScore #full {
 	position: absolute;
     white-space: nowrap;
@@ -812,7 +810,6 @@ width:0%;
     width: 0px;
     top: 0;
 }
-
 .mystarScore #full i {
 	color: #FFA200;
 }

@@ -41,15 +41,11 @@
   <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
   <!-- slidify sliders and fadeInUp reveal -->
   <script src="../../../resources/js/common.js"></script>
-  
-  <sec:authorize access="isAuthenticated()">
-    <sec:authentication property="principal" var="member"/>
-  </sec:authorize>
 </head>
 <body>
-<sec:authorize access="isAuthenticated()">
+<!-- <sec:authorize access="isAuthenticated()">
 	<sec:authentication property="principal" var="member"/>
-</sec:authorize>
+</sec:authorize> -->
 <header class="topbar">
         <nav>
             <div class="container">
@@ -71,38 +67,6 @@
             </div>
         </nav>
 </header>
-<script>
-function gologinout(num) {
-	
-	if(num == 0) {
-		if(!confirm('로그아웃 하시겠습니까?')) {
-			return;
-		}
-		
-		alert('로그아웃 됐습니다.');
-		
-		$.ajax({
-			url: '/logout',
-			data: {
-				"member_id" : ''
-			},
-			success: function(rs) {
-				location.reload();
-				$('#member_id').val('');
-			
-			}, error : function(xhr, status, error) {
-				alert('오류');
-			}
-		});
-		
-	} else {
-		alert('로그인 페이지로 이동합니다.');
-		location.href='/login';
-	}
-	
-}
-</script>
-
    <div class="biggestBox">
       <div class="noticeforUsing">
         <div class="smallNotice">
@@ -134,16 +98,34 @@ function gologinout(num) {
           </ul>
         </div>
       </div>
-
       <div class="biggerBox">
         <ul>
+          <li>
+            <a href="#content" id="noticeHere">
+              <strong
+                >[공지] 종이책 배송 지연 안내
+                <i class="fas fa-truck-container"></i>
+                <span><i class="fas fa-chevron-down"></i></span
+              ></strong>
+              <span> 2022.01.25</span>
+            </a>
+            <div id="content">
+              <p>
+                설 연휴로 인하여 종이책 배송 일정이 변경되어 안내드립니다. 배송
+                물량 증가로 부득이하게 지연되는 점 양해부탁드립니다. [배송 지연
+                기간] - 2022년 1월 27일 ~ 2022년 02월 03일 평소보다 최소 3일 ~
+                최대 7일 지연됩니다. 연휴 이후 안전하고 빠르게 배송하겠습니다.
+                즐겁고 편안한 연휴 보내시길 바랍니다. 감사합니다.
+              </p>
+            </div>
+          </li>
           <li>
             <a href="#content" id="noticeHere">
               <strong
                 >[공지] 개인정보처리방침 일부 개정 안내
                 <span><i class="fas fa-chevron-down"></i></span
               ></strong>
-              <span> 2020.05.9</span>
+              <span> 2022.12.12</span>
             </a>
             <div id="content" class="active">
               <p>
@@ -173,31 +155,12 @@ function gologinout(num) {
           </li>
           <li>
             <a href="#content" id="noticeHere">
-              <strong
-                >[공지] 종이책 배송 지연 안내
-                <i class="fas fa-truck-container"></i>
-                <span><i class="fas fa-chevron-down"></i></span
-              ></strong>
-              <span> 2020.04.28</span>
-            </a>
-            <div id="content">
-              <p>
-                연휴로 인하여 종이책 배송 일정이 변경되어 안내드립니다. 배송
-                물량 증가로 부득이하게 지연되는 점 양해부탁드립니다. [배송 지연
-                기간] - 2020년 4월 30일 ~ 2020년 5월 5일 평소보다 최소 3일 ~
-                최대 7일 지연됩니다. 연휴 이후 안전하고 빠르게 배송하겠습니다.
-                즐겁고 편안한 연휴 보내시길 바랍니다. 감사합니다.
-              </p>
-            </div>
-          </li>
-          <li>
-            <a href="#content" id="noticeHere">
               <strong>
                 내서재 후기 이벤트 당첨자 발표
                 <i class="fas fa-leaf-heart"></i>
                 <span><i class="fas fa-chevron-down"></i></span
               ></strong>
-              <span> 2020.04.13</span>
+              <span> 2021.11.17</span>
             </a>
             <div id="content">
               <p>
@@ -216,18 +179,17 @@ function gologinout(num) {
                 <i class="fad fa-lightbulb-exclamation bell"></i> 서버 점검 안내
                 <span><i class="fas fa-chevron-down"></i></span
               ></strong>
-              <span> 2020.04.05</span>
+              <span> 2021.11.04</span>
             </a>
             <div id="content">
               <p>
-                최근 네이버 클라우드 플랫폼과 아마존 웹 서비스 장애로 밀리의
+                최근 아마존 웹 서비스 장애로 밀리의
                 서재 서비스가 다소 불안정했었습니다. 이와 같은 서비스 영향을
                 최소화하기 위하여 아래와 같이 서버 이전 및 점검 작업을 진행할
                 예정입니다. 점검 기간에는 서비스 이용이 원활하지 않을 수
                 있습니다. 조금 불편하시더라도 너그러운 마음으로 이해
-                부탁드립니다. *서버 점검 중에도 앱에 다운로드 받은 책은
-                정상적으로 읽을 수 있습니다. - 작업 내용 : DB 서버 이전 및 점검
-                - 점검 시간 : 04월 08일(수) 새벽 2시에서 아침 8시까지 최선을
+                부탁드립니다.  - 작업 내용 : DB 서버 이전 및 점검
+                - 점검 시간 : 11월 10일(수) 새벽 2시에서 아침 8시까지 최선을
                 다해 점검하고 좀 더 안정적인 서비스로 찾아뵙겠습니다.
                 고맙습니다.
               </p>
@@ -239,14 +201,39 @@ function gologinout(num) {
     </div>
     <!-- biggestBox end -->
     <script>
+    function gologinout(num) {
+    	/* 로그아웃하기 */
+    	if(num == 0) {
+    		if(!confirm('로그아웃 하시겠습니까?')) {
+    			return;
+    		}	
+    		$.ajax({
+    			url: '/logout',
+    			data: {
+    				"member_name" : ''
+    			},
+    			success: function(rs) {
+    					alert('로그아웃이 완료되었습니다.');
+    					location.reload();
+    					$('#member_name').val('');
+    			}, error : function(xhr, status, error) {
+    				alert('오류');
+    			}
+    		});	
+    	} else {
+    		alert('로그인 페이지로 이동합니다.');
+    		location.href='/login';
+    	}
+    }
+	</script>
+    <script>
+    /* 공지사항 클릭시 해당 공지만 보여주기 */
       const container = document.querySelector(".biggerBox");
       const items = document.querySelectorAll(".biggerBox ul>li");
       const content = document.querySelectorAll(".biggerBox #content");
-      // let flag = false;
 
       items.forEach((item) => {
         item.addEventListener("click", (e) => {
-          // hide(e);
           items.forEach((it) => {
             it.querySelector("#content").classList.remove("active");
             item.querySelector("#content").classList.add("active");
@@ -254,15 +241,6 @@ function gologinout(num) {
         });
       });
 
-      // function hide(e) {
-      //   const click = e.target.parentNode.querySelector("#content");
-      //   // console.log(click);
-      //   if (click.style.display === "none") {
-      //     click.style.display = "block";
-      //   } else {
-      //     click.style.display = "none";
-      //   }
-      // }
     </script>
 </body>
 </html>

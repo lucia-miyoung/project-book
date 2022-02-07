@@ -2,16 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace = "MemberMapper">
+
 	<select id="showmyQstList" parameterType="hashMap" resultType="hashMap">
 		select qst_index, member_name, qst_title, qst_content, qst_image, qst_type, 
-		email, qst_date, qst_answer 
-		from service where member_name =#{member_name};
+		email, qst_date, qst_answer, answer_status  
+		from service where member_name =#{member_name} order by qst_index desc;
 	</select>
 	<insert id="insertQuestion" parameterType="hashMap">
 		insert into service values(#{member_name}, #{qst_title}, 
 		#{qst_content}, #{qst_image}, #{qst_type}, #{email}, now(),
-		'', (select IFNULL(max(qst_index)+1,1) from service b));
+		'', (select IFNULL(max(qst_index)+1,1) from service b), 'N');
 	</insert>
+	<delete id="deleteQuestion" parameterType="hashMap">
+		delete from service where qst_index = #{qst_index} and member_name=#{member_name}; 
+	</delete>
 	<select id="totalorderCnt" parameterType="hashMap" resultType="int">
 		select count(member_name) as cnt from order_history where member_name=#{member_name};
 	</select>
@@ -22,30 +26,24 @@
 	<delete id="deletemyaccount" parameterType="hashMap">
 		delete from members where member_name = #{member_name} and member_id = #{member_id}
 	</delete>
-	
 	<update id="updatemyinfo" parameterType="hashMap">
 		UPDATE members SET member_pw = #{member_new_pw}, 
 		MEMBER_NAME = #{member_name}, MEMBER_PHONE = #{member_phone}, 
 		MEMBER_HOME1 = #{member_home1}, MEMBER_HOME2 = #{member_home2}, 
 		MEMBER_HOME3 = #{member_home3}, member_image= #{member_image} 
 		WHERE member_id = #{member_id}
-	
 	</update>
-	
 	<select id="getMemInfo" parameterType="hashMap" resultType="hashMap">
 			SELECT member_id, member_name, member_phone, member_home1, 
 			member_home2, member_home3, member_image  
 			FROM members 
 			WHERE member_name = #{member_name}
-
 	</select>
-
 	<select id="myzzimCount" parameterType="hashMap" resultType="int">
 		select count(case when zzim_check = 'Y' then 1 end) as cnt FROM mypage as a 
 		left outer join members as b on a.member_id = b.member_id 
 		WHERE b.member_name = #{member_name}
-	</select>	
-	
+	</select>		
 	<select id="myheartCount" parameterType="hashMap" resultType="int">
 		SELECT count(case when heart_check = 'Y' then 1 end) as cnt 
 		FROM mypage
@@ -81,16 +79,18 @@
 	</select>
 
 	<select id="emotagList" parameterType="hashMap" resultType="hashMap">
-		SELECT emo_tag as emo_tag
-		FROM mypage WHERE book_id = #{book_id}
+		SELECT book_id, member_name, emo_tag FROM book_emotion_tag WHERE book_id = #{book_id} order by emo_date asc
 	</select>
-	
-	<select id="emotagInsert" parameterType="hashMap" resultType="hashMap">
-		INSERT INTO mypage(book_id, book_name, member_id, emo_tag) 
-		VALUES(#{book_id}, #{book_name}, #{member_id}, #{emo_tag});
-
+	<delete id="deleteEmotag" parameterType="hashMap">
+		delete from book_emotion_tag where book_id =#{book_id} and member_name =#{member_name};
+	</delete>
+	<insert id="insertEmotag" parameterType="hashMap">
+		INSERT INTO book_emotion_tag(book_id, member_name, emo_tag, emo_date) 
+		VALUES(#{book_id}, #{member_name}, #{emo_tag} , now());
+	</insert>
+	<select id="myemotagdupchk" parameterType="hashMap" resultType="int">
+		select count(member_name) from book_emotion_tag where book_id=#{book_id} and member_name=#{member_name};
 	</select>
-	
 	<select id="zzimInsert" parameterType="hashMap" resultType="hashMap">
 		
 		INSERT INTO mypage(member_id, book_id, zzim_check) 

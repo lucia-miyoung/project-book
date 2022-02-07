@@ -35,6 +35,7 @@ a {
     border: 1px solid #ccc;
     border-bottom: none;
     margin-right: -1px;
+	cursor:pointer;
 }
 .tabBox ul li.active{
 	background-color: #eff1f5;
@@ -318,17 +319,38 @@ fieldset {
   border-right: 1px solid #ccc;
   width:70px;
 }
-.detailQuestion p {
+.detailQuestion .question-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+.detailQuestion .question-detail p {
     margin: 10px 20px;
     flex:1;
 }
+.detailQuestion .question-detail .divider {
+	width: 90%;
+    height: 1px;
+    background-color: #e8e8e8;
+    margin: 20px 0;
+}
+.detailQuestion .question-detail .question-img {
+	width: 250px;
+    margin: 10px 0;
+}
+.detailQuestion .question-detail .question-img > img {
+	max-width: 100%;
+}
 .answer p {
     color: #333;
+    margin:0 auto;
 }
 .answer{
    	display: flex;
     align-items: center;
-    padding: 15px;
+    padding: 30px;
     background-color: #F3F4F6;
 }
 .question{

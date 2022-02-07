@@ -35,6 +35,7 @@ a {
     border: 1px solid #ccc;
     border-bottom: none;
     margin-right: -1px;
+	cursor:pointer;
 }
 .tabBox ul li.active{
 	background-color: #eff1f5;
@@ -88,43 +89,12 @@ a {
     color:#333;
 }
 
-/* #selectTopic select>option {
-    position: absolute;
-    left:0;
-    top:0;
-    padding:0;
-    padding-top: 47px;
-    width:100%;
-    box-shadow: 0 4px 10px rgba(0,0,0,.25);
-    display: none;
+.question_service {
+	border: 1px solid #ccc;
+    margin-top: 7px;
+    position:relative;
 }
-#selectTopic >ul li {
-    padding:0; 
-    margin:0;
-    width:100%;
-    font-size: 14px;
-}
-
-#selectTopic >ul li a {
-    display: block;
-    cursor: pointer;
-    height: 46px;
-    line-height: 46px;
-    padding: 0 15px;
-    background-color: #fff;
-    border-bottom: 1px solid #e8e8e8;
-    color: #333;
-}
-
-#selectTopic button strong {
-    float:left;
-}
-
-#selectTopic button span {
-    float:right;
-} */
-
-#titleName {
+.question_service input#qst_title {
     width:100%;
     border:none;
     outline:none;
@@ -135,21 +105,26 @@ a {
     line-height: 45px;
 }
 
-.title {
-	border: 1px solid #ccc;
-    margin-top: 7px;
-}
-
-.title textarea {
+.question_service textarea {
     width:100%;
     outline:none;
     resize:none;
     border:none;
     padding: 20px;
-    height: 220px;
+    height: 200px;
     font-size:14px;
     box-sizing: border-box;
-    /* border-top: #999; */
+    overflow:hidden;
+}
+.question_service .limitText {
+	position: absolute;
+    bottom: 10px;
+    right: 8px;
+    font-size: 12px;
+}
+
+#ansStatus {
+	margin-left:10px;
 }
 .addNotice ul {
     margin-top:10px;
@@ -174,19 +149,6 @@ a {
     left:0;
     content:"";
 }
-
-
-
-/* .addFile {
-    position: relative;
-   
-}
-
-.addFile input[type="file"] {
-    width:100%;
-    text-align:right;
-} */
-
 .one p {
     font-size:12px;
         color: #999;
@@ -203,7 +165,6 @@ a {
     font-size: 15px;
     margin:6px 0 14px 0;
 }
-
 label {
 
     font-weight: bold;
@@ -211,7 +172,6 @@ label {
     color:#333;
 
 }
-
 .agreeChk {
 
     margin:10px;
@@ -241,70 +201,34 @@ label {
     border:none;
     outline:none;
     cursor: pointer;
-
 }
-
 #preBtn {
     background-color:white; 
     color:#0099FF;
     border:1px solid #0099FF;
 }
-
 #preBtn:hover {
     background-color:#F3F4F6; 
     font-weight:bold;
 }
-
 #finishBtn:hover {
     background-color:rgb(15, 136, 218); 
     font-weight:bold;
 }
-
 .what {
-
     text-align:center;
     margin: 35% auto;
 }
-
 .noHave i {
 
     font-size: 33px;
     margin-bottom:12px;
     color:rgba(163, 95, 194, 0.925);
 }
-
 .what span {
     font-size:15px;
     color:rgba(93, 47, 114, 0.925);
 }
-
-/* .addFile {
-    position: relative;
-    background-color:white;
-    margin-top:8px;
-    height: 42px;
-    border:1px solid #e8e8e8;
-    
-}
-
-.addFile label {
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    text-indent:10px;
-    cursor: pointer;
-    line-height: 42px;
-    font-size:14px;
-    font-weight: normal;
-    color: rgb(97, 97, 97);
-}
-
-.addFile input[type="file"] {
-    visibility: hidden;
-}
- */
 .addFile label i {
     font-size: 22px;
     margin-left:4px;
@@ -332,44 +256,51 @@ fieldset {
     font-size: 13px;
     border:1px solid #e8e8e8;
     border-top:2px solid #0099FF;
+    border-collapse: collapse;
 }
 
 .questionTable table th {
     padding: 8px;
     border-bottom:1px solid #999;
 }
-
-.questionTable table td {
-    text-align:center;
-    padding: 10px 10px 0 10px;
-    
-
+.questionTable table tbody {
+	border-bottom:1px solid gray;
 }
-
+/* 문의사항 제목 qst_preview */
+.questionTable table tbody tr:nth-child(1) td{
+	padding:10px;
+}
+/* 문의사항 상세히 qst_detail */
+.questionTable table tbody tr:nth-child(2).invisible{
+	display:none;
+}
+.questionTable table td {
+    text-align:center;   
+}
+.questionTable .no_question{
+	display: block;
+    margin: 25% auto;
+    font-size: 14px;
+    font-weight: bold;
+    color: gray;
+}
 .questionTable a {
     color:#333;
+    font-weight:bold;
 }
-
-.questionTable a:hover {
-    font-weight: bold;
-    color:rgb(45, 45, 116);
-}
-
-.questionTable button {
+.questionTable button#deleteBtn {
     border:none;
     background-color:transparent;
     cursor: pointer;
     outline:none;
+    transition:all 200ms ease-in-out;
 }
-
-.questionTable tr:nth-child(2)>td:nth-child(5) {
-    color:rgb(199, 47, 47);
+.questionTable button#deleteBtn:hover i {
+    transform: scale(1.02);
+    color:red;
 }
-
-
 .detailQuestion i{
     font-size:15px;
-    
 }
 .fa-quora {
     color:rgb(201, 52, 52);
@@ -380,46 +311,53 @@ fieldset {
 }
 
 .detailQuestion {
-    display:inline-block;
-    display:none;
-    /* background-color:#F3F4F6;  */
-    /* display:flex;
-    flex-direction: column; */
-    z-index:0;
+    display: flex;
+    flex-direction: column;
 }
 
 .detailQuestion strong{
-    float:left;
-    width: 13%;    
-    padding:10px;
-    /* border:2px solid blue; */
-    /* height:100%; */
+  border-right: 1px solid #ccc;
+  width:70px;
 }
-.detailQuestion p {
-    float:left;
-    width: 87%;
-    /* border:2px solid red; */
-    padding:10px 30px 10px 20px;
-    margin-bottom:10px;
-    color: #999;
+.detailQuestion .question-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
 }
-
+.detailQuestion .question-detail p {
+    margin: 10px 20px;
+    flex:1;
+}
+.detailQuestion .question-detail .divider {
+	width: 90%;
+    height: 1px;
+    background-color: #e8e8e8;
+    margin: 20px 0;
+}
+.detailQuestion .question-detail .question-img {
+	width: 250px;
+    margin: 10px 0;
+}
+.detailQuestion .question-detail .question-img > img {
+	max-width: 100%;
+}
 .answer p {
     color: #333;
+    margin:0 auto;
 }
-
-
 .answer{
-    border-top:1px solid lightgray;
-    display:inline-block;
-    background-color:#F3F4F6; 
-    padding-top:10px;
+   	display: flex;
+    align-items: center;
+    padding: 30px;
+    background-color: #F3F4F6;
 }
-
 .question{
-    display:inline-block;
     border-top:1px solid #e8e8e8;
-    padding-top:10px;
+   	display: flex;
+    align-items: center;
+    padding: 15px;
 }
 
 #msg-wrap {
@@ -452,6 +390,7 @@ fieldset {
     border: 1px solid #ccc;
     border-radius: 0 0 3px 3px;
     background-color: #fff;
+    z-index: 1;
 }
 
 .selectResult ul {

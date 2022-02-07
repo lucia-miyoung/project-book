@@ -1,12 +1,18 @@
 a {
   text-decoration: none;
 }
+body {
+	font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+}
 .wrapper {
   box-sizing: content-box;
-  width: 700px;
+  max-width: 700px;
   margin: 0 auto;
   background-color: white;
   margin-bottom: 100px;
+}
+.wrapperBox h2 { 
+	margin-left: 10px;
 }
 .mypageBtn {
 	position: absolute;
@@ -27,12 +33,12 @@ a {
 	opacity: 1;
 }
 .top-container {
-  position: relative;
-  margin-top: 20px;
-  width: 100%;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: row;
+    position: relative;
+    margin: 20px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .body-container {
   display: inline-block;
@@ -48,7 +54,7 @@ a {
 .imageBox {
   border-radius: 0 5px 5px 0;
   padding: 10px;
-  margin-left: 20px;
+  margin-left: 13px;
   overflow: hidden;
   position: relative;
   min-height: 280px;
@@ -56,36 +62,40 @@ a {
   box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.24);
 }
 .introWrite {
-  /* border:2px solid brown; */
   width: 60%;
-  padding-left: 20px;
+  padding-left: 22px;
   margin-top: 20px;
-  /* border:2px solid greenyellow; */
 }
-.introWrite h2 {
-  margin-top: 20px;
+.introWrite h3 {
+  font-size: 28px;
+  width:96%;
+}
+.introWrite ul {
+    margin-left: 5px;
+    margin-top: 15px;
+    font-size: 14px;
+}
+.introWrite ul li {
+ 	padding: 4px 0;
+    list-style: none;
 }
 .choiceBtn {
   display: flex;
+  margin-top: 30px;
 }
 
 #choose {
-  width: 100%;
-  height: 35px;
-  border-radius: 7px;
-  margin: 5px;
-  border: 1px solid #0099ff;
-  color: #0099ff;
-  /* font-weight: bold;
-    color:white; */
-  /* border:none; */
-  font-size: 15px;
-  background-color: white;
-  margin-top: 35px;
-  margin-bottom: 10px;
-  outline: none;
-  cursor: pointer;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.16);
+    margin-right: 10px;
+    flex: 1;
+    height: 35px;
+    border-radius: 7px;
+    border: 1px solid #0099ff;
+    color: #0099ff;
+    font-size: 15px;
+    background-color: white;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 3px 3px 3px rgb(0 0 0 / 8%), 0 2px 2px rgb(0 0 0 / 16%);
 }
 
 .choiceBtn input[type="button"]:hover,
@@ -101,50 +111,65 @@ button:hover {
   color: white;
   font-weight: bold;
 }
-
-.introWrite li {
-  font-style: normal;
-  list-style: none;
-  margin: 8px 0px 5px 5px;
-}
-
 .detail {
   width: 100%;
-  /* border: 2px solid orange; */
-  margin: 10px 0 10px 0;
-  /* min-width: 320px; */
+  padding:15px 10px;
   overflow: hidden;
   line-height: 1.7em;
   height: 110px;
+  font-size: 14px;
+}
+.detail.open {
+  height: auto;
 }
 
 .reviewDetail table {
-  border-bottom: 1px solid lightgray;
-  border-top: 2px solid rgb(0, 0, 133);
-  width: 95%;
-  margin: 0 auto;
-  text-indent: 10px;
+ 	border-collapse: collapse;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid lightgray;
+    width: 95%;
+    margin: 0 auto;
 }
-
-.reviewDetail textarea {
-  width: 90%;
-  height: 100px;
-  resize: none;
-  outline: none;
-  border: none;
-  border-top: 1px solid #e8e8e8;
+.reviewDetail table tbody{
+	border-bottom: 1px solid black;
 }
-
-.reviewDetail table > tr:nth-child(1) > td:nth-child(1) {
-  border-top: none;
+.reviewDetail table tbody .review_user_name {
+	display: block;
+    font-size: 14px;
+    margin: 5px 0 0 4px;
+    color: #333;
 }
-
+.reviewDetail table tbody .review_date {
+	font-size:13px;
+	color:gray;
+}
+.reviewDetail table tbody .review_title {
+	font-size: 14px;
+    font-weight: bold;
+    margin: 8px 0 8px 10px;
+    display: block;
+}
+.reviewDetail table tbody .review_content {
+    border: 1px solid #ccc;
+    padding: 12px 8px;
+    width: 97%;
+    margin-bottom: 17px;
+    font-size: 13px;
+    margin-left: 8px;
+    outline:none;
+}
+.reviewDetail .noUserReview {
+	display: block;
+    text-align: center;
+    color: gray;
+    font-size: 15px;
+    margin: 5% auto;
+}
 .firstBox,
 .secondBox,
 .thirdBox,
 .fourthBox {
   background-color: #ffffff;
-  /* border:2px solid blue; */
   margin: 20px;
   border-radius: 10px;
   padding: 10px;
@@ -154,27 +179,18 @@ button:hover {
   margin-bottom: 20px;
 }
 
-.fifthBox {
-  background-color: #ffffff;
-  /* border:2px solid blue; */
-
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.emoTag {
+.emo_tag {
   padding-top: 5px;
   font-size: 13px;
 }
 
-.tagtag {
+.emo_tag_wrap {
   position: relative;
   margin-top: 30px;
   margin-bottom: 20px;
 }
 
-.tagtag input[type="text"] {
+.emo_tag_wrap input[type="text"] {
   width: 100%;
   outline: none;
   border: 1px solid #0099ff;
@@ -182,7 +198,7 @@ button:hover {
   padding: 10px 15px;
 }
 
-.tagtag input[type="button"] {
+.emo_tag_wrap input[type="button"] {
   position: absolute;
   border-radius: 0 15px 15px 0;
   height: 100%;
@@ -197,7 +213,7 @@ button:hover {
   cursor: pointer;
   padding: 0 16px;
 }
-.tagtag input[type="button"]:hover {
+.emo_tag_wrap input[type="button"]:hover {
   background-image: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05));
   background-image: -webkit-linear-gradient(
     rgba(0, 0, 0, 0.05),
@@ -211,7 +227,7 @@ button:hover {
   font-size: 16px;
 }
 
-.clicnBtn {
+.clickBtn {
   cursor: pointer;
   width: 100%;
   height: 50px;
@@ -222,15 +238,15 @@ button:hover {
   border-right: 1px solid white;
   font-size: 20px;
   background-color: lightgray;
-  color: white;
-  /* font-weight: bold; */
+  color: #fff;
 }
 .likeChk {
-  display: flex;
-  padding: 10px;
-  border-top: 1px solid #e8e8e8;
-  margin-top: 12px;
-  justify-content: space-between;
+    display: flex;
+    padding: 10px 0;
+    border-top: 1px solid #e8e8e8;
+    margin-top: 16px;
+    align-items: center;
+    justify-content: space-between;
 }
 .countLike {
   margin-right: 6px;
@@ -238,37 +254,13 @@ button:hover {
   color:#333;
 }
 .likeBtn {
-    align-items: center;
+   	align-items: center;
     display: flex;
-    justify-content: center;
+    margin-right: 10px;
 }
-
-/* .heartClick {
-  width:20px;
-  height:20px;
-  background: url(../../../.././../../img/empty.png) 50% 50% no-repeat;
-  cursor: pointer;
-  margin-top: 2px;
-  transition: all 100ms ease-in;
-}
-.heartClick.full {
-  width:20px;
-  height:20px;
-  background: url(../../../.././../../img/full.png) 50% 50% no-repeat;
-} */
-/* .likeBtn i:last-child {
-  opacity: 0;
-  transition: 0.2s;
-} */
-/* 
-.likeBtn input[type="checkbox"]:checked + label i:last-child {
-  opacity: 1;
-} */
-
 .fa-heart.invisible {
   display: none;
 }
-
 .likelists {
   margin-left: 5px;
   display: inline-block;
@@ -434,7 +426,6 @@ button:hover {
 
 #modalOpen {
 	display: flex;
-    margin-top: 10px;
     align-items: center;
 }
 
@@ -449,44 +440,54 @@ button:hover {
   font-size: 16px;
   padding: 10px;
 }
-
-.fifthBox {
-  position: relative;
-  /* border:2px solid blue; */
-}
-
 .similarBook {
-  position: relative;
-  display: flex;
-  padding: 0 6px;
-  width:675px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 15px 0;
   
 }
-
-.similarBook a {
-  flex-basis: 20%;
+.fifthBox {
+  padding: 10px;
 }
-
-.similarBook p {
-  display: block;
+.fifthBox h2{
+  text-align:center;
 }
-
 .fifthBox .similarBook img {
-    margin-right: 2px;
-    width: 20%;
+    width: 125px;
+    max-width: 125px;
+    flex: 1;
     box-sizing: border-box;
+    margin-right: 10px;
 }
-
+.fifthBox .similarBook img:last-child {
+    margin-right: 0px;
+}
+.fifthBox .similarBook .noBook {
+	margin: 8% auto;
+    font-weight: bold;
+    color: gray;
+    font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+}
+.hashTag > span {
+	display: block;
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    margin: 6% auto;
+    text-align: center;
+}
 .hashTag input[type="checkbox"] {
   display: none;
 }
 
-.hashTag input[type="checkbox"]:checked + label {
+/* .hashTag input[type="checkbox"]:checked + label {
   background-color: #0099ff;
   color: white;
   border: 1px dotted rgba(0, 101, 216, 0.904);
   cursor: pointer;
-}
+} */
 
 .hashTag input[type="checkbox"] + label {
   border: 1px dotted gray;
@@ -496,16 +497,18 @@ button:hover {
   margin-top: 20px;
   color: black;
   padding: 8px;
-  cursor: pointer;
 }
-
+.hash_tag_wrap label i {
+	cursor: pointer;
+    color: gray;
+    margin-left: 4px;
+}
 .bookStarScore {
-  margin-top: 50px;
-  display: inline-block;
+  	margin-top: 70px;
+    display: inline-block;
     position: relative;
-    margin-left:10px;
-    padding-left:0;
-    width:129.38px;
+    padding-left: 0;
+    width: 129.38px;
 }
 
 .bookStarScore i {
@@ -610,24 +613,56 @@ button:hover {
   background-color: #fff;
   transform: rotate(-45deg);
 }
-
-.starScore input[type="radio"] {
-  display: none;
+.review_star_wrap {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
 }
-
-.starScore label {
-  cursor: pointer;
-  color: rgb(134, 134, 134);
+.review_user_image {
+    display: flex;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
 }
-.starContainer {
-  /* position: relative; */
+.review_user_image img {
+	width: 100%;
+    height: 100%;
+    /* object-fit: cover; */
 }
-
-.starScore {
-  display: flex;
+.review_user_wrap {
+	margin-left:10px;
 }
-
-
-.default_love.invisible {
+.review_user_star.invisible {
 	display:none;
+}
+.review_user_star {
+    display: inline-block;
+    position: relative;
+    padding-left: 0;
+    width: 90px;
+}
+.review_user_star .review_wrap {
+    padding-left: 15px;
+}
+.review_user_start i {
+	font-size: 14px;
+}				
+.review_user_star #default i {
+	color: #979797;
+}
+.review_user_star #default, .review_user_star #full {
+	display:flex;
+}
+.review_user_star #full {
+	position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    top: 0;
+}
+.review_user_star #full i {
+	color: #FFA200;
 }

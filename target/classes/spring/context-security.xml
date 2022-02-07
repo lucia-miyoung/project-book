@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- 접근 제한 -->
+	<!-- <bean id="loginAccessDenied" class="common.security.MemberLoginDeniedHandler"/>
+	
+	로그인 관리
+	<bean id="ryanLoginSuccess" class="com.ryan.domain.security.RyanLoginSuccessHandler"/>
+	
+	비밀번호 암호화 
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	
+	유저정보
+	<bean id="memUserDetailService" class="com.ryan.domain.security.RyanMemberDetailsService" />
+	
+	<security:http pattern="/signupCheck" security="none"/>
+	<security:http pattern="/emailAuthentication" security="none"/>
+	<security:http pattern="/authenticationCheck" security="none"/>
+	<security:http pattern="/authenticationCompleteCheck" security="none"/>
+		
+	<security:http>
+					
+		제한 매핑주소 post는 다 걸어줘야함..4
+		<security:intercept-url pattern="/member/myaccount" access="hasRole('ROLE_MEMBER')" />
+		<security:intercept-url pattern="/member/mypage" access="hasRole('ROLE_MEMBER')"/>
+		<security:intercept-url pattern="/book/insertreadbook" access="hasRole('ROLE_SUB')"/>
+		<security:intercept-url pattern="/boolist/alarm" access="hasRole('ROLE_MEMBER')"/>
+
+		접근권한이 없을경우
+		<security:access-denied-handler ref="memberAccessDenied" />
+		
+		로그인
+		<security:form-login login-page="/login"
+			username-parameter="member_id"
+			password-parameter="member_pw"
+			login-processing-url="/login"/>
+		
+		로그아웃
+		<security:logout logout-url="/logout" invalidate-session="true" delete-cookies="remeber-me" logout-success-url="/" />
+		
+		자동로그인
+		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
+		
+	</security:http> -->
+	
+	<!-- <security:authentication-manager>
+		<security:authentication-provider user-service-ref="ryanUserDetailService">
+			
+			<security:password-encoder ref="bcryptPasswordEncoder"/>
+			
+		</security:authentication-provider>
+	</security:authentication-manager> -->
+	
+</beans>

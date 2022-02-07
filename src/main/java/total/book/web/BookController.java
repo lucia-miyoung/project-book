@@ -16,13 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import common.CommonController;
 import total.book.service.BookService;
 import total.login.service.LoginService;
 import total.member.service.MemberService;
 
 @Controller
 @RequestMapping("/book")
-public class BookController {
+public class BookController extends CommonController{
 	
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	protected ModelAndView mv = null;
@@ -48,16 +49,6 @@ public class BookController {
 		return "/main/main";
 	}
 	
-	@RequestMapping(value="/paper")
-	public String paper(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception{
-		System.out.println("paper {} : " + paramMap);
-		
-		model.addAttribute("paramMap", paramMap);
-		
-		return "/main/paper";
-	}
-
-	
 	@RequestMapping(value="/orderbook")
 	public String orderbook(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception{
 		System.out.println("orderbook {} : " + paramMap);
@@ -69,17 +60,7 @@ public class BookController {
 		System.out.println("book: " + service.bookDetail(paramMap));
 		return "/main/paper";
 	}
-	
-	
-	@RequestMapping(value="/putnewbook")
-	public String putnewbook(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception{
-		System.out.println("putnewbook {} : " + paramMap);
-		
-		model.addAttribute("paramMap", paramMap);
-		
-		return "/main/putNewBook";
-	}
-	
+
 	@RequestMapping(value="/search")
 	public String search(HttpServletRequest req,HttpServletResponse res, @RequestParam HashMap paramMap,ModelMap model) throws Exception{
 		System.out.println("search {} : " + paramMap);

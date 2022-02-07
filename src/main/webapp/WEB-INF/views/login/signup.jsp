@@ -38,46 +38,6 @@
   <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 </head>
 <body>
-<style>
-	.nickname-container {
-		display:flex;
-		flex-wrap:wrap;
-	}
-	.nickname-container label[for="nickname"] {
-   	 flex-basis: 79%;
-    	margin-right: 1%;
-	}
-.nickname-container button {
-  display:block;
-  flex-basis: 20%;
-  transition: 0.2s ease-out;
-  outline: 0;
-  border: 0;
-  cursor: pointer;
-  height: 44px;
-  background-color: var(--main-color);
-  color: #fff;
-  border-radius: 3px;
-  font-size: 14px;
-  box-shadow: 0 2px 8px -1px rgb(0 153 255 / 75%);
-  opacity: 0.8;
-}
-.nickname-container button.dup-chk {
-	display: block;
-    flex-basis: 20%;
-    outline: none;
-    border: 0;
-    border-radius: 3px;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.15);
-    font-size: 14px;
-    transition: 0.2s ease-out;
-    height: 48px;
-    opacity: 0.8;
-    box-shadow: none;
-}
-
-</style>
   <header class="topbar">
     <nav>
       <div class="container">
@@ -183,9 +143,10 @@
       });
     });
   </script>
-  <!-- 도로명주소 API 연결 -->
+
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <script>
+  /* 도로명주소 API 연결 */
     let isAddressWindowOpened = false;
     function openAddressAPI() {
       if (!isAddressWindowOpened) {
@@ -220,6 +181,7 @@
     }
   </script>
   <script>
+  /* 라벨 색 바꾸기 */
     function markChecked(label) {
       if (!label) return;
 
@@ -228,9 +190,8 @@
       label.appendChild(check);
     }
   </script>
-  <!-- 이메일 인증 버튼 활성화 -->
   <script>
-  
+  /* 이메일 인증 버튼 활성화 */
   	const authBtn = document.querySelector('.auth-btn');
   	authBtn.addEventListener('click', () => {
   			const btnVal = authBtn.textContent;
@@ -239,6 +200,8 @@
   			}; 
   	});
     	
+  	
+  	/* 인증 버튼 활성화될때, 타이머 설정 */
     function startTimer(timer) {
       // clear previous timer if any
       const previousCountdown = timer.getAttribute('data-countdown-timer-id');
@@ -256,13 +219,10 @@
         // update timer data and save on timer element
 
         timer.setAttribute('data-countdown', countdown < 0 ? 0 : countdown);
-
         let minutes = String(Math.floor(countdown < 0 ? 0 : countdown/60));
         minutes = (minutes.length === 1 ? '0' : '') + minutes;
-
         let seconds = String(Math.floor(countdown < 0 ? 0 : countdown%60));
         seconds = (seconds.length === 1 ? '0' : '') + seconds;
-
         timer.innerHTML = minutes + ':' + seconds;
 
         // decrease timer
@@ -277,15 +237,12 @@
             alert('인증 코드가 만료되었습니다.\n이메일을 새로 입력해주세요');
             return;
         }
-
       }, 1000);
       // set setInterval id to timer element
-      timer.setAttribute('data-countdown-timer-id', intervalId);
-      
+      timer.setAttribute('data-countdown-timer-id', intervalId);      
 } 
     
-    function requestVerificationCodeConfirmation(authcode) {
-       
+    function requestVerificationCodeConfirmation(authcode) {    
       const emailWrapper = document.querySelector('.email-container');
       const emailInput = document.getElementById('email');
       const email = emailInput.value.trim();
@@ -306,7 +263,6 @@
           if (code == authcode) {
             // lock email input on successful email verification
             emailInput.setAttribute('data-locked', true);
-
             emailWrapper.classList.remove('getAuth');
 
             // hide authentication code input
@@ -343,15 +299,13 @@
             
           } else {
             alert('일치하지 않는 인증 코드 입니다.');
-          }
-         
+          }        
      /*  }
       xhr.send('memberEmail=' + email + '&emailCode=' + code);
       */
-    }
+    }    
     
-    
-    // 이메일 인증 코드 전송 요청
+    /* 이메일 인증 코드 전송 요청 */
     function requestEmailVerificationCode() {
       const emailWrapper = document.querySelector('.email-container');
       const emailAuthButton = document.querySelector('.email-container > button');
@@ -407,12 +361,10 @@
         // remove all previous event handler
         emailAuthButton.parentElement.replaceChild(newEmailAuthButton, emailAuthButton); */
       };
-
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       xhr.send('member_email=' + email);
     }
-    
-    
+     
     function validateEmail() {
       const emailAuthButton = document.querySelector('.email-container > button');
       const emailInput = document.getElementById('email');
@@ -558,15 +510,12 @@
       			if(btnVal== '인증') {
       				requestEmailVerificationCode();
       			}; 
-      	});
-        	 
-        
-        
+      	});   
       });
     }); 
   </script>
-  <!-- 비밀번호 유효성 검사 -->
   <script>
+  /* 비밀번호 유효성 검사 */
     function isValidPasswdFormat(passwd) {
       const passwdPattern = /^(?=.*?[^\s])[\w\d]{4,}$/;
       return passwdPattern.test(passwd);
@@ -616,8 +565,8 @@
       });
     });
   </script>
-  <!-- 핸드폰번호 유효성 검사 -->
   <script>
+  /* 핸드폰 번호 유효성 검사 */
     function isValidTelFormat(tel) {
       tel = tel.trim().replace(/-/g, '').replace(/[\s]/g, '');
       const telPattern = /\d{11}/;
@@ -655,9 +604,8 @@
     });
   </script>
 
-  <!-- 닉네임 유효성 검사 -->
   <script>
-
+	/* 닉네임 유효성 검사 */
     function validateNickName(nickname) {
       const nicknameWrapper = document.querySelector('label[for="nickname"]').parentElement;
       const nicknameLabel = document.querySelector('.nickname-container label');
@@ -752,8 +700,8 @@
  
     });
   </script>
-  <!-- 주소 유효성 검사 -->
   <script>
+  /* 주소 유효성 검사 */
     $(document).ready(function() {
       const addressWrapper = document.querySelector('.address-container');
       const addressInputs = [...(addressWrapper.querySelectorAll('input'))];
@@ -771,8 +719,8 @@
       });
     });
   </script>
-  <!-- 양식 유효성 검사 -->
   <script>
+  /* 양식 유효성 검사 */
   // enable warning message
   function showWarningMsg(container, message) {
     const wrapper = document.querySelector('.form-container .' + container + '-container');
@@ -947,8 +895,6 @@
       submitStatus.isSubmitted = false;
       return;
     }
-    
-    
     const emailBtn = document.querySelector('.email-container > button');
     const nameBtn = document.querySelector('.nickname-container > button');
     const buttons = [emailBtn, nameBtn];
@@ -959,21 +905,11 @@
     
     for(let i=0; i<buttons.length; i++) {
     	const text = buttons[i].textContent.replace(/ /g, '');
-    	/* console.log(text); */
-/*     	if(text != '인증 완료') {
-    		alert('이메일 인증을 완료해주세요.');
-    		return;
-    	}
-    	if(text != '확인 완료') {
-    		alert('이름 중복 확인해주세요.');
-    		return;
-    	}  */
     	
 	}
   }
   
   </script>
-
 
   <!-- enable submit button on at least a single input to each form -->
   <script>

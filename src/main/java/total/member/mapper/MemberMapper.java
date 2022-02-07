@@ -17,6 +17,9 @@ public class MemberMapper extends CommonMapper{
 	public int insertQuestion(HashMap paramMap) {
 		return sss.insert("MemberMapper.insertQuestion", paramMap);
 	}
+	public int deleteQuestion(HashMap paramMap) {
+		return sss.delete("MemberMapper.deleteQuestion", paramMap);
+	}
 	public int totalorderCnt(HashMap paramMap) {
 		return sss.selectOne("MemberMapper.totalorderCnt", paramMap);
 	}
@@ -56,8 +59,14 @@ public class MemberMapper extends CommonMapper{
 	public List emotagList(HashMap paramMap) {
 		return sss.selectList("MemberMapper.emotagList", paramMap);
 	}
-	public int emotagInsert(HashMap paramMap) {
-		return sss.insert("MemberMapper.emotagInsert", paramMap);
+	public int deleteEmotag(HashMap paramMap) {
+		return sss.delete("MemberMapper.deleteEmotag", paramMap);
+	}
+	public int insertEmotag(HashMap paramMap) {
+		return sss.insert("MemberMapper.insertEmotag", paramMap);
+	}
+	public int myemotagdupchk(HashMap paramMap) {
+		return sss.selectOne("MemberMapper.myemotagdupchk",paramMap);
 	}
 	public List zzimList(HashMap paramMap) {
 		return sss.selectList("MemberMapper.zzimList", paramMap);

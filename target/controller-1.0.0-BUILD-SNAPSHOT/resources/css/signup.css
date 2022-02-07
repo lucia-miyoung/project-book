@@ -209,6 +209,7 @@ label[for="passwdConfirm"] {
     transition: 0.2s ease-out;
     height: 48px;
     opacity: 0.8;
+    box-shadow: none;
 }
 .address-container {
   display: flex;

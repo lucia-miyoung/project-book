@@ -40,8 +40,7 @@
 <link rel="stylesheet" href="../../../resources/css/detail.css">
 <link rel="stylesheet" href="../../../resources/css/common.css" />
 <script type="text/javascript" src="/resources/js/jquery-1.11.3.min.js"></script>
-<script type="text/javascript"
-	src="/resources/js/jquery-ui-1.10.3.custom.js"></script>
+<script type="text/javascript" src="/resources/js/jquery-ui-1.10.3.custom.js"></script>
 <!-- jQuery CDN -->
 <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 <!-- slidify sliders and fadeInUp reveal -->
@@ -56,8 +55,7 @@
 			<div class="container">
 				 <a href="javascript: history.back();"><i class="fas fa-arrow-left"></i><span>이전</span></a>
                  <a href="/book/main"><i class="fas fa-home"></i><span>홈</span></a>
-				<h2>도서 상세 - ${bookInfo.book_name}</h2>
-
+				<h2>도서 상세</h2>
 				<div class="login-out">
 					<c:choose>
 						<c:when test="${sessionScope.userId != null }">
@@ -73,42 +71,6 @@
 			</div>
 		</nav>
 	</header>
-
-	<script>
-
-	function gologinout(num) {
-		
-		if(num == 0) {
-			if(!confirm('로그아웃 하시겠습니까?')) {
-				return;
-			}
-		$('#member_id').val('');
-		
-			$.ajax({
-				url: '/logout',
-				data: {
-					"member_id" : ''
-				},
-				success: function(rs) {
-					alert('로그아웃이 완료됐습니다.');
-					location.reload();
-					
-				}, error : function(xhr, status, error) {
-					alert('오류');
-				}
-			});
-			
-		} else {
-			if(!confirm('로그인 하시겠습니까?')) {
-				return;
-			}
-			alert('로그인 페이지로 이동합니다.');
-			location.href='/login';
-		}
-		
-	}
-	
-</script>
 	<div class="wrapper">
 		<form id="frm" method="post">
 			<input type="hidden" name="member_name" id="member_name" value="${ sessionScope.userId }" /> 
@@ -117,27 +79,23 @@
 			<input type="hidden" name="book_id" id="book_id" value="${paramMap.book_id}" /> 
 			<input type="hidden" name="zzim_chk" id="zzim_chk" value="${zzimCnt}" />
 		</form>
-
+		<!-- form 끝 -->
 		<div class="top-container">
 			<c:if test="${sessionScope.userId != null}">
-				<a href="javascript:goView('${ sessionScope.userId }');"
-					class="mypageBtn">MY</a>
+				<a href="javascript:goMypage('${ sessionScope.userId }');" class="mypageBtn">MY</a>
 			</c:if>
 			<div class="leftBox">
 				<div class="imageBox">
-					<img src="/bookImg/book${paramMap.book_id}.jpg"
-						alt="없음" />
+					<img src="/bookImg/book${paramMap.book_id}.jpg"	alt="없음" />
 				</div>
-
 			</div>
-
-			<!-- top-container end -->
+			<!-- leftbox 끝 -->
+			
 			<div class="introWrite">
 				<h3>${bookInfo.book_name}</h3>
 				<ul>
-					<li>${bookInfo.book_author}</li>
-					<li style="color: gray;">${bookInfo.book_date}</li>
-					<li style="color: lightgray;">${bookInfo.book_type}</li>
+					<li>${bookInfo.book_author} (<span style="color: gray;">${bookInfo.book_date}</span>)</li>
+					<li style="color: gray;">${bookInfo.book_type}</li>
 				</ul>
 				<div class="bookStarScore">
 					<div id="default">
@@ -168,9 +126,7 @@
 					 	</span>
 					</div>
 				</div>
-
-				<!-- <input type="text" name="starTxt" id="starTxt" value="3"> -->
-				<form>
+				<!-- bookStarScore 끝 -->
 					<div class="choiceBtn">
 						<input type="button" value="바로읽기" class="goRead" id="choose"
 						onclick="goViewer();" />
@@ -180,31 +136,19 @@
 						<input type="button" value="바로 구매" class="goOrder" id="choose" 
 						onclick="goOrder();"/>
 					</div>
-				</form>
 				<div class="likeChk">
-					<a href="#" id="modalOpen">
+					<a id="modalOpen">
 						<div class="likelists">
 							<div class="likePeople">
 								<img src="/image/default.png"/>
 								<img src="/image/default.png"/>
 								<img src="/image/default.png"/>
-							<%-- <c:if test="${likedlist.size() == 0}">
-								<img src="/image/default.png"/>
-								<img src="/image/default.png"/>
-								<img src="/image/default.png"/>
-							</c:if>
-							<c:if test="${likedlist.size() > 0}">
-								<c:forEach items="${likedlist}" var="list">
-									<img src="/image${list.member_image}"/>
-								</c:forEach>
-							</c:if> --%>
 							</div>
-						</div> <span id="people"> 좋아하는 사람들</span>
+						</div> 
+						<span id="people"> 좋아하는 사람들</span>
 					</a>
-
 					<div class="likeBtn">
 						<span class="countLike">${heartCnt}</span>
-
 						<div class="heartClick">
 							<c:choose>
 								<c:when test="${sessionScope.userId != null}">
@@ -219,23 +163,16 @@
 								<c:otherwise>
 									<span class="far fa-heart" id="heartD"></span>
 								</c:otherwise>
-
 							</c:choose>
-						</div>
+						 </div>
 					</div>
-					<!--//likeBtn 끝  -->
-
+					<!--likeBtn 끝  -->
 				</div>
 				<!-- likeChk end -->
 				<div class="likemodal invisible">
-
 					<div class="modal_content">
-						<p>
-							<i class="fab fa-gratipay"></i> 좋아요한 사람들
-						</p>
-
+						<p><i class="fab fa-gratipay"></i> 좋아요한 사람들</p>
 						<div class="likeList">
-
 							<ul>
 							<c:choose>
 							<c:when test="${likedlist.size() > 0}">
@@ -263,48 +200,41 @@
 							<button type="button" id="peopleChkBtn">확인</button>
 						</span>
 					</div>
-
 				</div>
-
 			</div>
-			<!-- introWrite -->
+			<!-- introWrite 끝 -->
 		</div>
-		<!-- top-container -->
-
+		<!-- top-container 끝-->	
 		<div class="body-container">
-
 			<div class="firstBox">
 				<h2># 감성태그</h2>
-
 				<div class="hashtagDetail">
-
 					<div class="hashTag">
 						<c:choose>
 							<c:when test="${emotag.size() > 0}">
-								<c:forEach items="${emotag}" var="tag" varStatus="idx">
-									<c:if test="${tag.emo_tag != null }">
-										<input type="checkbox" name="tagChkbox" id="${idx.index}">
-										<label for="${idx.index}">${tag.emo_tag}</label>
-									</c:if>
+								<c:forEach items="${emotag}" var="tag" varStatus="idx" begin="0" end="4">
+									<div class="hash_tag_wrap" style="display:inline-block;" id="${idx.index}">
+										<input type="checkbox" class="hash_emo_tag" id="${idx.index}">
+										<label for="${idx.index}">#${tag.emo_tag} 
+										<c:if test="${sessionScope.userId == tag.member_name }">
+											<i class="far fa-times-circle"></i>
+										</c:if>
+										</label>
+									</div>
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
-								<span
-									style="display: block; text-align: center; font-size: 14px; color: gray; padding: 5px;">
-									There is no review. </span>
+								<span> 등록된 감성 태그가 없습니다. </span>
 							</c:otherwise>
 						</c:choose>
 					</div>
-					<div class="tagtag">
-						<form method="POST"></form>
-						<input type="text" name="emoTag" class="emoTag"
-							placeholder="이 책에 대한 나만의 #감성태그를 달아주세요"> <input
-							type="button" value="등록" class="inputBtn">
+					<div class="emo_tag_wrap">
+						<input type="text" name="emo_tag" class="emo_tag"
+							placeholder="이 책에 대한 나만의 #감성태그를 달아주세요">
+							<input type="button" value="등록" class="inputBtn">
 					</div>
-
 				</div>
 			</div>
-
 			<!-- firstBox end -->
 			<div class="wrapperBox">
 				<div class="secondBox box">
@@ -324,7 +254,7 @@
 
 						과연 달빛 마신 소녀 루나와 이상한 가족들은 보호령의 검은 장막을 걷어내고 사람들을 무겁게 휘감은 슬픔과 두려움을
 						사라지게 할 수 있을까? 이들이 펼치는 사랑과 모험의 환상적인 달빛 마법이 시작된다.</div>
-					<input type="button" value="더보기" class="clicnBtn">
+					<input type="button" value="더보기" class="clickBtn">
 
 				</div>
 				<div class="thirdBox box">
@@ -345,40 +275,78 @@
 						두고 다툼이 벌어지다 ∥ 41장 몇 개의 길이 만나다 ∥ 42장 세상이 파랗고 은빛이고 은빛이고 파랗다 ∥ 43장
 						루나가 처음으로 의도를 갖고 마법을 걸다 ∥ 44장 마음이 움직이다 ∥ 45장 거대한 용이 거대한 결단을 내리다 ∥
 						46장 몇 가족이 다시 만나다 ∥ 47장 글럭이 여행을 떠나며 시를 남기다 ∥ 48장 마지막 이야기를 하다</div>
-					<input type="button" value="더보기" class="clicnBtn">
+					<input type="button" value="더보기" class="clickBtn">
 				</div>
 				<div class="fourthBox box">
-					<h2>리뷰</h2>
+					<h2>리뷰 (${bookScore.cnt})</h2>
 					<div class="reviewDetail detail">
 						<table>
-							<tbody>
-								<tr>
-									<td>abc1234</td>
-									<td>2019/11/09</td>
+						 <c:choose>
+							<c:when test="${reviewallList.size() > 0}">
+                				<c:forEach var="rev" items="${reviewallList}">
+              						<tbody>
+										<tr style="background-color: #E8DCDC;">
+											<td>
+												<div class="review_star_wrap">
+													<div class="review_user_image">
+														<img src="/image${rev.member_image }"/>
+													</div>
+													<div class="review_user_wrap">
+														<span class="review_user_name">${rev.member_name }</span>
+														<div class="review_user_star">
+															<div id="default">
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+														</div>
+														<div id="full">
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+															<i class="fas fa-star"></i>
+														</div>
+													<input type="hidden" class="review_user_score" value="${rev.review_score }"/>
+													</div>
+												</div>
+											</div>
+											</td>
+											<td><span class="review_date">${rev.review_date }</span></td>
+										</tr>
+									<tr>
+									<td colspan="2" style="background-color: #FFF7F6;">
+										<div class="review_wrap">
+											<span class="review_title">${rev.review_title }</span>
+											<input type="text" name="review_content" class="review_content" value="${rev.review_content}" readonly />
+										</div>
+									</td>
 								</tr>
-								<tr>
-									<td colspan="2"></td>
-								</tr>
-								<tr>
-									<td colspan="2"><textarea name="reviewContent"
-											id="reviewContent" readonly></textarea></td>
-								</tr>
-							</tbody>
+								</tbody>
+              					</c:forEach>
+              				</c:when>
+						<c:otherwise>
+								<span class="noUserReview"> 등록된 리뷰가 없습니다. </span>
+						</c:otherwise>
+						</c:choose>
 						</table>
 					</div>
-					<input type="button" value="더보기" class="clicnBtn">
+					<input type="button" value="더보기" class="clickBtn">
 				</div>
 				<div class="fifthBox">
 					<h2>관련 도서</h2>
 					<div class="similarBook">
 					<c:choose>
-						<c:when test="${bookList.size() > 0 }">
-							<c:forEach items="${bookList }" var="list" varStatus="status" begin="15" end="19">
-								<img src="/bookImg/book${list.book_id}.jpg" alt="">
+						<c:when test="${relbookList.size() > 0 }">
+							<c:forEach items="${relbookList}" var="list" begin='0' end='4'>
+								<a href="javascript: goView('${list.book_id}');">
+									<img src="/bookImg/book${list.book_id}.jpg" alt="">
+								</a>
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
-							<span> 관련 도서가 없습니다. </span>
+							<span class="noBook"> 관련 도서가 없습니다. </span>
 						</c:otherwise>
 					</c:choose>	
 					</div>
@@ -389,88 +357,186 @@
 		<!-- body-container -->
 	</div>
 	<!-- wrapper end -->
-	</div>
-	</div>
+
 	
-<!-- 별점 구현 -->
 <script>
-	const starWidth = document.querySelector('.bookStarScore').offsetWidth;
-	const starCnt = document.querySelectorAll('.bookStarScore #default i').length;
-	let bookScore = Number(document.querySelector('.bookScoreWrap > .bookScore').textContent.trim());
-	const fullStar = document.querySelector('.bookStarScore #full');
-	console.log(bookScore);
-	let score = (starWidth/starCnt) * bookScore;
-	fullStar.style.width = score+"px";
-	
-	
+function gologinout(num) {
+	/* 로그아웃하기 */
+	if(num == 0) {
+		if(!confirm('로그아웃 하시겠습니까?')) {
+			return;
+		}	
+		$.ajax({
+			url: '/logout',
+			data: {
+				"member_name" : ''
+			},
+			success: function(rs) {
+					alert('로그아웃이 완료되었습니다.');
+					location.reload();
+					$('#member_name').val('');
+			}, error : function(xhr, status, error) {
+				alert('오류');
+			}
+		});	
+	} else {
+		alert('로그인 페이지로 이동합니다.');
+		location.href='/login';
+	}
+}
 </script>
-			
-	<script>
-    const boxes = document.querySelectorAll(".box");
-    const bigBox = document.querySelector(".wrapperBox");
-    const details = document.querySelectorAll(".detail");
-    const btns = document.querySelectorAll(".clicnBtn");
-    let boxHeight = 110 + "px";
+<script>
+	/* 책 별점 구현 */
+	const starWrap = document.querySelector('.bookStarScore');
+	const starWidth = starWrap.offsetWidth;
+	const starCnt = document.querySelectorAll('.bookStarScore #default i').length;
+	let bookstarScore = document.querySelector('.bookScoreWrap > .bookScore').textContent.trim();
+	let bookScore = Number(bookstarScore);
+	const fullStar = document.querySelector('.bookStarScore #full');
+	
+	if(starWrap) {
+		let score = (starWidth/starCnt) * bookScore;
+		fullStar.style.width = score+"px";	
+		if(bookstarScore.split('.')[1] == '') {
+			document.querySelector('.bookScoreWrap > .bookScore').textContent = bookstarScore.split('.')[0];
+		}
+	}
 
-    bigBox.addEventListener("click", (event) => {
-      if (event.target.nodeName == "INPUT") {
-        const here = event.target.parentNode.querySelector(".detail");
-        if (here.style.height == boxHeight) {
-          here.style.height = "auto";
-        } else {
-          here.style.height = boxHeight;
-        }
-      }
-    });
+	/* 유저의 개별 별점 구현 */
+	const userstarWrap = document.querySelectorAll('.review_user_star');
+	const userStarWidth = $('.review_user_star').width();
+	const userStars = document.querySelectorAll('.review_user_score');
+	const userFullStar = document.querySelectorAll('.review_user_star #full');
+	let userstarCnt = document.querySelectorAll('.review_user_star #default')[0];
+		
+		if(userstarCnt) {
+			userstarCnt = userstarCnt.querySelectorAll('i').length;
+		}
+	
+		userStars.forEach((star, index) => {
+			let num = Number(star.value);
+				let userScore = (userStarWidth/userstarCnt) * num;
+				userFullStar[index].style.width = userScore+"px";
+		});
+</script>
 
-// 해시태그
+<script>
+	/* 탭 클릭시 해당 상세 정보 보이기  */
+	const wrapboxes = document.querySelectorAll('.wrapperBox .detail');
+	wrapboxes.forEach(box => {
+		const boxButton = box.parentNode.querySelector('input[type="button"]');
+		boxButton.addEventListener('click', () => {
+				box.classList.toggle('open');
+		});
+	});
 
+	/* 해시태그 */
     const hashTagBox = document.querySelector(".hashTag");
-    const inputTag = document.querySelector(".emoTag");
+    const hashtagspan = document.querySelector(".hashTag > span");
+    const inputTag = document.querySelector(".emo_tag");
     const addBtn = document.querySelector(".inputBtn");
-    const labels = document.querySelectorAll(".hashTag input[type='checkbox'] + label");
-    let output = "";
-    let index = 0;
-
-    function createItem(value, idx) {
-      if (inputTag.value == "" || inputTag.value == null) {
-        alert("빈칸을 입력해주세요");
-        inputTag.focus();
-        return;
-      }
-
-      inputTag.value = "";
-      inputTag.focus();
-      index = idx;
-    }
-
-    function addItem() {
-      const value = inputTag.value;
-      if (index < 5) {
-        const item = createItem(value, index + 1);
-      } else {
-        alert("해시태그는 5개까지 가능합니다.");
-        inputTag.value = "";
-        inputTag.focus();
-        return;
-      }
-    }
-
+    const tagwrap = document.querySelectorAll('.hashTag .hash_tag_wrap');
+	let tagindex = 0;
+	
+	if(tagwrap.length > 0) {
+		tagindex = Number(tagwrap[tagwrap.length-1].getAttribute('id'))+1;
+	}
+	
     addBtn.addEventListener("click", () => {
-      addItem();
+      	addItem();
     });
 
     inputTag.addEventListener("keypress", (event) => {
-      if (event.key === "Enter") {
-        addItem();
-      }
+      	if (event.key === "Enter") {
+        	addItem();
+      	}
     });
 
+      function addItem() {  
+    	if(inputTag.value == '' || inputTag.value == null) {
+    		alert('빈칸을 입력해주세요.');
+    		inputTag.focus();
+    		return;
+    	}
+    	
+    	if(tagwrap.length == 5) {
+    		alert('해시태그는 5개까지 가능합니다.');
+    		return;
+    	}
+    	
+        const usernm = document.querySelector('#member_name').value;
+        const bookid = document.querySelector('#book_id').value;
+        const emoInput = document.querySelector('.emo_tag').value;
+		
+	 $.ajax({
+        	url:"/member/setdetailInfo",
+        	data: {
+        		 "status" : "I",
+        		 "member_name" : usernm, 
+        		 "book_id": bookid, 
+        		 "emo_tag": emoInput
+        	},
+        	success:function(rs) {
+        		if(rs > 0) { 
+        			if(hashtagspan) {
+        				hashtagspan.remove();
+        			}
+        			hashTagBox.innerHTML += 
+        			'<div class="hash_tag_wrap" style="display:inline-block;" id="'
+        			+tagindex+'"><input type="checkbox" class="hash_emo_tag" id="'
+        			+tagindex+'"><label for="'+tagindex+'">#'+emoInput+'<i class="far fa-times-circle"></i></label></div>';
+        			inputTag.value='';
+        			inputTag.focus();
+        		} else {
+        			alert('동일한 아이디로 책 한권당 1개의 태그만 가능합니다.');
+        			inputTag.value='';
+        			inputTag.focus();
+        		}
+        	},
+        	error: function(xhr,status,error) {
+        		alert("오류");
+        	}
+        });
+      }
 
+      /* 내 해시태그 삭제하기 */
+      hashTagBox.addEventListener('click', (event) => {
+    		if(event.target.localName == "i") {
+    			const parevent = event.target.parentNode.parentNode;
+    			delItem(parevent);
+    		}  
+      });
+      
+      function delItem(parent) {
+    	  const tagwrap = document.querySelectorAll('.hashTag .hash_tag_wrap');
+    	  const usernm = document.querySelector('#member_name').value;
+          const bookid = document.querySelector('#book_id').value;
+          
+          $.ajax({
+          	url:"/member/setdetailInfo",
+          	data: {
+          		 "status" : "D",
+          		 "member_name" : usernm, 
+          		 "book_id": bookid
+          	},
+          	success:function(rs) {
+          		console.log(rs);
+          		if(rs > 0) {
+          			parent.remove();
+          			if(tagwrap.length == 1) {
+          				location.reload();
+          			} 
+          		}
+          	},
+          	error: function(xhr,status,error) {
+          		alert("오류");
+          	}
+          });
+      }
+      
     </script>
-
-	<!-- 좋아요 버튼 -->
-	<script>
+    <script>
+    /* 하트 클릭 */
     const heart = document.querySelector('.heartClick i');
     let countLike = document.querySelector('.countLike');
     let loveCnt = Number(countLike.innerHTML);
@@ -500,8 +566,7 @@
 		});	
     }
 
-function changeHeart(yn) {
-                    		    	
+function changeHeart(yn) {                		    	
     const status = document.querySelector('#status');
     const dupCheck = document.querySelector('#dup_chk');
     const memName = $('#member_name').val();
@@ -529,9 +594,8 @@ function changeHeart(yn) {
     }
 
     </script>
-
-	<!-- 찜하기 버튼 -->
 	<script>
+	/* 찜하기 버튼 */
     const zzim = document.querySelector('#zzim_chk')
     const status = document.querySelector('#status');
     const zzimBtn = document.querySelector('.zzimBtn');
@@ -557,7 +621,6 @@ function changeHeart(yn) {
     		gozzim();
     });
     
-
     function gozzim() {
     	 const status = document.querySelector('#status');
     	 const dupChk = status.value > 0 ? 'U' : 'I';
@@ -587,7 +650,7 @@ function changeHeart(yn) {
     	});
     }
     
-    //좋아요한 사람들 modal창 
+    /* 좋아요한 사람들 팝업창 */ 
     const likemodalBtn = document.querySelector('#peopleChkBtn');
     const likemodal = document.querySelector('.likemodal');
     
@@ -606,10 +669,9 @@ function changeHeart(yn) {
     	$('#frm').attr('action', '/member/mypage');
     	$('#frm').submit();
     }
-    
     </script>
-    
     <script> 
+    /* viewer 페이지로 이동 */
     function goViewer() {
     	if(${orderchk} == 0 && ${sessionScope.userId == null}) {
     		if(!confirm('구매 후 이용 가능합니다. 로그인하시겠습니까?')) {
@@ -629,11 +691,20 @@ function changeHeart(yn) {
     	$('#frm').submit();
     }
     
-    function goView(num) {
+    /* 마이페이지가기 */
+    function goMypage(num) {
     	$('#frm').attr("action", "/member/mypage");
     	$('#frm').submit();
     }
     
+    /* 해당 책 상세페이지로 가기 */  	
+    function goView(num) {
+     	$("#book_id").val(num);
+       $("#frm").attr("action","/member/detail");
+       $("#frm").submit();
+     }  
+    
+    /* 바로구매 버튼 */
     function goOrder() {
     	const memNm = document.querySelector('#member_name').value;
     	if(memNm == '' || memNm == null) {
@@ -644,18 +715,13 @@ function changeHeart(yn) {
 			location.href="/login";
 			return;
     	}
-    	
     	if(${orderchk} > 0) {
     		alert('이미 구매한 도서입니다. ID당 도서 1개씩만 구매 가능합니다.');
     		return;
     	}
-    	
     	$('#frm').attr("action", "/member/paycheck.do");
     	$('#frm').submit();
     }
-    
-    </script>
-
+	</script>
 </body>
-
 </html>

@@ -45,46 +45,11 @@
             </div>
         </nav>
 </header>
-<script>
-
-
-	
-	function gologinout(num) {
-		
-		if(num == 0) {
-			if(!confirm('로그아웃 하시겠습니까?')) {
-				return;
-			}
-
-			  $.ajax({
-				url: '/logout',
-				data: {
-					"member_id" : $('#member_id').val()
-				}
-				,success: function(rs) {
-					alert('로그아웃 됐습니다.');
-					location.reload();
-				
-				}, error : function(xhr, status, error) {
-					alert('오류');
-				}
-			});  
-			
-		} else {
-			alert('로그인 페이지로 이동합니다.');
-			location.href='/login';
-		}
-		
-	}
-	
-</script>
-
-
  <div class="newMyInfo">
- 
  	<form id="frm" method="post" action="" enctype="multipart/form-data">
+ 	<input type="hidden" name="loginName" id="loginName" value="${sessionScope.userId }"/>
  	<input type="hidden" name="status" id="status" value=""/>
- 	<input type="hidden" name="member_id" id="member_id" value="${paramMap.member_id }"/>
+ 	<input type="hidden" name="member_id" id="member_id" value="${memData.member_id }"/>
       <div class="imageBox">
         <img id="myFaceImage" src="/image${memData.member_image}"/>
         <!-- 사진 넣을거임 -->
@@ -115,13 +80,13 @@
           type="password"
           id="inputPw"
           maxlength="16"
-          placeholder="비밀번호" />
+          placeholder="비밀번호" value="${memData.member_pw }"/>
         <span id="hereText">8자 이상, 16자 이하로 입력해주세요.</span>
         <input
           type="password"
           id="inputPwAgain" 
           name="member_pw"
-          placeholder="비밀번호 확인"/>
+          placeholder="비밀번호 확인" value="${memData.member_pw }"/>
         <span class="data-chk" id="rechkPW"></span>
       </div>
       <hr class="firstLine" />
@@ -196,10 +161,37 @@
       </form>
     </div>
     <!-- 제일 큰 박스 end -->
-
 <script>
-alert("회원님의 정보 보호 및 정확한 확인을 위해 \n회원 정보 수정시 다시 로그인하셔야 합니다. \n이용시 참고 바랍니다.");
+function gologinout(num) {
+	/* 로그아웃하기 */
+	if(num == 0) {
+		if(!confirm('로그아웃 하시겠습니까?')) {
+			return;
+		}	
+		$.ajax({
+			url: '/logout',
+			data: {
+				"member_name" : ''
+			},
+			success: function(rs) {
+					alert('로그아웃이 완료되었습니다.');
+					location.reload();
+					$('#member_name').val('');
+			}, error : function(xhr, status, error) {
+				alert('오류');
+			}
+		});	
+	} else {
+		alert('로그인 페이지로 이동합니다.');
+		location.href='/login';
+	}
+}
+</script>
+<script>
 
+ alert("닉네임을 변경할 경우, 회원님의 정보 보호를 위해 \n다시 로그인하셔야 합니다. 이용시 참고 바랍니다.");
+
+/* 정보 수정 취소 */
 const resetBtn = document.querySelector(".resetBtn");
 resetBtn.addEventListener('click', () => {
 	if(!confirm("정보 수정을 취소하시겠습니까?")) {
@@ -208,8 +200,8 @@ resetBtn.addEventListener('click', () => {
 	location.href="/member/myaccount";
 });
 
+/* 프로필 사진, 기본이미지로 설정 */
 const deleteBtn = document.querySelector('#deleteBtn');
-
 deleteBtn.addEventListener('click', () => {
 	if(!confirm("기본 이미지로 수정하시겠습니까?")) {
 		return;
@@ -217,11 +209,10 @@ deleteBtn.addEventListener('click', () => {
 	const imgthumb = document.querySelector('.imageBox > img');
 	imgthumb.setAttribute('src', "/image/default.png");
 });
-
 </script>
 
 <script>
-//파일 첨부 & 썸네일
+/* 파일 첨부 & 썸네일 */
 const userimg = document.querySelector('#camera');
 userimg.addEventListener('change', (event) => {
 	onsetimage(event); 
@@ -244,16 +235,13 @@ let imgtype = ['jpg', 'jpeg', 'png', 'svg'];
 		let url = event.target.result;
 		const imgthumb = document.querySelector('.imageBox > img');
 		imgthumb.setAttribute('src', url);
-
 	};
 }
-
-
-
 </script>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+/* 주소 API 연결 */
 function zipCodeClick() {
 	const zipcode = document.querySelector('#homeZipcode');
 	const address = document.querySelector('#homeAdrs');
@@ -270,9 +258,7 @@ function zipCodeClick() {
 }
 </script>
 <script>
-
-
-//이름 중복 확인
+/* 이름 중복 확인 */
 const nameChkBtn = document.querySelector('#nickNameChk');
 const nameMsg = document.querySelector('.wrapperOne span');
 
@@ -311,11 +297,10 @@ function nameCheck(name) {
 		error : function(xhr, status, error) {
 			alert('오류');
 		}
-	}); 
-	
+	}); 	
 }
 
-//비밀번호 확인
+/* 비밀번호 확인 */
 const pw = document.querySelector('#inputPw');
 const pwChk = document.querySelector('#inputPwAgain');
 const msg = document.querySelector(".wrapperOne_half #rechkPW");
@@ -337,6 +322,7 @@ pwChk.addEventListener('blur', () => {
 	}
 });
 
+/* 전화번호 validation 확인 */
 const telInput = document.querySelector('#phoneNum');
 const telmsg = document.querySelector('.phoneUpdate span');
 	
@@ -369,6 +355,7 @@ const chkBtn = document.querySelector('.chkBtn');
 	});
 	    
 
+/* 형식 확인 */
 function isValidNickNameFormat(nickname) {
     const nicknamePattern = /^[가-힣]+$/;
     return nicknamePattern.test(nickname);
@@ -383,14 +370,15 @@ function isValidTelFormat(tel) {
     return telPattern.test(tel);
  }
     
+/* 저장 버튼 클릭시 validation 확인 */    
 function submitChecks() {
-	
 	const spanArr = document.querySelectorAll('span.data-chk');
 	const nickName = document.querySelector('#nickName');
 	const inputPw = document.querySelector('#inputPw');
 	const inputPwAgain = document.querySelector('#inputPwAgain');
 	const phone = document.querySelector('#phoneNum');
 	const inputs = [nickName, inputPw, inputPwAgain, phone];
+	const userNm = document.querySelector('#loginName');
 
    		for(let i=0; i<inputs.length; i++) {
    			if(inputs[i].value.trim() == '' || inputs[i].value.trim() == null) {
@@ -403,7 +391,7 @@ function submitChecks() {
 		for(let i=0; i<spanArr.length; i++) {
 			const id = spanArr[i].parentNode.querySelector('input').getAttribute('id');
 			if(spanArr[i].getAttribute('data-check') != 'yes'){
-				if(id=="nickName") {
+				if(nickName.value != userNm.value && id=="nickName") {
 					alert('이름 중복 확인을 해주세요.');
 					spanArr[i].parentNode.querySelector('input').focus();
 					return;
@@ -419,16 +407,13 @@ function submitChecks() {
 					return;
 				}	
 			}	
-		}
-		
+		}	
 		if(!confirm('수정하시겠습니까?')) {
 			return;
-		}		
-		
+		}			
 		$('#status').val('U');	
 		
 		const orginImg = document.querySelector('.imageBox > img').getAttribute('src').split('/image')[1];
-		console.log(orginImg);
 		const formvalue = $('#frm')[0];
 		let formdata = new FormData(formvalue);
 		formdata.append("orgin_img", orginImg);
@@ -442,8 +427,13 @@ function submitChecks() {
 			type: 'POST',
 			success: function(rs) {
 				if(rs.result > 0) {
-					alert('정보수정이 완료되었습니다. 다시 로그인 해주세요.');
-					location.href="/login";
+					if(nickName.value == userNm.value) {
+						alert('정보 수정이 완료되었습니다.');
+						location.href="/member/myaccount";
+					} else {
+						alert('정보 수정이 완료되었습니다. 다시 로그인 해주세요.');
+						location.href="/login";
+					}
 				} else {
 					alert('정보 수정이 실패했습니다. 다시 확인해주세요.');
 				}
@@ -453,7 +443,6 @@ function submitChecks() {
 			}
 		});
 }    
-
 </script>
 
 </body>

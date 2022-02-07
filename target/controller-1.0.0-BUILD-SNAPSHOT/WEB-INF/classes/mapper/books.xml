@@ -2,7 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace = "BookMapper">
-	
+	<select id="relatedBookList" parameterType="hashMap" resultType="hashMap">
+		select book_id, book_name, book_author, book_type, book_price from books 
+		where replace(book_type, ' ', '') 
+		like (select concat('%',replace(book_type, ' ', ''), '%') from books 
+		where book_id = #{book_id}) and book_id NOT IN (#{book_id});
+	</select>
 	<select id="salebookList" parameterType="hashMap" resultType="hashMap">
 		select a.book_id, a.book_name, a.book_author, a.book_type, 
 		a.book_date, a.book_price, b.sale, 

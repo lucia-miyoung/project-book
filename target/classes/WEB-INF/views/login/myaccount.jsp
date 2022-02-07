@@ -49,16 +49,15 @@
 <script src="../../../resources/js/common.js"></script>
 </head>
 <body>
-	<sec:authorize access="isAuthenticated()">
+	<!-- <sec:authorize access="isAuthenticated()">
 		<sec:authentication property="principal" var="member" />
-	</sec:authorize>
+	</sec:authorize> -->
 	<header class="topbar">
 		<nav>
 			<div class="container">
 				 <a href="javascript: history.back();"><i class="fas fa-arrow-left"></i><span>이전</span></a>
                  <a href="/book/main"><i class="fas fa-home"></i><span>홈</span></a>
 				<h2>내 정보 관리</h2>
-
 				<div class="login-out">
 					<c:choose>
 						<c:when test="${sessionScope.userId != null }">
@@ -74,7 +73,6 @@
 			</div>
 		</nav>
 	</header>
-	
 
 	<div class="wrapper">
 	<form id="frm" method="post">
@@ -125,35 +123,29 @@
     </div>
   </div>
 <script>
-
 function gologinout(num) {
-	
+	/* 로그아웃하기 */
 	if(num == 0) {
 		if(!confirm('로그아웃 하시겠습니까?')) {
 			return;
-		}
-		
-		alert('로그아웃 됐습니다.');
-		
+		}	
 		$.ajax({
 			url: '/logout',
 			data: {
-				"member_id" : ''
+				"member_name" : ''
 			},
 			success: function(rs) {
-				location.reload();
-				$('#member_id').val('');
-			
+					alert('로그아웃이 완료되었습니다.');
+					location.reload();
+					$('#member_name').val('');
 			}, error : function(xhr, status, error) {
 				alert('오류');
 			}
-		});
-		
+		});	
 	} else {
 		alert('로그인 페이지로 이동합니다.');
 		location.href='/login';
 	}
-	
 }
 
 function goview(url) {
@@ -167,8 +159,6 @@ function goview(url) {
 }
 
 </script>
-
-	
 </body>
 
 </html>

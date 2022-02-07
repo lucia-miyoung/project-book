@@ -13,7 +13,6 @@
     <script src="https://kit.fontawesome.com/3fb56dfe63.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../../../resources/css/reset.css">
     <link rel="stylesheet" href="../../../resources/css/common.css">
- <!--    <script src="../../../resources/js/common.js"></script> -->
 </head>
 <body>
    <header class="topbar">
@@ -38,55 +37,21 @@
 			</div>
 		</nav>
 	</header>
-	<script>
-
-	function gologinout(num) {
-		
-		if(num == 0) {
-			if(!confirm('로그아웃 하시겠습니까?')) {
-				return;
-			}
-		$('#member_name').val('');
-		
-			$.ajax({
-				url: '/logout',
-				data: {
-					"member_name" : ''
-				},
-				success: function(rs) {
-					alert('로그아웃이 완료됐습니다.');
-					location.reload();
-					
-				}, error : function(xhr, status, error) {
-					alert('오류');
-				}
-			});
-			
-		} else {
-			if(!confirm('로그인 하시겠습니까?')) {
-				return;
-			}
-			alert('로그인 페이지로 이동합니다.');
-			location.href='/login';
-		}
-		
-	}
-	
-</script>
-
 <div class="bigBox">
       <div class="tabBox">
           <ul class="tabs">
-                <li class="active" data-id="one">
-                      문의하기
-                </li>
-                <li data-id="two">           
+                <li class="qstStay active" data-id="two" >           
                       문의내역
+                </li>
+                 <li class="qstAdd" data-id="one">
+                      문의하기
                 </li>
           </ul>
       </div>
       <form method="post" id="postform" enctype="multipart/form-data">
       <input type="hidden" id="member_name" name="member_name" value="${sessionScope.userId }"/>
+      <input type="hidden" id="qst_idx" name="qst_idx" value=""/>  
+      <input type="hidden" id="status" name="status" value=""/>
          <div class="contentBox" data-id="one">
             <div class="goQuestion">
               <div id="msg-wrap">
@@ -131,13 +96,6 @@
             <div class="email">
                 <input type="text" name="email" id="email">
             </div>
-            <!-- <label for="tellInput">
-                연락처
-            </label>
-            <div class="tell">
-                <input type="text" name="tell" id="tell">
-            </div> -->
-
         <div class="agreeChk">
             <label for="chkbox">
             <input type="checkbox" name="chkbox" id="chkbox">
@@ -158,7 +116,6 @@
     
                 </li>
             </ul>
-
         </div>
         <div class="btn">
             <button type="button" id="preBtn" onclick="history.back()">이전</button>
@@ -184,12 +141,12 @@
                    <!-- foreach 시작 -->
                    <c:choose>
 				<c:when test="${myqstList.size() > 0}">
-                <c:forEach var="list" items="${myqstList}">
-              		<tbody>
+                <c:forEach var="list" items="${myqstList}" varStatus="index">
+              		<tbody data-var="${list.qst_index }">
               		<tr class="qst_preview">
               			<td>
               				<c:choose>
-								<c:when test="${list.qst_answer == null || list.qst_answer == ''}">
+								<c:when test="${list.answer_status == 'N'}">
                						<span id="ansStatus" style="color:#ccc;">답변 대기</span>
               					</c:when>
 								<c:otherwise>
@@ -201,14 +158,21 @@
                         <td><a href="#" id="qst_title" data-id="${list.qst_index}">${list.qst_title}</a></td>
                         <td>${list.member_name}</td>
                         <td style="font-size:11px;">${list.qst_date}</td>
-                        <td><button type="button" id=deleteBtn><i class="fas fa-trash-alt"></i></button></td>
+                        <td><button type="button" id=deleteBtn onclick="godeletequestion(this,'${list.qst_index}')" data-var="${list.qst_index }"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>
                     <tr class="qst_detail invisible" data-index="${list.qst_index}">
                         <td colspan="6"> 
                         <div class="detailQuestion">
                             <div class="question">
                                 <strong><i class="fab fa-quora"></i></strong> 
-                                <p> ${list.qst_content}</p>
+                                <div class="question-detail"> 
+                                	<p>${list.qst_content}</p>
+                                	<c:if test="${list.qst_image !=null }">
+                                	<div class="divider"></div>
+                                	<div class="question-img"><img src="/svcImg${list.qst_image }"/></div>
+                                	</c:if>
+                                </div>
+                               
                             </div>
 									<div class="answer">
 									<c:choose>
@@ -222,7 +186,7 @@
                                 			</p>
                                	</c:otherwise>
 								</c:choose>
-                            		</div>
+                            </div>
                         </div>    
                         </td>
                     </tr>
@@ -240,26 +204,93 @@
         </div>
 </div>
 
-<!-- 질문 타이틀 클릭시 질문 상세 보임 -->
 <script>
-        const qstname = document.querySelectorAll('#qst_title');
-        const qstdetail = document.querySelectorAll('.qst_detail');
-
-        qstname.forEach(name => {
-            name.addEventListener('click', () => {
-                const dataid = name.getAttribute('data-id');
-                qstdetail.forEach(detail=>{
-                    const dataidx = detail.getAttribute('data-index');
-                    if(dataid == dataidx) {
-                        detail.classList.toggle('invisible');
-                    }
-                });
-            });
-        });
+function gologinout(num) {
+	/* 로그아웃하기 */
+	if(num == 0) {
+		if(!confirm('로그아웃 하시겠습니까?')) {
+			return;
+		}	
+		$.ajax({
+			url: '/logout',
+			data: {
+				"member_name" : ''
+			},
+			success: function(rs) {
+					alert('로그아웃이 완료되었습니다.');
+					location.reload();
+					$('#member_name').val('');
+			}, error : function(xhr, status, error) {
+				alert('오류');
+			}
+		});	
+	} else {
+		alert('로그인 페이지로 이동합니다.');
+		location.href='/login';
+	}
+}
 </script>
-
-<!-- 질문 등록 글자수 제한 등 validation 체크-->
 <script>
+/* 질문 타이틀 클릭시 질문 상세 보이기 */
+
+const qstname = document.querySelectorAll('#qst_title');
+const qstdetail = document.querySelectorAll('.qst_detail');
+
+  	qstname.forEach(name => {
+       name.addEventListener('click', () => {
+       	const dataid = name.getAttribute('data-id');
+          qstdetail.forEach(detail=>{
+             const dataidx = detail.getAttribute('data-index');
+               if(dataid == dataidx) {
+                 detail.classList.toggle('invisible');
+               }
+          });
+        });
+    });
+  	
+/* 해당 질문 삭제 */  	
+function godeletequestion(event,number) {
+	const conf = confirm('해당 질문을 삭제하시겠습니까?');
+	if(!conf) {
+		return;
+	}
+	ondeleteQst(event, number);
+}
+  	
+function ondeleteQst(event, num) {
+	const data = event.getAttribute('data-var');
+	if(!data) {
+		return;
+	}   	
+	const qsttbody = document.querySelectorAll(".questionTable table tbody");
+	const deletedrow = document.querySelector(".questionTable table tbody[data-var='"+data+"']");
+    const usernm = document.querySelector('#member_name').value;
+        	
+      $.ajax({
+        url: "/member/deletemyqstService",
+        data: {
+        	"status" : "D",
+        	"member_name" : usernm, 
+        	"qst_index": num
+        },
+        async: true,
+        success: function(rs) {
+        	if(rs > 0) {
+        	 	if(qsttbody.length > 1) {
+        	 		deletedrow.remove();	
+        	 	} else {
+        	 		location.reload();
+        	 	}
+        	}
+        },
+        error: function(xhr,status,error) {
+        		alert('오류가 발생했습니다.');
+        }
+      });     	
+ }   
+</script>
+<script>
+/* 질문 등록 글자수 제한 등 validation 체크 */
 const qstConts = document.querySelector('.question_service #qst_content');
 const limit = document.querySelector('.question_service .limitText');
 const limitText = document.querySelector('.question_service .limitText > span');
@@ -278,6 +309,7 @@ const qstBtn = document.querySelector('#finishBtn');
 const agreeChk = document.querySelector('.agreeChk #chkbox');
 const qstInput = document.querySelector('.question_service > input');
 const qstText = document.querySelector('.question_service > textarea');
+const litabs = document.querySelectorAll('ul.tabs li');
 
 	qstBtn.addEventListener('click', () => {
 		if(!agreeChk.checked){
@@ -296,6 +328,10 @@ const qstText = document.querySelector('.question_service > textarea');
 		}
 		if(qstText.value.length < 10 || qstText.value.length > 500) {
 			alert('문의 내용은 10자 이상 500자 이하로 입력 가능합니다.');
+			qstText.focus();
+			return;
+		}
+		if(!confirm('문의 등록을 하시겠습니까?')) {
 			return;
 		}
 		oninsertQst();
@@ -303,9 +339,9 @@ const qstText = document.querySelector('.question_service > textarea');
 	
 function oninsertQst() {
 	
+	$('#status').val('I');
 	const formvalue = $('#postform')[0];
 	let formdata = new FormData(formvalue);
-	formdata.append("status","I");
 	
 	$.ajax({
 		url: "/member/setQuestionService",
@@ -317,11 +353,8 @@ function oninsertQst() {
 		type: 'POST',
 		success: function(rs) {
 			if(rs > 0) {
-				if(!confirm('문의 등록을 하시겠습니까?')) {
-					return;
-				}
 				alert('문의사항 등록이 완료되었습니다.');
-				location.href="/member/myaccount";
+				location.reload();
 			}
 		},
 		error: function(xhr,status,error) {
@@ -329,38 +362,39 @@ function oninsertQst() {
 		}
 	});
 }
-
 </script>
-
-<!-- 문의 등록 & 문의 내역 확인하기 -->
 <script>
-const tabs = document.querySelectorAll('ul.tabs li');
-const conts = document.querySelectorAll('.contentBox');
+/* 문의 등록 & 문의 내역 확인하기 */
+ const tabs = document.querySelectorAll('ul.tabs li');
+ const conts = document.querySelectorAll('.contentBox');
 
-tabs.forEach((tab, index) => {
-	tab.addEventListener('click', (event) => {
-		const tabid = tab.dataset.id;
-		const conid = conts[index].dataset.id;
-			conts.forEach(cont=>{
-				if(tabid == cont.dataset.id) {
-					cont.classList.remove('invisible');
-				}else {
-					cont.classList.add('invisible');
-				}
-			});
-	
-		tabs.forEach(tab=> {
-			tab.classList.remove('active');
-		});
-		tab.classList.add('active');
-	});
-	
-});
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', (event) => {
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                tab.classList.add('active');
+                onclicktab(tab, index);
+            });
+            onclicktab(tab, index);
+        });
 
+    function onclicktab(tab, index) {
+        if (tab.classList.contains('active')) {
+            const tabid = tab.dataset.id;
+            const conid = conts[index].dataset.id;
+              conts.forEach(cont => {
+                   if (tabid == cont.dataset.id) {
+                       cont.classList.remove('invisible');
+                   } else {
+                       cont.classList.add('invisible');
+                   }
+           	  });
+         }
+    }
 </script>
-
-<!-- 문의 유형 select 박스로 수작업 -->
 <script>
+/* 문의 유형 select 박스 커스터마이징 */
 const selectWrap = document.querySelector('.selectWrap');
 const selectIcon = document.querySelector('.selectWrap > i');
 const selectResult = document.querySelector('.selectResult');
@@ -384,9 +418,8 @@ selectList.addEventListener('click', (event) => {
     }
 });
 </script>
-
-<!-- 파일 첨부 validation -->
 <script>
+/* 파일 첨부 validation */
 const qstImg = document.querySelector('#qst_image');
 let imgtype= ['jpg', 'jpeg', 'png', 'svg'];
 
@@ -398,7 +431,6 @@ qstImg.addEventListener('change', (event) => {
  		return;
  	}
 });
-
 </script>
 
 </body>

@@ -1106,9 +1106,8 @@
 
 .recent-posts .profile-thumbnail-wrapper {
   width: 42px;
-  height: 42px;
+  height: 54px;
   overflow: hidden;
-  border-radius: 50%;
   box-shadow: 1px 1px 5px -1px rgba(0, 0, 0, 0.5);
   font-size: 0;
   margin-right: 8px;
@@ -1117,7 +1116,9 @@
 .recent-posts .profile-thumbnail-wrapper a {
   display: block;
 }
-
+.recent-posts .profile-thumbnail-wrapper img {
+  height: auto;
+}
 .recent-posts .message-bubble  {
   flex: 1;
 }

@@ -18,9 +18,7 @@
         <form id="frm" method="post">
             <input type="hidden" name="member_name" id="member_name" value="${sessionScope.userId}" />
         	<input type="hidden" name="orderChk" id="orderChk" value="${orderChk}" />
-        	 
         </form>
-
         <div class="mainTitle">
             <h3 style="font-size:18px;"> 주문/결제 </h3>
         </div>
@@ -33,7 +31,6 @@
                 주문번호 (${orderNum}) / 주문 날짜 :
                 <input type="text" id="order_date" name="order_date" value="" readonly/>
             </div>
-		
             <div class="order-info">
                 <div class="order-info-title">
                     도서 정보
@@ -64,7 +61,6 @@
                   </c:forEach>
                 </div>
             </div>
-
             <div class="user-info">
                 <div class="user-info-title">
                     주문자 정보
@@ -156,12 +152,11 @@
                 <button type="button" class="cancel-button">취소하기</button>
                 <button type="button" class="pay-button">결제하기</button>
             </div>
-
         </div>
  	</form>
     </div>
-    
    	<script>
+   	/* 주문 취소하기 */
    		const cancelBtn = document.querySelector('.cancel-button');
    		cancelBtn.addEventListener('click', () => {
    			if(!confirm('취소하시겠습니까?')) {
@@ -170,6 +165,7 @@
    			history.back(-1);
    		});
    		
+   	/* 추문하기 버튼 클릭시 validation 체크 */	
    		const payBtn = document.querySelector('.pay-button');
    		const orderChk = document.querySelector('#orderChk');	
    		const inputs = document.querySelectorAll('.orderDetail input:not(#book_id)');
@@ -181,21 +177,17 @@
    	   				inputs[i].focus();
    	   				return;
    	   			}
-   	   		}
-   	   		
+   	   		}   		
    			if(orderChk.value > 0) {
    				alert('이미 구매된 도서가 있습니다. \n아이디 1개당 각 도서 1개씩만 구매 가능합니다.');
    				return;
    			}
-
    			if(!confirm('구매하시겠습니까?')) {
    				return;
    			} else {
    				onorderitem();
-   			}
-   			
-   		});
-   		
+   			}  			
+   		}); 		
    		function onorderitem() {
    			$.ajax({
    				url: "/member/setOrderitem.do",
@@ -213,8 +205,8 @@
    			});
    		}
    	</script>
-   
     <script>
+    	/* 배송 메세지 select 커스터마이징 */
         const selectWrap = document.querySelector('.selectWrap');
         const selectIcon = document.querySelector('.selectWrap > i');
         const selectResult = document.querySelector('.selectResult');
@@ -226,7 +218,6 @@
             selectIcon.classList.toggle('open');
             selectResult.classList.toggle('invisible');
         });
-
         selectList.addEventListener('click', (event) => {
             if (event.target.nodeName == 'LI') {
                 const val = event.target.textContent;
@@ -248,6 +239,7 @@
             adrsInput.focus();
         });
 
+        /* 주문 날짜 포맷 */
         let today = new Date();
         let year = today.getFullYear();
         let month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -259,11 +251,10 @@
         
         let dateSpan = document.querySelector('.orderInformation > input');
         dateSpan.value = dateString + ' ' + timeString;
-
     </script>
     <script>
+    	/* 할인 상품 & 정가 상품 fliter */
     	const saleprice = document.querySelectorAll('.sale_price');		
-    	
     	if(saleprice) {
 			saleprice.forEach(sale=>{
 				let span = sale.querySelector('#price');
@@ -287,18 +278,18 @@
     	let price = 0;
 		let maxPrice = 50000;
 
-		//할인되는 책이 있을 경우, 할인 금액으로 계산
+		/* 할인되는 책이 있을 경우, 할인 금액으로 계산 */
 		bookPrices.forEach(item=> {
 			const salefare = item.parentNode.parentNode.querySelector('.sale_price > span');
 			let sales = salefare == null ? item.textContent : salefare.textContent;
 			price += Number(sales);	
    	});
 
-    	//결제 정보 자동 입력
+    	/* 결제 정보 자동 입력 */
     	let disPrice = (price*disc)/100;
     	discSpan.textContent = disPrice.toLocaleString();
     	
-    	//상품 금액 5만원이상 무료배송
+    	/* 상품 금액 5만원이상 무료배송 */
     	price >= maxPrice ? shipSpan = 0 : shipSpan;
     	document.querySelector('#ship_price').textContent = shipSpan.toLocaleString();
     	
@@ -307,10 +298,9 @@
     	
     	totalSpan.value = sum.toLocaleString();
     	
-    	//마일리지
+    	/* 마일리지 */
     	let milesum = Math.round(((price-disPrice)*3)/100);
     	mileSpan.value = milesum;
-    		
     </script>
 </body>
 </html>
